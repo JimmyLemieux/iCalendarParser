@@ -21,3 +21,6 @@ gitCommit:
 
 gitPush:
 	git push -u origin master
+
+gitPull:
+	git pull https://JimmyLemieux:Jrrangers123321@github.com/JimmyLemieux/iCalendarParser.git
