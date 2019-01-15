@@ -137,7 +137,6 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
     free(stringBuffer);
     free(temp);
 
-    free_fields(lines,fileLineCount);
     *fileLines = fileLineCount;
     *arraySize = lineSize;
     fclose(file);
@@ -259,13 +258,13 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     i = 0;
 
 
-    readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
+    char **test = readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
 
     printf("arraySize: %d and fileLines: %d\n", arraySize,fileLines);
 
     //validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
 
-    //free_fields(test,arraySize);
+    free_fields(test,arraySize);
     free(tempFile);
     free(fileExtension);
     return OK;
