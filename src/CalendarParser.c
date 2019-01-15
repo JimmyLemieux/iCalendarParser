@@ -264,6 +264,10 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
 
     //validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
 
+    for(i = 0;i<arraySize;i++) {
+        printf("%s",test[i]);
+    }
+
     free_fields(test,arraySize);
     free(tempFile);
     free(fileExtension);
