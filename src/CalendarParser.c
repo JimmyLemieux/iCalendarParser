@@ -66,10 +66,18 @@ char *setStr(char *s) {
     return new;
 }
 
+void free_fields(char **ptr, int size) {
+    int i;
+    for(i = 0;i<size;i++) {
+        free(ptr[i]);
+    }
+    free(ptr);
+}
 
 
 
-char ** readFileChar(char *fileName, int *arraySize,int *fileLines) {
+
+char ** readFileChar(char *fileName, int *arraySize,int *fileLines, char **lines) {
 
     int c;
     int fileLineCount = 0;
@@ -80,7 +88,7 @@ char ** readFileChar(char *fileName, int *arraySize,int *fileLines) {
     int k;
     char *stringBuffer = calloc(1,sizeof(stringBuffer));
     char *temp; 
-    char **lines = calloc(1, sizeof(lines)*lineSize + 1);
+    lines = calloc(1, sizeof(lines)*lineSize + 1);
     
     FILE *file = fopen(fileName,"r");
 
@@ -154,19 +162,14 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     return OK;
 }
 
-void free_fields(char **ptr, int size) {
-    int i;
-    for(i = 0;i<size;i++) {
-        free(ptr[i]);
-    }
-    //free(ptr);
-}
+
 
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     /*First step, when opening the file make sure it is of valid file extension
     Also make sure that the actual file opens and that you can read contents from the file
     */
+    char **test = NULL;
     char *tempFile = NULL;
     char *fileExtension = NULL;
     FILE *file;
@@ -240,11 +243,15 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     i = 0;
 
 
-    char **test = readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
+    test = readFileChar(tempFile, &arraySize,&fileLines,test);//This needs to be freed and checked for memleaks
 
     printf("arraySize: %d and fileLines: %d\n", arraySize,fileLines);
 
     //validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
+    for(i = 0;i<arraySize;i++) {
+        printf("%s",test[i]);
+    }
+
 
 
     free_fields(test,arraySize);
