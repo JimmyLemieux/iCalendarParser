@@ -116,7 +116,10 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
                 index+=2;
                 tempStart = index;
                 lineSize++;
-                lines = realloc(lines, sizeof(lines) * (lineSize+1));
+
+                char **newPtr = NULL;
+                newPtr = realloc(lines, sizeof(char*) * (lineSize+1));
+                lines = newPtr;
                 free(temp);
                 temp = NULL;
                 continue;
