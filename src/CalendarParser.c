@@ -154,6 +154,15 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     return OK;
 }
 
+void free_fields(char **ptr, int size) {
+    int i;
+    for(i = 0;i<size;i++) {
+        free(ptr[i]);
+    }
+    //free(ptr);
+}
+
+
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     /*First step, when opening the file make sure it is of valid file extension
     Also make sure that the actual file opens and that you can read contents from the file
@@ -238,14 +247,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     //validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
 
 
-    //Free
-    for(i = 0;i<arraySize;i++) {
-        printf("%s",test[i]);
-        free(test[i]);
-    }
-
-
-    free(test);
+    free_fields(test,arraySize);
     free(tempFile);
     free(fileExtension);
     return OK;
