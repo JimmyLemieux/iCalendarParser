@@ -46,38 +46,6 @@ char ** init_str_array(int N, int K) {
     return a;
 }
 
-
-// void  splitLine(char *fileFeed,char* del, int *arraySize) {
-//     char *token;
-//     char *tempLine;
-//     char **fileLines;
-//     int j;
-//     if(fileFeed == NULL || del == NULL) {
-//         return;
-//     }
-
-
-//     token = (char *)malloc(sizeof(char) * 256);
-//     token = strtok(fileFeed, del);
-//     j = 0;
-//     while(token != NULL) {
-//         if(j % 255 == 0 && j != 0) {
-//             fileLines = (char **)realloc(fileLines, sizeof(char *)* 255);
-//         }
-//         strcat(token,"\0");
-//         tempLine = (char *)malloc(strlen(token)+1);
-//         strcpy(tempLine,token); //includes the null ter from token
-//         fileLines[j] = (char *)malloc(strlen(tempLine) + 1);
-//         strcpy(fileLines[j],tempLine);
-//         token = strtok(NULL,del); 
-//         j++;
-//     }
-//     *arraySize = j;
-//     free(tempLine);
-//     tempLine = NULL;
-//     free(token);
-// }
-
 /*Make a trim that will remove white space,
 If the line has a space at the begin and is a potential line fold then do a special case for the trim */
 
