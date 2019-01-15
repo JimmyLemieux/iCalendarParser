@@ -9,7 +9,7 @@ git: gitAdd gitCommit gitPush
 pull: gitStash gitPull
 
 parser:
-	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -o ./bin/parser.o
+	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -ggdb3 -o ./bin/parser.o
 
 main:
 	$(CC) $(CFLAGS) ./bin/parser.o -ggdb3 -o ./bin/main.o ./src/main.c
