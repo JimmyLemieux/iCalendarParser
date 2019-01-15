@@ -76,7 +76,7 @@ void free_fields(char **ptr, int size) {
 
 
 
-
+//This works with big input
 char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool tokenizer and memleak fix
     int c;
     int fileLineCount = 0;
