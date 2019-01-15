@@ -8,12 +8,20 @@ git: gitAdd gitCommit gitPush
 
 pull: gitStash gitPull
 
+run: runMain
+
 parser:
 	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -o ./bin/parser.o
 
 main:
 	$(CC) $(CFLAGS) ./bin/parser.o -o ./bin/main.o ./src/main.c
 
+
+runMain:
+	./bin/main.o
+
+runMainVal:
+	valgrind ./bin/main.o
 
 gitAdd:
 	git add .
