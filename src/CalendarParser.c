@@ -87,7 +87,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
     int k;
     char *stringBuffer = calloc(1,sizeof(stringBuffer));
     char *temp; 
-    char **lines = calloc(1, sizeof(char *)*50);
+    char **lines = calloc(1, sizeof(char *));
     
     FILE *file = fopen(fileName,"r");
 
