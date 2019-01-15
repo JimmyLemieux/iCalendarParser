@@ -107,21 +107,24 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
                 k = 0;
                 int startIndex = tempStart;
                 int endIndex = index+2;
-                temp = calloc((index+3), sizeof(temp));
-                //lines[lineSize] = calloc(100,sizeof(char));
+
+                temp = calloc(1, sizeof(char*)*(index+2));                
+                
                 strncpy(temp, stringBuffer + startIndex, endIndex - startIndex);
-                lines[lineSize] = malloc(strlen(temp) * 10);
+                
+                lines[lineSize] = calloc(1,strlen(temp) + 1);
                 strcpy(lines[lineSize],temp);
-                strcat(lines[lineSize], "\0");
+                lineSize++;
+                lines = realloc(lines, sizeof(lines) * (lineSize+1));
+                
+                
+                
+                //For the loop
                 index+=2;
                 tempStart = index;
-                lineSize++;
 
-                char **newPtr = NULL;
-                newPtr = realloc(lines, sizeof(char*) * (lineSize+1));
-                lines = newPtr;
+                //Free the string
                 free(temp);
-                temp = NULL;
                 continue;
             }
 
@@ -132,6 +135,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
     *arraySize = lineSize;
     fclose(file);
     free(stringBuffer);
+    free(temp);
 
     // for(k=0;k<lineSize;k++) {
     //     printf("%s",lines[k]);
