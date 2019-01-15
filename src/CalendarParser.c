@@ -77,8 +77,7 @@ void free_fields(char **ptr, int size) {
 
 
 
-char ** readFileChar(char *fileName, int *arraySize,int *fileLines, char **lines) {
-
+char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
     int c;
     int fileLineCount = 0;
     int lineSize = 0;
@@ -88,7 +87,7 @@ char ** readFileChar(char *fileName, int *arraySize,int *fileLines, char **lines
     int k;
     char *stringBuffer = calloc(1,sizeof(stringBuffer));
     char *temp; 
-    lines = calloc(1, sizeof(lines)*lineSize + 1);
+    char **lines = calloc(1, sizeof(lines)*lineSize + 1);
     
     FILE *file = fopen(fileName,"r");
 
@@ -169,7 +168,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     /*First step, when opening the file make sure it is of valid file extension
     Also make sure that the actual file opens and that you can read contents from the file
     */
-    char **test = NULL;
     char *tempFile = NULL;
     char *fileExtension = NULL;
     FILE *file;
@@ -243,7 +241,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     i = 0;
 
 
-    test = readFileChar(tempFile, &arraySize,&fileLines,test);//This needs to be freed and checked for memleaks
+    char **test = readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
 
     printf("arraySize: %d and fileLines: %d\n", arraySize,fileLines);
 
@@ -253,7 +251,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
         printf("%s", test[i]);
     }
 
-    free_fields(test,arraySize);
+    //free_fields(test,arraySize);
     free(tempFile);
     free(fileExtension);
     return OK;
