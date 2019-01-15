@@ -130,9 +130,9 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
     fclose(file);
     free(stringBuffer);
 
-    for(k=0;k<lineSize;k++) {
-        printf("%s",lines[k]);
-    }
+    // for(k=0;k<lineSize;k++) {
+    //     printf("%s",lines[k]);
+    // }
 
 
     return lines;
