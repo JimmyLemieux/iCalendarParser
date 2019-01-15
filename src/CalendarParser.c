@@ -203,6 +203,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
             j++;
         }
         fileExtension[j] = '\0';
+        printf("The file extension is %s\n",fileExtension);
+
         if(strcmp(fileExtension,"ics") != 0) {
             free(fileExtension);
             free(tempFile);
@@ -214,6 +216,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
 
     //Open the file and read the contents line by line
 
+    printf("The file name is %s\n",fileName); 
     file = fopen(fileName,"r");
     if(file == NULL) {  //The file did not open properly
         errnum = errno;
@@ -221,10 +224,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
         fprintf(stderr,"Error opening file: %s\n",strerror(errnum));
         return INV_FILE;
     }
-    i = 0;
 
+    //End of pen test for file
     fclose(file);
 
+    i = 0;
 
 
     char **test = readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
@@ -237,7 +241,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     //Free
     for(i = 0;i<arraySize;i++) {
         printf("%s",test[i]);
-        printf("is now freed\n");
         free(test[i]);
     }
 
