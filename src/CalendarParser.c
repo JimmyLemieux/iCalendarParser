@@ -77,7 +77,7 @@ void free_fields(char **ptr, int size) {
 
 
 
-char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
+char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool tokenizer and memleak fix
     int c;
     int fileLineCount = 0;
     int lineSize = 0;
@@ -181,7 +181,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
 
 
-ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
+ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
     /*First step, when opening the file make sure it is of valid file extension
     Also make sure that the actual file opens and that you can read contents from the file
     */
