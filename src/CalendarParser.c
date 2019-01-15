@@ -181,7 +181,7 @@ ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
 ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     //Looking for a BEGIN:VCALENDER and then an END:VCALENDAR
     //The very first line in the file needs to be a BEGIN:CALENDAR
-
+    /* Push worked from the remote */
 
 
 
