@@ -104,7 +104,7 @@ char ** readFileChar(char *fileName, int *arraySize,int *fileLines) {
                 temp = calloc((index+3), sizeof(temp));
                 lines[lineSize] = calloc(100,sizeof(char));
                 strncpy(temp, stringBuffer + startIndex, endIndex - startIndex);
-                lines[lineSize] = setStr(temp);
+                lines[lineSize] = calloc(1,strlen(temp) * 9);
                 strcpy(lines[lineSize],temp);
                 //printf("Temp value -> %s",temp);
                 index+=2;
