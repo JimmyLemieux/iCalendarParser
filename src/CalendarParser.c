@@ -240,9 +240,9 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
 
     //Free
     for(i = 0;i<arraySize;i++) {
-        free(test[i]);
+        //free(test[i]);
     }
-    //free(test);
+    free(test);
     free(tempFile);
     free(fileExtension);
     return OK;
