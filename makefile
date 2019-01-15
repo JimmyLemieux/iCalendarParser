@@ -15,10 +15,10 @@ main:
 	$(CC) $(CFLAGS) ./bin/parser.o -o ./bin/main.o ./src/main.c
 
 
-run:
+runM:
 	./bin/main.o
 
-runVal:
+runMVal:
 	valgrind ./bin/main.o
 
 gitAdd:
