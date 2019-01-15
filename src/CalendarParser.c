@@ -110,7 +110,8 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
 
                 temp = calloc(1, sizeof(char*)*(index+2));                
                 
-                strncpy(temp, stringBuffer + startIndex, endIndex - startIndex);
+                strcpy(temp,"Hello");
+                //strncpy(temp, stringBuffer + startIndex, endIndex - startIndex);
                 
                 lines[lineSize] = calloc(1,strlen(temp) + 1);
                 strcpy(lines[lineSize],temp);
@@ -124,7 +125,8 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
                 tempStart = index;
 
                 //Free the string
-                // free(temp);
+                free(temp);
+                temp = NULL;
                 continue;
             }
 
