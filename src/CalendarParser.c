@@ -209,11 +209,15 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
             printf("The file is not a ical file\n"); 
             return INV_FILE;
         }
+
+        free(fileExtension);
+        free(tempFile);
     }
+
 
     //Open the file and read the contents line by line
 
-    file = fopen(tempFile,"r");
+    file = fopen(fileName,"r");
     if(file == NULL) {  //The file did not open properly
         errnum = errno;
         printf("There was an error on the file load\n");
