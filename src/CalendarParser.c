@@ -131,11 +131,15 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
         }
         index++;
     }
+
+    free(stringBuffer);
+    free(temp);
+
+    free_fields(lines,fileLineCount);
     *fileLines = fileLineCount;
     *arraySize = lineSize;
     fclose(file);
-    free(stringBuffer);
-    free(temp);
+
 
     // for(k=0;k<lineSize;k++) {
     //     printf("%s",lines[k]);
