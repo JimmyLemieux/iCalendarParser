@@ -68,6 +68,7 @@
 
 int main() {
     printf("This is from the remote\n");
+    createCalendar("badFile.ical", NULL); 
     //printf("Error Code: %u\n", createCalendar("badFile.ical", NULL));
     return 0;
 }

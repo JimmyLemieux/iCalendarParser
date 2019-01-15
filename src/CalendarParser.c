@@ -171,7 +171,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     int errnum;
     int arraySize;
     int fileLines;
-    char *stringBuffer = calloc(1,sizeof(stringBuffer));
 
     // obj = malloc(sizeof(Calendar*));
     // *obj = malloc(sizeof(Calendar));
@@ -234,14 +233,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
 
 
-
-
     //Free
     for(i = 0;i<arraySize;i++) {
         free(test[i]);
     }
     free(test);
-    free(stringBuffer);
     free(tempFile);
     free(fileExtension);
     return OK;
