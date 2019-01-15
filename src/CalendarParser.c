@@ -54,6 +54,7 @@ char * trimLine(char *line) {
         return NULL;
     }
     //Remove the \r\n
+    return NULL;
 }
 
 
@@ -76,7 +77,6 @@ char ** readFileChar(char *fileName, int *arraySize,int *fileLines) {
     int stringSize = 0;
     int index = 0;
     int tempStart = 0;
-    int i;
     int k;
     char *stringBuffer = calloc(1,sizeof(stringBuffer));
     char *temp; 
@@ -130,8 +130,6 @@ char ** readFileChar(char *fileName, int *arraySize,int *fileLines) {
 ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
     //Declare vars
     int i;
-    int j;
-
     if(lines == NULL || (arraySize < fileLines)) {
         printf("Bad Line\n");
         printf("This is an invalid file\n");
@@ -153,17 +151,15 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     //The very first line in the file needs to be a BEGIN:CALENDAR
     /* Push worked from the remote */
 
-
-
+    return OK;
 }
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
     /*First step, when opening the file make sure it is of valid file extension
     Also make sure that the actual file opens and that you can read contents from the file
     */
-    char **lines;
-    char *tempFile;
-    char *fileExtension;
+    char *tempFile = NULL;
+    char *fileExtension = NULL;
     FILE *file;
     int i;
     int j;
@@ -240,8 +236,12 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
 
     //Free
     for(i = 0;i<arraySize;i++) {
-        //free(test[i]);
+        printf("%s",test[i]);
+        printf("is now freed\n");
+        free(test[i]);
     }
+
+
     free(test);
     free(tempFile);
     free(fileExtension);
