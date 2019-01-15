@@ -124,7 +124,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) {
                 tempStart = index;
 
                 //Free the string
-                free(temp);
+                // free(temp);
                 continue;
             }
 
