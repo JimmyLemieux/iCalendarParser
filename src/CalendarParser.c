@@ -192,6 +192,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
 
     if(index == strlen(tempFile)) {
         printf("There is no file extension\n");
+        free(tempFile);
+        free(fileExtension);
         return INV_FILE;
     }
 
@@ -206,12 +208,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) {
         }
         fileExtension[j] = '\0';
         if(strcmp(fileExtension,"ics") != 0) {
+            free(fileExtension);
+            free(tempFile);
             printf("The file is not a ical file\n"); 
             return INV_FILE;
         }
-
-        free(fileExtension);
-        free(tempFile);
     }
 
 
