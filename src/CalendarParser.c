@@ -273,6 +273,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         } 
 
         free(left);
+        free(right);
     }
 
     return OK;
@@ -394,7 +395,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     
     
     printf("\\THIS FILE WAS FLAGGED AS VALID\\\n");
-    
+
     //Remove all of the special chars on each  line
     for(i = 0;i<arraySize;i++) {
         test[i] = trimSpecialChars(test[i]);
