@@ -285,7 +285,6 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         
         if(strcmp(left,"VERSION") == 0 && open == 1) {
             if(!foundVersion) {
-                printf("Found version\n");
                 foundVersion = 1;
             } else {
                 free(left);
@@ -296,7 +295,6 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
         if(strcmp(left,"PRODID") == 0 && open == 1) {
             if(!foundPRODID) {
-                printf("Found the PRODID\n");
                 foundPRODID = 1;
             } else {
                 free(left);
@@ -327,24 +325,52 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
     int i;
     int j;
     int k;
-    int open;
+    int index;
+    int open = 0;
     char *right;
     char *left;
     if(lines == NULL || arraySize == 0) {
         printf("This is an invalid file\n");
         return INV_FILE;
     }
-    for(i = 0;i<arraySize;i++) {
+    //Only need to check the lines between the first and last lines
+    //It has been confirmed that the basic calendar components have been confirmed
+    for(i = 1;i<arraySize - 1;i++) {
+        index = 0;
+        while(index < strlen(lines[i]) && lines[i][index] != ':') {
+            index++;
+        }
+
+        if(index == strlen(lines[i])) {
+            continue;
+        }
+        
+        left = calloc(1, (index+1) * sizeof(char));
+        right = calloc(1, (strlen(lines[i]) - index) * sizeof(char));
+
+        for(k = 0;k<index;k++) {
+            left[k] = lines[i][k];
+        }
+
+        for(k=index+1,j=0;k<strlen(lines[i]);k++,j++) {
+            right[j] = lines[i][k];
+        }
+
+
+        //Now that we have the right and left begin to look for the open and closed events 
+
+        if(strcmp(left, "BEGIN") == 0 && strcmp(right,"VEVENT"))
+
+
+        printf("LEFT:%s :::: RIGHT:%s\n",left,right);
 
 
 
 
+        free(left);
+        free(right);
 
-    }
-
-
-
-
+    } // end loop
     return OK;
 }
 
@@ -467,7 +493,20 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return INV_FILE;
     }
 
+    error = checkEvents(test,arraySize);
+
+    if(error != 0) {
+        printf("Found a error with an event in this calendar!\n");
+        free_fields(test,arraySize);
+        free(tempFile);
+        free(fileExtension);
+        return INV_FILE;
+    }
+
+
     printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
+
+
 
 
     free_fields(test,arraySize);
