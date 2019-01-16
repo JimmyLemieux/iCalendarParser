@@ -320,7 +320,11 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 //AN EVENT MUST have a BEGIN:VENEVT and then a END:VEVENT tag
 //INSIDE an event it MUST have a DTSTAMP property and UID property and DTSTART property
 
-//The event compone
+//Will finish this function later, need to first check for mismatches of BEGIN and END
+//This function will check if all of the events in the file are good
+
+
+//I should make a find first occurence function that will find the first occurence of a char and split to left and right
 ICalErrorCode checkEvents(char **lines, int arraySize) {
     int i;
     int j;
@@ -355,24 +359,13 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
         for(k=index+1,j=0;k<strlen(lines[i]);k++,j++) {
             right[j] = lines[i][k];
         }
-
-
         //Now that we have the right and left begin to look for the open and closed events 
-
-
         printf("LEFT:%s :::: RIGHT:%s\n",left,right);
-
-
-
-
         free(left);
         free(right);
-
     } // end loop
     return OK;
 }
-
-
 
 
 
