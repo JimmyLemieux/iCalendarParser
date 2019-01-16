@@ -359,8 +359,6 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
 
         //Now that we have the right and left begin to look for the open and closed events 
 
-        if(strcmp(left, "BEGIN") == 0 && strcmp(right,"VEVENT"))
-
 
         printf("LEFT:%s :::: RIGHT:%s\n",left,right);
 
