@@ -261,6 +261,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
         if(open < 0) {
             printf("THERE WAS A BEGIN END MISMATCH");
+            free(right);
+            free(left);
             return INV_CAL;
         }
 
@@ -280,6 +282,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
                 printf("Found version\n");
                 foundVersion = 1;
             } else {
+                free(left);
+                free(right);
                 return DUP_VER;
             }
         }
@@ -289,6 +293,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
                 printf("Found the PRODID\n");
                 foundPRODID = 1;
             } else {
+                free(left);
+                free(right);
                 return DUP_PRODID;
             }
         }
