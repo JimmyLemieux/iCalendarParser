@@ -188,8 +188,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     int foundVersion = 0;
     int foundPRODID = 0;
     int open = 0;
-    char *left;
-    char *right;
+    char *left = NULL;
+    char *right = NULL;
 
     if(lines == NULL || arraySize == 0) {
         printf("Something is still wrong with the file\n");
@@ -229,6 +229,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
         if((strcmp(left,"BEGIN") == 0 || strcmp(left,"END") == 0) && (strcmp(right,"VCALENDAR") == 0)) {
             printf("There is a duplicate property in the file\n");
+            free(left);
+            free(right);
             return INV_CAL;
         }
         free(left);
@@ -308,7 +310,6 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         free(right);
         return INV_CAL;
     } 
-
 
     return OK;
 }
