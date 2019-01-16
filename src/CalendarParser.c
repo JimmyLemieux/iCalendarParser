@@ -217,7 +217,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         } 
 
         //The index is going to be where the left half begins
-        left = calloc(1,index+1 * sizeof(left));
+        left = calloc(1,(index+1) * sizeof(left));
         right = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
         for(k = 0;k<index;k++) {
             left[k] = lines[i][k];
@@ -249,7 +249,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             continue;
         }
 
-        left = calloc(1, (index+2) * sizeof(char));
+        left = calloc(1, (index+1) * sizeof(char));
         right = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
 
 
