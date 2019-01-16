@@ -270,11 +270,15 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
         if(strcmp(left,"BEGIN") == 0) {
             open++;
+            free(right);
+            free(left);
             continue; // to the next line
         }
 
         if(strcmp(left,"END") == 0) {
             open--;
+            free(right);
+            free(left);
             continue;
         }
         
@@ -306,8 +310,6 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
 
     if(!foundPRODID || !foundVersion) {
-        free(left);
-        free(right);
         return INV_CAL;
     } 
 
