@@ -321,11 +321,30 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 //If you can find a BEGIN:EVENT in the top level of the CALENDAR component this will return OK
 //AN EVENT MUST have a BEGIN:VENEVT and then a END:VEVENT tag
 //INSIDE an event it MUST have a DTSTAMP property and UID property and DTSTART property
-ICalErrorCode checkForEvent(char **lines, int arraySize) {
+
+//The event compone
+ICalErrorCode checkEvents(char **lines, int arraySize) {
+    int i;
+    int j;
+    int k;
+    int open;
+    char *right;
+    char *left;
     if(lines == NULL || arraySize == 0) {
         printf("This is an invalid file\n");
         return INV_FILE;
     }
+    for(i = 0;i<arraySize;i++) {
+
+
+
+
+
+    }
+
+
+
+
     return OK;
 }
 
