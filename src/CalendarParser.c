@@ -183,8 +183,13 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     //DEC VARS
     int i;
     int j;
-
-
+    int k;
+    int index;
+    int open;
+    int close;
+    char *left;
+    char *right;
+    
 
     if(lines == NULL || arraySize == 0) {
         printf("Something is still wrong with the file\n");
@@ -195,7 +200,41 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
     /* Checking if the first and last lines are valid */
 
+    if(strcmp(lines[0],"BEGIN:VCALENDAR") != 0 || strcmp(lines[arraySize - 1], "END:VCALENDAR") != 0) {
+        printf("The calendar does not start and end properly\n");
+        return INV_CAL;
+    }
 
+    // Check for the begin and end tags are consistent
+
+    for(i = 0;i<arraySize;i++) { //Looping through each line
+        index = 0;
+        while(index < strlen(lines[i]) && lines[i][index] != ':') {
+            index++;
+        }
+        if(index == strlen(lines[i])) { // The : was not found
+            printf("A : was not found on this line\n");
+            continue;
+        } 
+
+        //The index is going to be where the left half begins
+        left = calloc(1,index+1 * sizeof(left));
+        right = calloc(1,strlen(lines[i]) - index);
+        for(k = 0;k<index;k++) {
+            left[k] = lines[i][k];
+        }
+        printf("The left is : %s\n", left);
+        //Since we have now found the right line, we can now find the right
+        for(k = index+1,j=0;k<strlen(lines[i]);k++,j++) {
+            right[j] = lines[i][k];
+        }
+        printf("The right is : %s\n", right);
+
+        //FREE the right and left
+
+        free(left);
+        free(right);
+    }
     return OK;
 }
 
@@ -322,9 +361,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         test[i] = trimSpecialChars(test[i]);
     }
 
-    for(i = 0;i<arraySize;i++) {
-        printf("%s\n", test[i]);
-    }
+    error = checkCalendarHead(test,arraySize);
 
     free_fields(test,arraySize);
     free(tempFile);
