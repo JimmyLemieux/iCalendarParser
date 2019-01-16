@@ -185,8 +185,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     int j;
     int k;
     int index;
-    int open;
-    int close;
+    int foundVersion = 0;
+    int foundPRODID = 0;
     char *left;
     char *right;
     
@@ -206,35 +206,75 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     }
 
     // Check for the begin and end tags are consistent
-
-    for(i = 0;i<arraySize;i++) { //Looping through each line
+    //You just need to check for BEGIN or END VCALENDER within the first and last lines
+    for(i = 1;i<arraySize - 1;i++) { //Looping through each line
         index = 0;
         while(index < strlen(lines[i]) && lines[i][index] != ':') {
             index++;
         }
         if(index == strlen(lines[i])) { // The : was not found
-            printf("A : was not found on this line\n");
             continue;
         } 
 
         //The index is going to be where the left half begins
         left = calloc(1,index+1 * sizeof(left));
-        right = calloc(1,strlen(lines[i]) - index);
+        right = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
         for(k = 0;k<index;k++) {
             left[k] = lines[i][k];
         }
-        printf("The left is : %s\n", left);
         //Since we have now found the right line, we can now find the right
         for(k = index+1,j=0;k<strlen(lines[i]);k++,j++) {
             right[j] = lines[i][k];
         }
-        printf("The right is : %s\n", right);
 
-        //FREE the right and left
-
+        if((strcmp(left,"BEGIN") == 0 || strcmp(left,"END") == 0) && (strcmp(right,"VCALENDAR") == 0)) {
+            printf("There is a duplicate property in the file\n");
+            return INV_CAL;
+        }
         free(left);
         free(right);
     }
+
+    //If we made it through the above iterations then check if the calendar has a version and UID
+    //If the calendar has both of these things in the top directory then you want to parse them
+
+    for(i = 1;i<arraySize - 1;i++) {
+        index = 0;
+        while(index < strlen(lines[i]) && lines[i][index] != ':') {
+            index++;
+        }
+
+        if(index == strlen(lines[i])) {
+            continue;
+        }
+
+        left = calloc(1,index+1 * sizeof(char));
+        right = calloc(1, (strlen(lines[i]) - index) * sizeof(char));
+
+        for(k = 0;k<index;k++) {
+            left[k] = lines[i][k];
+        }
+        if(strcmp(left,"VERSION") == 0) {
+            if(!foundVersion) {
+                printf("Found version\n");
+                foundVersion = 1;
+            } else {
+                return DUP_VER;
+            }
+        }
+
+        if(strcmp(left,"PRODID") == 0) {
+            if(!foundPRODID) {
+                printf("Found the PRODID\n");
+                foundPRODID = 1;
+            } else {
+                return DUP_PRODID;
+            }
+        } 
+
+        free(left);
+    }
+
     return OK;
 }
 
@@ -354,14 +394,24 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     
     
     printf("\\THIS FILE WAS FLAGGED AS VALID\\\n");
-    printf("\\NOW CHECKING CALENDAR CONTENTS\\\n");
-
+    
     //Remove all of the special chars on each  line
     for(i = 0;i<arraySize;i++) {
         test[i] = trimSpecialChars(test[i]);
     }
 
     error = checkCalendarHead(test,arraySize);
+
+    if(error != 0) {
+        printf("This is an invalid file\n");
+        free_fields(test,arraySize);
+        free(tempFile);
+        free(fileExtension);
+        return INV_FILE;
+    }
+
+    printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
+
 
     free_fields(test,arraySize);
     free(tempFile);
