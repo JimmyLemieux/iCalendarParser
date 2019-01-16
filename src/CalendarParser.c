@@ -191,6 +191,9 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     char *left;
     char *right;
 
+    char *leftC;
+    char *rightC;
+
     if(lines == NULL || arraySize == 0) {
         printf("Something is still wrong with the file\n");
         return INV_FILE;
@@ -247,59 +250,59 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             continue;
         }
 
-        left = calloc(1,index * sizeof(char));
-        right = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
+        leftC = calloc(1,index+1 * sizeof(char));
+        rightC = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
 
 
         for(k = 0;k<index;k++) {
-            left[k] = lines[i][k];
+            leftC[k] = lines[i][k];
         }
 
         for(k = index+1,j=0;k<strlen(lines[i]);k++,j++) {
-            right[j] = lines[i][k];
+            rightC[j] = lines[i][k];
         }    
 
         if(open < 0) {
             printf("THERE WAS A BEGIN END MISMATCH");
-            free(right);
-            free(left);
+            free(rightC);
+            free(leftC);
             return INV_CAL;
         }
 
-        if(strcmp(left,"BEGIN") == 0) {
+        if(strcmp(leftC,"BEGIN") == 0) {
             open++;
             continue; // to the next line
         }
 
-        if(strcmp(left,"END") == 0) {
+        if(strcmp(leftC,"END") == 0) {
             open--;
             continue;
         }
         
         
-        if(strcmp(left,"VERSION") == 0 && open == 1) {
+        if(strcmp(leftC,"VERSION") == 0 && open == 1) {
             if(!foundVersion) {
                 printf("Found version\n");
                 foundVersion = 1;
             } else {
-                free(left);
-                free(right);
+                free(leftC);
+                free(rightC);
                 return DUP_VER;
             }
         }
 
-        if(strcmp(left,"PRODID") == 0 && open == 1) {
+        if(strcmp(leftC,"PRODID") == 0 && open == 1) {
             if(!foundPRODID) {
                 printf("Found the PRODID\n");
                 foundPRODID = 1;
             } else {
-                free(left);
-                free(right);
+                free(leftC);
+                free(rightC);
                 return DUP_PRODID;
             }
         }
-        free(left);
-        free(right);
+        free(leftC);
+        free(rightC);
     }
 
 
