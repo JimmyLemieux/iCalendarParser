@@ -188,11 +188,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     int foundVersion = 0;
     int foundPRODID = 0;
     int open = 0;
-    char *leftCal;
-    char *rightCal;
-    char *leftCComp;
-    char *rightCComp;
-    
+    char *left;
+    char *right;
 
     if(lines == NULL || arraySize == 0) {
         printf("Something is still wrong with the file\n");
@@ -220,28 +217,28 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         } 
 
         //The index is going to be where the left half begins
-        leftCal = calloc(1,index+1 * sizeof(leftCal));
-        rightCal = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
+        left = calloc(1,index+1 * sizeof(left));
+        right = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
         for(k = 0;k<index;k++) {
-            leftCal[k] = lines[i][k];
+            left[k] = lines[i][k];
         }
         //Since we have now found the right line, we can now find the right
         for(k = index+1,j=0;k<strlen(lines[i]);k++,j++) {
-            rightCal[j] = lines[i][k];
+            right[j] = lines[i][k];
         }
 
-        if((strcmp(leftCal,"BEGIN") == 0 || strcmp(leftCal,"END") == 0) && (strcmp(rightCal,"VCALENDAR") == 0)) {
+        if((strcmp(left,"BEGIN") == 0 || strcmp(left,"END") == 0) && (strcmp(right,"VCALENDAR") == 0)) {
             printf("There is a duplicate property in the file\n");
             return INV_CAL;
         }
-        free(leftCal);
-        free(rightCal);
+        free(left);
+        free(right);
     }
 
     //If we made it through the above iterations then check if the calendar has a version and UID
     //If the calendar has both of these things in the top directory then you want to parse them
 
-    for(i = 1;i<arraySize - 1;i++) {
+    for(i = 0;i<arraySize;i++) {
         index = 0;
         while(index < strlen(lines[i]) && lines[i][index] != ':') {
             index++;
@@ -250,14 +247,35 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             continue;
         }
 
-        leftCComp = calloc(1,index+1 * sizeof(char));
+        left = calloc(1,index+1 * sizeof(char));
+        right = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
+
 
         for(k = 0;k<index;k++) {
-            leftCComp[k] = lines[i][k];
+            left[k] = lines[i][k];
         }
 
+        for(k = index+1,j=0;k<strlen(lines[i]);k++,j++) {
+            right[j] = lines[i][k];
+        }    
+
+        if(open < 0) {
+            printf("THERE WAS A BEGIN END MISMATCH");
+            return INV_CAL;
+        }
+
+        if(strcmp(left,"BEGIN") == 0) {
+            open++;
+            continue; // to the next line
+        }
+
+        if(strcmp(left,"END") == 0) {
+            open--;
+            continue;
+        }
         
-        if(strcmp(leftCComp,"VERSION") == 0) {
+        
+        if(strcmp(left,"VERSION") == 0 && open == 1) {
             if(!foundVersion) {
                 printf("Found version\n");
                 foundVersion = 1;
@@ -266,16 +284,22 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             }
         }
 
-        if(strcmp(leftCComp,"PRODID") == 0) {
+        if(strcmp(left,"PRODID") == 0 && open == 1) {
             if(!foundPRODID) {
                 printf("Found the PRODID\n");
                 foundPRODID = 1;
             } else {
                 return DUP_PRODID;
             }
-        } 
-        free(leftCComp);
+        }
+        free(left);
     }
+
+
+    if(!foundPRODID || !foundVersion) {
+        return INV_CAL;
+    } 
+
 
     return OK;
 }
