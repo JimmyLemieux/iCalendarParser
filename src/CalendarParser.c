@@ -154,13 +154,13 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
 ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
     //Declare vars
     int i;
-    if(lines == NULL || (arraySize < fileLines)) {
-        printf("Bad Line\n");
-        printf("This is an invalid file\n");
+    if(lines == NULL || (arraySize < fileLines) || fileLines == 0 || arraySize == 0) {
+        printf("This is an invalid file!\n");
         return INV_FILE;
     }
     for(i = 0;i<arraySize;i++) {
-        if(lines[i][strlen(lines[i]) - 1] != '\n' || lines[i][strlen(lines[i]) - 2] != '\r') {
+        if(lines[i][strlen(lines[i]) - 1] != '\n' && lines[i][strlen(lines[i]) - 2] != '\r') {
+            printf("This is an invalid file due to no CRLF\n");
             return INV_FILE;
         }
     }
@@ -185,6 +185,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     /*First step, when opening the file make sure it is of valid file extension
     Also make sure that the actual file opens and that you can read contents from the file
     */
+    ICalErrorCode error;
     char *tempFile = NULL;
     char *fileExtension = NULL;
     FILE *file;
@@ -230,7 +231,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
             j++;
         }
         fileExtension[j] = '\0';
-        printf("The file extension is %s\n",fileExtension);
 
         if(strcmp(fileExtension,"ics") != 0) {
             free(fileExtension);
@@ -243,7 +243,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     //Open the file and read the contents line by line
 
-    printf("The file name is %s\n",fileName); 
     file = fopen(fileName,"r");
     if(file == NULL) {  //The file did not open properly
         errnum = errno;
@@ -258,15 +257,31 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     i = 0;
 
 
+    
     char **test = readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
 
-    printf("arraySize: %d and fileLines: %d\n", arraySize,fileLines);
 
-    //validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
 
-    for(i = 0;i<arraySize;i++) {
-        printf("%s",test[i]);
+    error = validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
+
+
+    if(error != 0) { //Error With the file
+        printf("Invalid file\n");
+        free_fields(test,arraySize);
+        free(tempFile);
+        free(fileExtension);
+        return INV_FILE;
     }
+
+    //If there is a pass, continue to look at the calendar contents
+    // The calendar contents are supposed to be specified inside the text
+
+    
+    
+    printf("\\THIS FILE WAS FLAGGED AS VALID\\\n");
+    printf("\\NOW CHECKING CALENDAR CONTENTS\\\n");
+
+    
 
     free_fields(test,arraySize);
     free(tempFile);
