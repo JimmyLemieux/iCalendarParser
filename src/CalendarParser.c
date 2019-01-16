@@ -247,7 +247,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             continue;
         }
 
-        left = calloc(1,index+1 * sizeof(char));
+        left = calloc(1,index * sizeof(char));
         right = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
 
 
