@@ -293,6 +293,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             }
         }
         free(left);
+        free(right);
     }
 
 
