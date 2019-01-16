@@ -49,12 +49,17 @@ char ** init_str_array(int N, int K) {
 /*Make a trim that will remove white space,
 If the line has a space at the begin and is a potential line fold then do a special case for the trim */
 
-char * trimLine(char *line) {
+
+/* This function will trim the \r\n from the end of each line and */
+
+char * trimSpecialChars(char *line) {
+    int i;
     if(line == NULL){
         return NULL;
     }
     //Remove the \r\n
-    return NULL;
+    line[strlen(line) - 2] = '\0';    
+    return line;
 }
 
 
@@ -170,13 +175,44 @@ ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
 
 
 
+//This function will be for checking if the first line is BEGIN:VCALENDAR and the last line is END:VCALENDAR
+//Also that the CALENDAR has all of its required properties in the top level directory
+//This will require keeping track of BEGIN and END TAGS
+//It is possible to do both of these at the same time :)
 ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
-    //Looking for a BEGIN:VCALENDER and then an END:VCALENDAR
-    //The very first line in the file needs to be a BEGIN:CALENDAR
-    /* Push worked from the remote */
+    //DEC VARS
+    int i;
+    int j;
+
+
+
+    if(lines == NULL || arraySize == 0) {
+        printf("Something is still wrong with the file\n");
+        return INV_FILE;
+    }
+    //Check to see if the CALENDAR has a BEGIN and then END, IF THERE is at least ONE COMPONENT
+    //CHECK IF THE CALENDAR has a version and a PROID
+
+    /* Checking if the first and last lines are valid */
+
 
     return OK;
 }
+
+
+//This function is responsible for checking if there is at least one component in the CALENDAR
+//If you can find a BEGIN:EVENT in the top level of the CALENDAR component this will return OK
+//AN EVENT MUST have a BEGIN:VENEVT and then a END:VEVENT tag
+//INSIDE an event it MUST have a DTSTAMP property and UID property and DTSTART property
+ICalErrorCode checkForEvent(char **lines, int arraySize) {
+    if(lines == NULL || arraySize == 0) {
+        printf("This is an invalid file\n");
+        return INV_FILE;
+    }
+    return OK;
+}
+
+
 
 
 
@@ -281,7 +317,14 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     printf("\\THIS FILE WAS FLAGGED AS VALID\\\n");
     printf("\\NOW CHECKING CALENDAR CONTENTS\\\n");
 
-    
+    //Remove all of the special chars on each  line
+    for(i = 0;i<arraySize;i++) {
+        test[i] = trimSpecialChars(test[i]);
+    }
+
+    for(i = 0;i<arraySize;i++) {
+        printf("%s\n", test[i]);
+    }
 
     free_fields(test,arraySize);
     free(tempFile);
