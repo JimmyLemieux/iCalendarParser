@@ -187,8 +187,11 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     int index;
     int foundVersion = 0;
     int foundPRODID = 0;
-    char *left;
-    char *right;
+    int open = 0;
+    char *leftCal;
+    char *rightCal;
+    char *leftCComp;
+    char *rightCComp;
     
 
     if(lines == NULL || arraySize == 0) {
@@ -217,22 +220,22 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         } 
 
         //The index is going to be where the left half begins
-        left = calloc(1,index+1 * sizeof(left));
-        right = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
+        leftCal = calloc(1,index+1 * sizeof(leftCal));
+        rightCal = calloc(1,(strlen(lines[i]) - index) * sizeof(char));
         for(k = 0;k<index;k++) {
-            left[k] = lines[i][k];
+            leftCal[k] = lines[i][k];
         }
         //Since we have now found the right line, we can now find the right
         for(k = index+1,j=0;k<strlen(lines[i]);k++,j++) {
-            right[j] = lines[i][k];
+            rightCal[j] = lines[i][k];
         }
 
-        if((strcmp(left,"BEGIN") == 0 || strcmp(left,"END") == 0) && (strcmp(right,"VCALENDAR") == 0)) {
+        if((strcmp(leftCal,"BEGIN") == 0 || strcmp(leftCal,"END") == 0) && (strcmp(rightCal,"VCALENDAR") == 0)) {
             printf("There is a duplicate property in the file\n");
             return INV_CAL;
         }
-        free(left);
-        free(right);
+        free(leftCal);
+        free(rightCal);
     }
 
     //If we made it through the above iterations then check if the calendar has a version and UID
@@ -243,18 +246,18 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         while(index < strlen(lines[i]) && lines[i][index] != ':') {
             index++;
         }
-
         if(index == strlen(lines[i])) {
             continue;
         }
 
-        left = calloc(1,index+1 * sizeof(char));
-        right = calloc(1, (strlen(lines[i]) - index) * sizeof(char));
+        leftCComp = calloc(1,index+1 * sizeof(char));
 
         for(k = 0;k<index;k++) {
-            left[k] = lines[i][k];
+            leftCComp[k] = lines[i][k];
         }
-        if(strcmp(left,"VERSION") == 0) {
+
+        
+        if(strcmp(leftCComp,"VERSION") == 0) {
             if(!foundVersion) {
                 printf("Found version\n");
                 foundVersion = 1;
@@ -263,7 +266,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             }
         }
 
-        if(strcmp(left,"PRODID") == 0) {
+        if(strcmp(leftCComp,"PRODID") == 0) {
             if(!foundPRODID) {
                 printf("Found the PRODID\n");
                 foundPRODID = 1;
@@ -271,9 +274,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
                 return DUP_PRODID;
             }
         } 
-
-        free(left);
-        free(right);
+        free(leftCComp);
     }
 
     return OK;
