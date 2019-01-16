@@ -304,6 +304,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
 
     if(!foundPRODID || !foundVersion) {
+        free(left);
+        free(right);
         return INV_CAL;
     } 
 
