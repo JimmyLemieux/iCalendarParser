@@ -429,13 +429,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     char *left;
     char *right;
 
+    printf("Printing the fetchCal Events\n");
     for(i = 0;i<arraySize;i++) {
-        
-
-
-
+        printf("%s\n", lines[i]);
     }
-
 
     return OK;
 }
