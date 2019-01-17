@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <math.h>
+#include <ctype.h>
 #include "CalendarParser.h"
 
 #define D printf("debug\n")
@@ -27,6 +28,7 @@ char * stringCpy(char * first, char * second) {
     first[strlen(second)] = '\0';
     return first;
 }
+
 
 int checkToken(char *token) {
     for(int i = 0;i<strlen(token);i++) {
@@ -195,6 +197,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
     /* Checking if the first and last lines are valid */
 
+    
     if(strcmp(lines[0],"BEGIN:VCALENDAR") != 0 || strcmp(lines[arraySize - 1], "END:VCALENDAR") != 0) {
         printf("The calendar does not start and end properly\n");
         return INV_CAL;
@@ -422,6 +425,9 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
 
 
 
+/* There will need to be checking for alarms in the events as well */
+/* It should be noted that events are not required to have alarms */
+/* This function could make a sub call to another function that will parse the alarms out of the function*/
 ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     int i;
     int j;
@@ -601,7 +607,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     
     char **test = readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
 
-
+    /* Check the to lower function */
 
     error = validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
 
