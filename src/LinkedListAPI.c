@@ -365,12 +365,11 @@ void * nextElement(ListIterator * iter){
 
 /* Implement the print event object function */
 /* This function will print the contents of the event object in human readible code */
+/*Here as well you will need to go through all of the alarms and properties*/
 char* printEventFunc(void *toBePrinted) {
 	char *tempStr;
 
 	Event *tempEvent;
-	int len;
-
 	if(toBePrinted == NULL) {
 		return NULL;
 	}
@@ -378,16 +377,13 @@ char* printEventFunc(void *toBePrinted) {
 	tempEvent = (Event*)toBePrinted;
 
 	/* We are going to have the print out the contents of the event object we just refrenced */
-	printf("%s\n",tempEvent->UID);
+	// printf("%s\n",tempEvent->UID);
 	tempStr = calloc(1, 50);
 	sprintf(tempStr, "UID: %s", tempEvent->UID); 
 	return tempStr;
 }
-
-
 /* You will have to traverse all of the properties and alarms of this event as well */ 
 /* You will need to free the two list * inside the event object */ 
-
 int compareEvent(const void *first, const void *second) {
 	Event *event1;
 	Event *event2;
@@ -418,7 +414,6 @@ int compareEvent(const void *first, const void *second) {
 	}
 	return 1;
 }
-
 void deleteFunc(void *toBeDeleted) {
 	Event *tempEvent;
 	if(toBeDeleted == NULL) {
@@ -428,5 +423,48 @@ void deleteFunc(void *toBeDeleted) {
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
 	free(tempEvent);
+
+}
+
+char* printDate(void *toBePrinted) {
+	char *tempStr;
+	DateTime *tempDT;
+	int length = 0;
+	if(toBePrinted == NULL) {
+		return NULL;
+	}
+	tempDT = (DateTime*)toBePrinted;
+	/* You need to print the date, time and UTC */
+	length = strlen(tempDT->date) + strlen(tempDT->time);
+	tempStr = calloc(1,length+1);
+	sprintf(tempStr, "DATE:%s, TIME:%s and the UTC is %d\n", tempDT->date, tempDT->time, tempDT->UTC);
+	return tempStr;
+}
+
+int compareDates(const void *first,const void *second) {
+	DateTime *tempDT1;
+	DateTime *tempDT2;
+	if(first == NULL || second == NULL) {
+		return 0;
+	}
+
+
+	tempDT1 = (DateTime*)first;
+	tempDT2 = (DateTime*)second;
+
+	/* We need to compare the date, time and UTC */
+
+	if(strcmp(tempDT1->date, tempDT2->date) != 0) {
+		return 0;
+	}
+
+	if(strcmp(tempDT1->time, tempDT2->time) != 0) {
+		return 0;
+	}
+
+	if(tempDT1->UTC != tempDT2->UTC) {
+		return 0;
+	}
+	return 1;
 
 }
