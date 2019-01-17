@@ -327,7 +327,7 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
 
     for(i = 0;i<arraySize;i++) {
         index = 0;
-        while(index < strlen(lines[i]) || lines[i][index] != ':') {
+        while(index < strlen(lines[i]) && lines[i][index] != ':') {
             index++;
         }
 
