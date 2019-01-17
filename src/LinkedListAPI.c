@@ -1,4 +1,5 @@
 #include "LinkedListAPI.h"
+#include "CalendarParser.h"
 #include "assert.h"
 
 /** Function to initialize the list metadata head to the appropriate function pointers. Allocates memory to the struct.
@@ -360,4 +361,72 @@ void * nextElement(ListIterator * iter){
 
     }
     return data;
+}
+
+/* Implement the print event object function */
+/* This function will print the contents of the event object in human readible code */
+char* printEventFunc(void *toBePrinted) {
+	char *tempStr;
+
+	Event *tempEvent;
+	int len;
+
+	if(toBePrinted == NULL) {
+		return NULL;
+	}
+
+	tempEvent = (Event*)toBePrinted;
+
+	/* We are going to have the print out the contents of the event object we just refrenced */
+	printf("%s\n",tempEvent->UID);
+	tempStr = calloc(1, 50);
+	sprintf(tempStr, "UID: %s", tempEvent->UID); 
+	return tempStr;
+}
+
+
+/* You will have to traverse all of the properties and alarms of this event as well */ 
+/* You will need to free the two list * inside the event object */ 
+
+int compareEvent(const void *first, const void *second) {
+	Event *event1;
+	Event *event2;
+
+	if(first == NULL || second == NULL) {
+		return 0;
+	}
+
+	event1 = (Event *)first;
+	event2 = (Event *)second;
+	/* Check all of the components of the property are the same
+	Which includes, UID, DTSTART, DTSTAMP, and alarms if there is one */
+
+	if(strcmp(event1->UID,event2->UID) != 0) {
+		return 0;
+	}
+
+	if(strcmp(event1->startDateTime.date, event2->startDateTime.date) != 0) {
+		return 0;
+	}
+
+	if(strcmp(event1->startDateTime.time,event2->startDateTime.time) != 0) {
+		return 0;
+	}
+
+	if(event1->startDateTime.UTC != event2->startDateTime.UTC) {
+		return 0;
+	}
+	return 1;
+}
+
+void deleteFunc(void *toBeDeleted) {
+	Event *tempEvent;
+	if(toBeDeleted == NULL) {
+		return;
+	}
+	tempEvent = (Event*)toBeDeleted;
+	/* We basically need to free everything that is contained inside the event object */
+	/* for now just free the main event pointer */
+	free(tempEvent);
+
 }

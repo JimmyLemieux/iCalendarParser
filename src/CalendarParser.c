@@ -625,6 +625,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
+    
+
     printf("The object worked\n");
     free_fields(test,arraySize);
     free(tempFile);

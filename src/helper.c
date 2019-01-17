@@ -83,8 +83,6 @@ void stringToUpper(char *string) {
 }
 
 
-
-
 char * stringCpy(char * first, char * second) {
     if(first == NULL || second == NULL) {
         return NULL;
