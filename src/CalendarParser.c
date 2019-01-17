@@ -514,6 +514,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
     }
+    free(right);
+    free(left);
     return OK;
 }
 
