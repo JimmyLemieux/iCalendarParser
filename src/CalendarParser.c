@@ -4,6 +4,8 @@
 #include <errno.h>
 #include <math.h>
 #include "CalendarParser.h"
+
+#define D printf("debug\n")
 // #include "LinkedListAPI.h"
 
 //Add a MISMATCH CHECKER that will check BEGIN and END tags
@@ -149,11 +151,6 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     fclose(file);
 
 
-    // for(k=0;k<lineSize;k++) {
-    //     printf("%s",lines[k]);
-    // }
-
-
     return lines;
 }
 
@@ -173,8 +170,6 @@ ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
     }
     return OK;
 }
-
-
 
 
 //This function will be for checking if the first line is BEGIN:VCALENDAR and the last line is END:VCALENDAR
@@ -370,6 +365,63 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
 }
 
 
+ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
+    //The object needs to be malloced 
+    // All of the things have been checked, then we can just look for the version and proID
+    int i;
+    int j;
+    int k;
+    int index;
+    char *left;
+    char *right;
+    if(lines == NULL || obj == NULL) {
+        return OTHER_ERROR;
+    }
+
+    for(i = 0;i<arraySize;i++) {
+        index = 0;
+        while(index < strlen(lines[i]) && lines[i][index] != ':') {
+            index++;
+        }
+
+        if(index == strlen(lines[i])) {
+            printf("The token was not found on this line\n");
+            continue;
+        }
+
+        /* If the : is found, then we need to make a right and left */
+        left = calloc(1, (index+1) *sizeof(char));
+        right = calloc(1, (strlen(lines[i]) - index) * sizeof(char));
+        for(j = 0;j<index;j++) {
+            left[j] = lines[i][j]; 
+        }
+
+        for(j=index+1,k=0;j<strlen(lines[i]);j++,k++) {
+            right[k] = lines[i][j];
+        }
+
+        if(strcmp(left,"VERSION") == 0) { // This is a version that should be parsed, when it is parsed add to the calendar object
+            obj->version = atof(right);
+
+            free(right);
+            free(left);
+            continue;
+        }
+
+        if(strcmp(left,"PRODID") == 0) {
+            strcpy(obj->prodID,right);
+            free(left);
+            free(right);
+            continue;
+        }
+        
+        free(left);
+        free(right);
+
+    }
+    return OK;
+}
+
 
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
@@ -386,9 +438,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     int errnum;
     int arraySize;
     int fileLines;
-
-    // obj = malloc(sizeof(Calendar*));
-    // *obj = malloc(sizeof(Calendar));
+    obj = malloc(sizeof(Calendar*));
+    *obj = malloc(sizeof(Calendar));
     
 
     if(fileName == NULL) {
@@ -486,22 +537,36 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return INV_FILE;
     }
 
-    error = checkEvents(test,arraySize);
+    // error = checkEvents(test,arraySize);
+
+    // if(error != 0) {
+    //     printf("Found a error with an event in this calendar!\n");
+    //     free_fields(test,arraySize);
+    //     free(tempFile);
+    //     free(fileExtension);
+    //     return INV_FILE;
+    // }
+
+    /* Check for events and other things later, start the parser for now */
+    printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
+    printf("This worked\n");
+
+    /* Make functions to return the version and proID into the calendar object */
+
+    error = fetchCalRequiredProps(*obj,test,arraySize);
 
     if(error != 0) {
-        printf("Found a error with an event in this calendar!\n");
+        printf("Found an error while parsing the version and proID\n");
         free_fields(test,arraySize);
-        free(tempFile);
+        free(tempFile); 
         free(fileExtension);
-        return INV_FILE;
+        return OTHER_ERROR;
     }
 
+    printf("The version is %f\n", (*obj)->version);
+    printf("The proID is %s\n",(*obj)->prodID);
 
-    printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
-
-
-
-
+    printf("The object worked\n");
     free_fields(test,arraySize);
     free(tempFile);
     free(fileExtension);
