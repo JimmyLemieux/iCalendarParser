@@ -6,6 +6,7 @@
 #include "CalendarParser.h"
 
 #define D printf("debug\n")
+#define P printf("Check for Return\n")
 // #include "LinkedListAPI.h"
 
 //Add a MISMATCH CHECKER that will check BEGIN and END tags
@@ -429,6 +430,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     int open = 0;
     char *left;
     char *right;
+    Event *new_event;
 
     printf("Printing the fetchCal Events\n");
     /* Loop through all of the calendar events and parse all of the contents */
@@ -449,11 +451,67 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         /* The character was found then we have to see if the conponent is a VEVENT*/
 
+        left = calloc(1, (index+1) * sizeof(char));
+        right = calloc(1, (strlen(lines[i]) - index) * sizeof(char));
+
+        /* Populate the left and right char * */
+
+        for(j = 0;j<index;j++) {
+            left[j] = lines[i][j];
+        }
+         
+        for(j = index+1,k=0;j<strlen(lines[i]);j++,k++) {
+            right[k] = lines[i][j];
+        }
+
+        /* Check if there is an opening for the event */
+        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
+            open++;
+            free(right);
+            free(left);
+            
+            /* When we find an event we need to allocate space for the event in the cal obj */
+            new_event = malloc(sizeof(Event));
+            continue;
+        }
 
 
+        if(strcmp(left,"END") == 0 && strcmp(right,"VEVENT") == 0) {
+            open--;
+            /*Print out the contents of the event */
+            printf("The UID is : %s\n", new_event->UID);
+            printf("The start time is : %s\n", new_event->startDateTime.date);
+            printf("The creation date is : Will fix this later\n");
+            free(new_event);
+            continue;
+        }
 
+        if(strcmp(left,"UID") == 0 && open) {
+            strcpy(new_event->UID,right);
+            free(right);
+            free(left);
+            continue;
+        }
+
+
+        if(strcmp(left,"DTSTART") == 0 && open) {
+            /*Making a new Datetime structure */ 
+            strcpy(new_event->startDateTime.date, right);
+            printf("The date has been made\n");
+            free(right);
+            free(left);
+            continue;
+        }
+
+
+        if(strcmp(left, "DTSTAMP") == 0 && open) { //This finds an abort trap
+            //This is where the abort trap
+            printf("The creation date has been added\n");
+            free(right);
+            free(left);
+            continue;
+        }
     }
-
     return OK;
 }
 
@@ -475,7 +533,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
     
-
     if(fileName == NULL) {
         printf("The file name is null\n");
         return INV_FILE;
@@ -583,7 +640,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Check for events and other things later, start the parser for now */
     printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
-    printf("This worked\n");
 
     /* Make functions to return the version and proID into the calendar object */
 
@@ -596,6 +652,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         free(fileExtension);
         return OTHER_ERROR;
     }
+
+    printf("THE REQUIRED COMPONENETS OF THE CALENDAR\n");
 
     printf("The version is %f\n", (*obj)->version);
     printf("The proID is %s\n",(*obj)->prodID);
