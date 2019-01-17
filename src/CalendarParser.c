@@ -354,7 +354,6 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
 
         if(strcmp(left,"version") == 0) { // This is a version that should be parsed, when it is parsed add to the calendar object
             obj->version = atof(right);
-
             free(right);
             free(left);
             continue;
@@ -373,7 +372,6 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
     }
     return OK;
 }
-
 
 
 /* There will need to be checking for alarms in the events as well */
