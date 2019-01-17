@@ -7,7 +7,7 @@
 #include "CalendarParser.h"
 #include "helper.c"
 #define D printf("debug\n")
-#define P printf("Check for Return\n")
+#define R printf("Check for Return\n")
 // #include "LinkedListAPI.h"
 
 //Add a MISMATCH CHECKER that will check BEGIN and END tags
@@ -15,77 +15,6 @@
 
 Calendar cal;
 List list;
-
-
-// char * stringCpy(char * first, char * second) {
-//     if(first == NULL || second == NULL) {
-//         return NULL;
-//     }
-//     first = (char *)realloc(first, strlen(second) + 1);
-//     for(int i = 0;i<strlen(second);i++) {
-//         first[i] = second[i];
-//     }
-//     first[strlen(second)] = '\0';
-//     return first;
-// }
-
-
-// int checkToken(char *token) {
-//     for(int i = 0;i<strlen(token);i++) {
-//         if(token[i] == '\n' || token[i] == '\r') {
-//             return 0;
-//         }
-//     }
-//     return 1;
-// }
-
-
-
-// char ** init_str_array(int N, int K) {
-//     char **a;
-//     int i;
-
-//     a = malloc(sizeof(char *) * N);
-
-//     for(i = 0;i<N;i++) {
-//         a[i] = malloc(sizeof(char) * K);
-//     }
-//     return a;
-// }
-
-/*Make a trim that will remove white space,
-If the line has a space at the begin and is a potential line fold then do a special case for the trim */
-
-
-/* This function will trim the \r\n from the end of each line and */
-
-// char * trimSpecialChars(char *line) {
-//     int i;
-//     if(line == NULL){
-//         return NULL;
-//     }
-//     //Remove the \r\n
-//     line[strlen(line) - 2] = '\0';    
-//     return line;
-// }
-
-
-
-// char *setStr(char *s) {
-//     char *new = calloc(1, sizeof(char) *strlen(s) + 9);
-//     strcpy(new,s);
-//     strcat(new,"\0");
-//     return new;
-// }
-
-// void free_fields(char **ptr, int size) {
-//     int i;
-//     for(i = 0;i<size;i++) {
-//         free(ptr[i]);
-//     }
-//     free(ptr);
-// }
-
 
 
 //This works with big input
@@ -586,7 +515,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         }
     }
 
-
     //Open the file and read the contents line by line
 
     file = fopen(fileName,"r");
@@ -600,13 +528,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     //End of pen test for file
     fclose(file);
 
-    i = 0;
-
-
-    
     char **test = readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
-
-    /* Check the to lower function */
 
     error = validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
 
@@ -640,16 +562,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         free(fileExtension);
         return INV_FILE;
     }
-
-    // error = checkEvents(test,arraySize);
-
-    // if(error != 0) {
-    //     printf("Found a error with an event in this calendar!\n");
-    //     free_fields(test,arraySize);
-    //     free(tempFile);
-    //     free(fileExtension);
-    //     return INV_FILE;
-    // }
 
     /* Check for events and other things later, start the parser for now */
     printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
