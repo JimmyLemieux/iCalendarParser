@@ -422,6 +422,7 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
+	printf("The object was freed!\n"); 
 	free(tempEvent);
 
 }
@@ -473,7 +474,13 @@ int compareDates(const void *first,const void *second) {
 
 void deleteDate(void *toBeDeleted) {
 	/* This one is a bit more simple because you dont need to traverse any other lists */
-	
+	DateTime *tempDT;
 
+	if(toBeDeleted == NULL) {
+		return;
+	}
+	tempDT = (DateTime*)toBeDeleted; 
 
+	printf("The object was freed!\n"); 
+	free(tempDT);
 }
