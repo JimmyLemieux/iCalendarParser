@@ -467,11 +467,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         /* Check if there is an opening for the event */
         if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
             open++;
+            new_event = malloc(sizeof(Event));
             free(right);
             free(left);
-            
-            /* When we find an event we need to allocate space for the event in the cal obj */
-            new_event = malloc(sizeof(Event));
             continue;
         }
 
