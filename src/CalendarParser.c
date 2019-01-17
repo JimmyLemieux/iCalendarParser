@@ -432,7 +432,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     char *right;
     Event *new_event;
 
-    printf("Printing the fetchCal Events\n");
+    if(obj == NULL || lines == NULL) {
+        return OTHER_ERROR;
+    }
+
     /* Loop through all of the calendar events and parse all of the contents */
     /* Assume that all of the contents of the event are proper and in order */
     /* I need to make a check for the events later */
@@ -445,7 +448,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
         
         if(index == strlen(lines[i])) {
-            printf("The token was not found on this line\n");
             continue;
         }
 
@@ -480,6 +482,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             printf("The UID is : %s\n", new_event->UID);
             printf("The start time is : %s\n", new_event->startDateTime.date);
             printf("The creation date is : Will fix this later\n");
+            printf("\n\n\n");
             free(new_event);
             free(right);
             free(left);
@@ -516,6 +519,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     }
     return OK;
 }
+
+
 
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
