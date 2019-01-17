@@ -366,7 +366,7 @@ void * nextElement(ListIterator * iter){
 /* Implement the print event object function */
 /* This function will print the contents of the event object in human readible code */
 /*Here as well you will need to go through all of the alarms and properties*/
-char* printEventFunc(void *toBePrinted) {
+char* printEvent(void *toBePrinted) {
 	char *tempStr;
 
 	Event *tempEvent;
@@ -384,7 +384,7 @@ char* printEventFunc(void *toBePrinted) {
 }
 /* You will have to traverse all of the properties and alarms of this event as well */ 
 /* You will need to free the two list * inside the event object */ 
-int compareEvent(const void *first, const void *second) {
+int compareEvents(const void *first, const void *second) {
 	Event *event1;
 	Event *event2;
 
@@ -414,7 +414,7 @@ int compareEvent(const void *first, const void *second) {
 	}
 	return 1;
 }
-void deleteFunc(void *toBeDeleted) {
+void deleteEvent(void *toBeDeleted) {
 	Event *tempEvent;
 	if(toBeDeleted == NULL) {
 		return;
@@ -425,6 +425,8 @@ void deleteFunc(void *toBeDeleted) {
 	free(tempEvent);
 
 }
+
+
 
 char* printDate(void *toBePrinted) {
 	char *tempStr;
@@ -466,5 +468,12 @@ int compareDates(const void *first,const void *second) {
 		return 0;
 	}
 	return 1;
+
+}
+
+void deleteDate(void *toBeDeleted) {
+	/* This one is a bit more simple because you dont need to traverse any other lists */
+	
+
 
 }
