@@ -600,6 +600,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     free_fields(test,arraySize);
     free(tempFile);
     free(fileExtension);
+    free(*obj);
+    free(obj);
     return OK;
 }
 
