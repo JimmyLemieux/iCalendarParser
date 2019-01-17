@@ -17,27 +17,27 @@ Calendar cal;
 List list;
 
 
-char * stringCpy(char * first, char * second) {
-    if(first == NULL || second == NULL) {
-        return NULL;
-    }
-    first = (char *)realloc(first, strlen(second) + 1);
-    for(int i = 0;i<strlen(second);i++) {
-        first[i] = second[i];
-    }
-    first[strlen(second)] = '\0';
-    return first;
-}
+// char * stringCpy(char * first, char * second) {
+//     if(first == NULL || second == NULL) {
+//         return NULL;
+//     }
+//     first = (char *)realloc(first, strlen(second) + 1);
+//     for(int i = 0;i<strlen(second);i++) {
+//         first[i] = second[i];
+//     }
+//     first[strlen(second)] = '\0';
+//     return first;
+// }
 
 
-int checkToken(char *token) {
-    for(int i = 0;i<strlen(token);i++) {
-        if(token[i] == '\n' || token[i] == '\r') {
-            return 0;
-        }
-    }
-    return 1;
-}
+// int checkToken(char *token) {
+//     for(int i = 0;i<strlen(token);i++) {
+//         if(token[i] == '\n' || token[i] == '\r') {
+//             return 0;
+//         }
+//     }
+//     return 1;
+// }
 
 
 
