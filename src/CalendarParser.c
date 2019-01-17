@@ -422,6 +422,24 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
     return OK;
 }
 
+ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
+    int i;
+    int j;
+    int k;
+    char *left;
+    char *right;
+
+    for(i = 0;i<arraySize;i++) {
+        
+
+
+
+    }
+
+
+    return OK;
+}
+
 
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
@@ -565,6 +583,21 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     printf("The version is %f\n", (*obj)->version);
     printf("The proID is %s\n",(*obj)->prodID);
+
+    // Look for the events
+    /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
+    /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
+
+    error = fetchCalEvents(*obj, test,arraySize);
+
+    if(error != 0) {
+        printf("Found an error while looking for the events\n");
+        free_fields(test,arraySize);
+        free(tempFile);
+        free(fileExtension);
+        return OTHER_ERROR;
+    }
+
 
     printf("The object worked\n");
     free_fields(test,arraySize);
