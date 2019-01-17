@@ -483,6 +483,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             printf("The start time is : %s\n", new_event->startDateTime.date);
             printf("The creation date is : Will fix this later\n");
             free(new_event);
+            free(right);
+            free(left);
             continue;
         }
 
