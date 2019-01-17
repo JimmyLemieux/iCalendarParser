@@ -482,6 +482,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             printf("The UID is : %s\n", new_event->UID);
             printf("The start time is : %s\n", new_event->startDateTime.date);
             printf("The creation date is : Will fix this later\n");
+            printf("----------------------------------------\n");
             printf("\n\n\n");
             free(new_event);
             free(right);
@@ -660,10 +661,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
-    printf("THE REQUIRED COMPONENETS OF THE CALENDAR\n");
-
+    printf("THE REQUIRED COMPONENETS OF THE CALENDAR\n\n");
+    printf("----------------------------------------\n");
     printf("The version is %f\n", (*obj)->version);
-    printf("The proID is %s\n",(*obj)->prodID);
+    printf("The proID is %s\n\n\n",(*obj)->prodID);
+    printf("----------------------------------------\n");
 
     // Look for the events
     /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
