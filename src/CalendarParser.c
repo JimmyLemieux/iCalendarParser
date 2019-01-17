@@ -96,7 +96,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     int stringSize = 0;
     int index = 0;
     int tempStart = 0;
-    int k;
+    int k = 0;
     char *stringBuffer = calloc(1,sizeof(stringBuffer));
     char *temp; 
     char **lines = calloc(1, sizeof(char *));
