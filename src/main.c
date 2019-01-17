@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 // #include "CalendarParser.h"
 // #include "LinkedListAPI.h"
 #include "CalendarParser.h"
@@ -63,11 +64,24 @@
     
 // }
 
-
-
+void stringToLower(char *string) {
+    int index = 0; 
+    if(string == NULL) {
+        return;
+    }
+    for(index = 0;string[index];index++) {
+        string[index] = ((unsigned char)tolower(string[index]));
+    }
+}
 
 int main() {
-    createCalendar("test.ics", NULL); 
+    char *a;
+    a = calloc(1, 10 * sizeof(char));
+    strcpy(a,"TEST");
+    stringToLower(a);
+    printf("%s\n", a);
+    //printf("%s\n", a);
+    //createCalendar("test.ics", NULL); 
     //printf("Error Code: %u\n", createCalendar("badFile.ical", NULL));
     return 0;
 }
