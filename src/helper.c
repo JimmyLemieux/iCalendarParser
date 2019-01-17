@@ -3,7 +3,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
-
+#define SEG printf("This line is giving a Segfault")
+#define FREE free(x)
+#define MAL malloc(size_t s)
+#define PRINT printf(x)
+#define CAL calloc(n,size_t s)
 /* Making helper functions that will make my life easier */
 
 // Make copy, strcat, copyTO, returns index of char and substring
@@ -138,4 +142,11 @@ int indexOfSubstring(char *line, char *substring) {
 }
 
 
+int isStringEmpty(char *string) {
+    if(string == NULL || strlen(string) == 0) {
+        printf("The String is empty\n");
+        return 1;
+    }
+    return 0;
+}
 

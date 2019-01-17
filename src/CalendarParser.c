@@ -126,8 +126,13 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
     /* Checking if the first and last lines are valid */
 
-    
-    if(strcmp(lines[0],"BEGIN:VCALENDAR") != 0 || strcmp(lines[arraySize - 1], "END:VCALENDAR") != 0) {
+    stringToLower(lines[0]);
+    stringToLower(lines[arraySize - 1]);
+
+    printf("%s\n", lines[0]);
+    printf("%s\n", lines[arraySize - 1]); 
+
+    if(strcmp(lines[0],"begin:vcalendar") != 0 || strcmp(lines[arraySize - 1], "end:vcalendar") != 0) {
         printf("The calendar does not start and end properly\n");
         return INV_CAL;
     }
@@ -154,7 +159,11 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             right[j] = lines[i][k];
         }
 
-        if((strcmp(left,"BEGIN") == 0 || strcmp(left,"END") == 0) && (strcmp(right,"VCALENDAR") == 0)) {
+        /*Change the left and right to lowerCase */
+        stringToLower(left); 
+        stringToLower(right);
+
+        if((strcmp(left,"begin") == 0 || strcmp(left,"end") == 0) && (strcmp(right,"vcalendar") == 0)) {
             printf("There is a duplicate property in the file\n");
             free(left);
             free(right);
@@ -188,6 +197,10 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             right[j] = lines[i][k];
         }    
 
+        /* Set the right and left to be lowercase */
+        stringToLower(left);
+        stringToLower(right);
+
         if(open < 0) {
             printf("THERE WAS A BEGIN END MISMATCH");
             free(right);
@@ -195,14 +208,14 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             return INV_CAL;
         }
 
-        if(strcmp(left,"BEGIN") == 0) {
+        if(strcmp(left,"begin") == 0) {
             open++;
             free(right);
             free(left);
             continue; // to the next line
         }
 
-        if(strcmp(left,"END") == 0) {
+        if(strcmp(left,"end") == 0) {
             open--;
             free(right);
             free(left);
@@ -210,7 +223,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         }
         
         
-        if(strcmp(left,"VERSION") == 0 && open == 1) {
+        if(strcmp(left,"version") == 0 && open == 1) {
             if(!foundVersion) {
                 foundVersion = 1;
             } else {
@@ -220,7 +233,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             }
         }
 
-        if(strcmp(left,"PRODID") == 0 && open == 1) {
+        if(strcmp(left,"prodid") == 0 && open == 1) {
             if(!foundPRODID) {
                 foundPRODID = 1;
             } else {
@@ -285,6 +298,11 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
         for(k=index+1,j=0;k<strlen(lines[i]);k++,j++) {
             right[j] = lines[i][k];
         }
+        /* chage the right and left to lowercase */
+        /* This is for checking for case insensitive things in the properties */
+        stringToLower(left);
+        stringToLower(right);
+
         //Now that we have the right and left begin to look for the open and closed events 
         printf("LEFT:%s :::: RIGHT:%s\n",left,right);
         free(left);
@@ -309,7 +327,7 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
 
     for(i = 0;i<arraySize;i++) {
         index = 0;
-        while(index < strlen(lines[i]) && lines[i][index] != ':') {
+        while(index < strlen(lines[i]) || lines[i][index] != ':') {
             index++;
         }
 
@@ -329,7 +347,12 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
             right[k] = lines[i][j];
         }
 
-        if(strcmp(left,"VERSION") == 0) { // This is a version that should be parsed, when it is parsed add to the calendar object
+        /* The right and left need to converted into lower */
+        stringToLower(left);
+        stringToLower(right);
+
+
+        if(strcmp(left,"version") == 0) { // This is a version that should be parsed, when it is parsed add to the calendar object
             obj->version = atof(right);
 
             free(right);
@@ -337,7 +360,7 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
             continue;
         }
 
-        if(strcmp(left,"PRODID") == 0) {
+        if(strcmp(left,"proid") == 0) {
             strcpy(obj->prodID,right);
             free(left);
             free(right);
@@ -400,8 +423,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             right[k] = lines[i][j];
         }
 
+        /* change the right and left to lowercase */
+        stringToLower(left);
+        stringToLower(right);
+
         /* Check if there is an opening for the event */
-        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
+        if(strcmp(left,"begin") == 0 && strcmp(right,"vevent") == 0) {
             open++;
             new_event = malloc(sizeof(Event));
             free(right);
@@ -410,7 +437,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
 
-        if(strcmp(left,"END") == 0 && strcmp(right,"VEVENT") == 0) {
+        /* There needs to be an end to the event in order for this to work */
+        /* I am going to have to make a validation of mismatches to make sure that everything is fine */
+        if(strcmp(left,"end") == 0 && strcmp(right,"vevent") == 0) {
             open--;
             /*Print out the contents of the event */
             printf("The UID is : %s\n", new_event->UID);
@@ -424,7 +453,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcmp(left,"UID") == 0 && open) {
+        if(strcmp(left,"uid") == 0 && open) {
             strcpy(new_event->UID,right);
             free(right);
             free(left);
@@ -432,7 +461,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
 
-        if(strcmp(left,"DTSTART") == 0 && open) {
+        if(strcmp(left,"dtstart") == 0 && open) {
             /*Making a new Datetime structure */ 
             strcpy(new_event->startDateTime.date, right);
             printf("The date has been made\n");
@@ -442,7 +471,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
 
-        if(strcmp(left, "DTSTAMP") == 0 && open) { //This finds an abort trap
+        if(strcmp(left, "dtstamp") == 0 && open) { //This finds an abort trap
             //This is where the abort trap
             printf("The creation date has been added\n");
             free(right);
@@ -556,7 +585,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     error = checkCalendarHead(test,arraySize);
 
     if(error != 0) {
-        printf("This is an invalid file\n");
+        printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
         free(tempFile);
         free(fileExtension);
