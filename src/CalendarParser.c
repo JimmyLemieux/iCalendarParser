@@ -615,7 +615,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
     /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
 
-    error = fetchCalEvents(*obj, test,arraySize);
+    //error = fetchCalEvents(*obj, test,arraySize);
 
     if(error != 0) {
         printf("Found an error while looking for the events\n");
