@@ -127,12 +127,9 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
                 lineSize++;
                 lines = realloc(lines, sizeof(lines) * (lineSize+1));
                 
-                
-                
                 //For the loop
                 index+=2;
                 tempStart = index;
-
                 //Free the string
                 free(temp);
                 temp = NULL;
@@ -422,21 +419,43 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
     return OK;
 }
 
+
+
 ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     int i;
     int j;
     int k;
+    int index;
+    int open = 0;
     char *left;
     char *right;
 
     printf("Printing the fetchCal Events\n");
+    /* Loop through all of the calendar events and parse all of the contents */
+    /* Assume that all of the contents of the event are proper and in order */
+    /* I need to make a check for the events later */
+
+
     for(i = 0;i<arraySize;i++) {
-        printf("%s\n", lines[i]);
+        index = 0;
+        while(index < strlen(lines[i]) && lines[i][index] != ':') {
+            index++;
+        }
+        
+        if(index == strlen(lines[i])) {
+            printf("The token was not found on this line\n");
+            continue;
+        }
+
+        /* The character was found then we have to see if the conponent is a VEVENT*/
+
+
+
+
     }
 
     return OK;
 }
-
 
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
@@ -594,7 +613,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         free(fileExtension);
         return OTHER_ERROR;
     }
-
 
     printf("The object worked\n");
     free_fields(test,arraySize);
