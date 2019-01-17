@@ -2,11 +2,14 @@ CC = gcc
 CFLAGS = -pedantic -ansi -std=c11 -Wall -Iinclude/
 COMMITM = new Commit
 
-all: parser main
+all: helper parser main
 
 git: gitAdd gitCommit gitPush
 
 pull: gitStash gitPull
+
+helper:
+	$(CC) $(CFLAGS) -c ./src/helper.c -g -o ./bin/helper.o
 
 parser:
 	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -g -o ./bin/parser.o

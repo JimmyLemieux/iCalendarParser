@@ -21,7 +21,6 @@ int checkToken(char *token) {
 
 
 char * trimSpecialChars(char *line) {
-    int i;
     if(line == NULL){
         return NULL;
     }
@@ -129,7 +128,6 @@ int indexOf(char *line, char c) {
 
 
 int indexOfSubstring(char *line, char *substring) {
-    char *tempSub;
     if(line == NULL || substring == NULL) {
         return -1;
     }

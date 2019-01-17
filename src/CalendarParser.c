@@ -5,7 +5,7 @@
 #include <math.h>
 #include <ctype.h>
 #include "CalendarParser.h"
-
+#include "helper.c"
 #define D printf("debug\n")
 #define P printf("Check for Return\n")
 // #include "LinkedListAPI.h"
@@ -41,17 +41,17 @@ List list;
 
 
 
-char ** init_str_array(int N, int K) {
-    char **a;
-    int i;
+// char ** init_str_array(int N, int K) {
+//     char **a;
+//     int i;
 
-    a = malloc(sizeof(char *) * N);
+//     a = malloc(sizeof(char *) * N);
 
-    for(i = 0;i<N;i++) {
-        a[i] = malloc(sizeof(char) * K);
-    }
-    return a;
-}
+//     for(i = 0;i<N;i++) {
+//         a[i] = malloc(sizeof(char) * K);
+//     }
+//     return a;
+// }
 
 /*Make a trim that will remove white space,
 If the line has a space at the begin and is a potential line fold then do a special case for the trim */
@@ -59,32 +59,32 @@ If the line has a space at the begin and is a potential line fold then do a spec
 
 /* This function will trim the \r\n from the end of each line and */
 
-char * trimSpecialChars(char *line) {
-    int i;
-    if(line == NULL){
-        return NULL;
-    }
-    //Remove the \r\n
-    line[strlen(line) - 2] = '\0';    
-    return line;
-}
+// char * trimSpecialChars(char *line) {
+//     int i;
+//     if(line == NULL){
+//         return NULL;
+//     }
+//     //Remove the \r\n
+//     line[strlen(line) - 2] = '\0';    
+//     return line;
+// }
 
 
 
-char *setStr(char *s) {
-    char *new = calloc(1, sizeof(char) *strlen(s) + 9);
-    strcpy(new,s);
-    strcat(new,"\0");
-    return new;
-}
+// char *setStr(char *s) {
+//     char *new = calloc(1, sizeof(char) *strlen(s) + 9);
+//     strcpy(new,s);
+//     strcat(new,"\0");
+//     return new;
+// }
 
-void free_fields(char **ptr, int size) {
-    int i;
-    for(i = 0;i<size;i++) {
-        free(ptr[i]);
-    }
-    free(ptr);
-}
+// void free_fields(char **ptr, int size) {
+//     int i;
+//     for(i = 0;i<size;i++) {
+//         free(ptr[i]);
+//     }
+//     free(ptr);
+// }
 
 
 
@@ -328,7 +328,6 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
     int j;
     int k;
     int index;
-    int open = 0;
     char *right;
     char *left;
     if(lines == NULL || arraySize == 0) {
