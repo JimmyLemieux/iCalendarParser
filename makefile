@@ -2,11 +2,14 @@ CC = gcc
 CFLAGS = -pedantic -ansi -std=c11 -Wall -Iinclude/
 COMMITM = new Commit
 
-all: helper parser main
+all: LL helper parser main
 
 git: gitAdd gitCommit gitPush
 
 pull: gitStash gitPull
+
+LL:
+	$(CC) $(CFLAGS) -c ./src/LinkedListAPI.c -g -o ./bin/LL.o
 
 helper:
 	$(CC) $(CFLAGS) -c ./src/helper.c -g -o ./bin/helper.o
@@ -15,7 +18,7 @@ parser:
 	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -g -o ./bin/parser.o
 
 main:
-	$(CC) $(CFLAGS) ./bin/parser.o -g -o ./bin/main.o ./src/main.c
+	$(CC) $(CFLAGS) ./bin/parser.o ./bin/LL.o -g -o ./bin/main.o ./src/main.c
 
 
 runM:

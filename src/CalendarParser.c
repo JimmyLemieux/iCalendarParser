@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <math.h>
 #include <ctype.h>
+#include "LinkedListAPI.h"
 #include "CalendarParser.h"
 #include "helper.c"
 #define D printf("debug\n")
@@ -15,6 +16,71 @@
 
 Calendar cal;
 List list;
+
+
+/* make the compare functions for the linked list */
+char* printEvent(void *toBePrinted) {
+	char *tempStr;
+
+	Event *tempEvent;
+	if(toBePrinted == NULL) {
+		return NULL;
+	}
+
+	tempEvent = (Event*)toBePrinted;
+
+	/* We are going to have the print out the contents of the event object we just refrenced */
+	// printf("%s\n",tempEvent->UID);
+	tempStr = calloc(1, 50);
+	sprintf(tempStr, "UID: %s", tempEvent->UID); 
+	return tempStr;
+}
+/* You will have to traverse all of the properties and alarms of this event as well */ 
+/* You will need to free the two list * inside the event object */ 
+int compareEvents(const void *first, const void *second) {
+	Event *event1;
+	Event *event2;
+
+	if(first == NULL || second == NULL) {
+		return 0;
+	}
+
+	event1 = (Event *)first;
+	event2 = (Event *)second;
+	/* Check all of the components of the property are the same
+	Which includes, UID, DTSTART, DTSTAMP, and alarms if there is one */
+
+	if(strcmp(event1->UID,event2->UID) != 0) {
+		return 0;
+	}
+
+	if(strcmp(event1->startDateTime.date, event2->startDateTime.date) != 0) {
+		return 0;
+	}
+
+	if(strcmp(event1->startDateTime.time,event2->startDateTime.time) != 0) {
+		return 0;
+	}
+
+	if(event1->startDateTime.UTC != event2->startDateTime.UTC) {
+		return 0;
+	}
+	return 1;
+}
+
+void deleteEvent(void *toBeDeleted) {
+	Event *tempEvent;
+	if(toBeDeleted == NULL) {
+		return;
+	}
+	tempEvent = (Event*)toBeDeleted;
+	/* We basically need to free everything that is contained inside the event object */
+	/* for now just free the main event pointer */
+	printf("The object was freed!\n"); 
+	free(tempEvent);
+
+}
+
 
 
 //This works with big input
@@ -386,10 +452,28 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     char *left;
     char *right;
     Event *new_event;
+    List *eventList;
+    Node *new_event_node;
 
     if(obj == NULL || lines == NULL) {
         return OTHER_ERROR;
     }
+
+    /* Initialize the list that will store all of the events that have been parsed */
+    /* The list needs to have the required functions that will be used to compare,print and delete */
+
+    eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
+
+    if(eventList == NULL) {
+        printf("The list was NULL\n");
+        return OTHER_ERROR;
+    }
+
+
+
+
+
+
 
     /* Loop through all of the calendar events and parse all of the contents */
     /* Assume that all of the contents of the event are proper and in order */
@@ -401,7 +485,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         while(index < strlen(lines[i]) && lines[i][index] != ':') {
             index++;
         }
-        
         if(index == strlen(lines[i])) {
             continue;
         }
@@ -437,6 +520,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         /* There needs to be an end to the event in order for this to work */
         /* I am going to have to make a validation of mismatches to make sure that everything is fine */
+        /* This is where the event should be added to the linked list*/
+        /* Somehow pass the List into the function and push the list */ 
         if(strcmp(left,"end") == 0 && strcmp(right,"vevent") == 0) {
             open--;
             /*Print out the contents of the event */
@@ -445,6 +530,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             printf("The creation date is : Will fix this later\n");
             printf("----------------------------------------\n");
             printf("\n\n\n");
+
+            new_event_node = initializeNode((void *)new_event);
+            insertBack(eventList,new_event_node);
             free(new_event);
             free(right);
             free(left);
@@ -625,7 +713,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
-    
+
 
     printf("The object worked\n");
     free_fields(test,arraySize);
