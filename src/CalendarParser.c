@@ -929,6 +929,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     /* Just test for now */
 
 
+    freeList((*obj)->properties);
     freeList((*obj)->events);
     printf("List has been freed!\n");
 
