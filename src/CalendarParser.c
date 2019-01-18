@@ -77,8 +77,63 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
+    freeList(tempEvent->alarms);
 	free(tempEvent);
 
+}
+
+
+char *printAlarm(void *toBePrinted) {
+    char *tempStr;
+    Alarm *tempAlarm;
+    int len;
+    if(toBePrinted == NULL) {
+        return NULL;
+    }
+    tempAlarm = (Alarm *)toBePrinted;
+    len = strlen(tempAlarm->action) + strlen(tempAlarm->trigger) + 90;
+    tempStr = calloc(1, sizeof(char) * len);
+    sprintf(tempStr, "Alarms Action is : %s, Alarms Trigger is : %s\n", tempAlarm->action, tempAlarm->trigger);
+    return tempStr;
+}
+
+int compareAlarms(const void *first, const void *second) {
+    Alarm *alarm1;
+    Alarm *alarm2;
+
+    if(first == NULL || second == NULL) {
+        return 0;
+    }
+    
+
+    alarm1 = (Alarm*)first;
+    alarm2 = (Alarm*)second;
+
+    if(strcmp(alarm1->trigger,alarm2->trigger) != 0) {
+        return 0;
+    }
+
+    if(strcmp(alarm1->action,alarm2->action) != 0) {
+        return 0;
+    }
+
+    /* I am also going to have to look through all of the properties */
+
+    return 1;
+}
+
+void deleteAlarm(void *toBeDeleted) {
+    Alarm *tempAlarm;
+
+    if(toBeDeleted == NULL) {
+        return;
+    }
+
+    tempAlarm = (Alarm*)toBeDeleted;
+
+    /* I will also have to go through the properties for this and free */
+    free(tempAlarm->trigger);
+    free(tempAlarm);
 }
 
 
@@ -456,6 +511,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     Event *new_event;
     Alarm *new_alarm;
     List *eventList;
+    List *alarmList;
 
     if(obj == NULL || lines == NULL) {
         return OTHER_ERROR;
@@ -465,7 +521,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     /* The list needs to have the required functions that will be used to compare,print and delete */
 
     eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
-
+    
     if(eventList == NULL) {
         printf("The list was not init properly!\n");
         return OTHER_ERROR;
@@ -509,6 +565,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(strcmp(left,"begin") == 0 && strcmp(right,"vevent") == 0) {
             open++;
             new_event = malloc(sizeof(Event));
+            alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
             free(right);
             free(left);
             continue;
@@ -592,9 +649,11 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             printf("In an event with a UID of %s\n",new_event->UID);
             printf("The Trigger = %s\n", new_alarm->trigger);
             printf("The Action = %s\n",new_alarm->action);
+
+            insertBack(alarmList, (void *)new_alarm);
             /* Instead this should be pushed onto the alarm list at the current event */
-            free(new_alarm->trigger);
-            free(new_alarm);
+            // free(new_alarm->trigger);
+            // free(new_alarm);
             free(left);
             free(right);
             continue;
@@ -606,6 +665,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         /* Somehow pass the List into the function and push the list */ 
         if(strcmp(left,"end") == 0 && strcmp(right,"vevent") == 0) {
             open--;
+            new_event->alarms = alarmList;                  //Each event block will have a list of alarms
             insertBack(eventList,(void *)new_event);        //This will be freed in the freelist
             free(right);
             free(left);
@@ -616,9 +676,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     free(right);
     free(left);
     }
-
-
-
     obj->events = eventList;
     
     return OK;
@@ -778,6 +835,12 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         Event *tmp = (Event*)elem;
         char *str = (*obj)->events->printData(tmp);
         printf("%s\n", str);
+        printf("\n\n");
+        Alarm *tempAlarm = getFromFront(tmp->alarms);
+        printf("The first alarm in the event is:\n");
+        
+        printf("Action: %s\n", tempAlarm->action);
+        printf("Trigger: %s\n" ,tempAlarm->trigger);
         free(str);
     }
 
