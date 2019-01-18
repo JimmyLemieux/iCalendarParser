@@ -962,7 +962,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         }
         printf("Trigger: %s\n" ,tempAlarm->trigger);
         printf("\n");
-        deallocator((char *)str); 
+        free(str);
+       // deallocator((char *)str); 
     }
 
     printf("Printing the properties that are apart of the calendar object!\n");
