@@ -570,7 +570,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }   
 
         if(strcmp(left,"trigger") == 0 && open && alarmOpen) {
-            new_alarm->trigger = malloc(sizeof(char) * strlen(right));
+            new_alarm->trigger = malloc(sizeof(char) * strlen(right)+1);
             stringToUpper(right);
             strcpy(new_alarm->trigger, right);
             free(left);
