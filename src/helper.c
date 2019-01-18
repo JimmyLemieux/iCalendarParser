@@ -148,3 +148,27 @@ int isStringEmpty(char *string) {
     return 0;
 }
 
+
+void splitByFirstOccurence(char *line, char *left, char *right, char del) {
+    int i;
+    int k;
+    int find = indexOf(line,del);
+    
+
+
+    if(find == -1) {
+        printf("Whoops\n");
+        return;
+    }
+
+
+    for(i = 0;i<find;i++) {
+        left[i] = line[i];
+    }
+    
+    for(k = find+1,i=0;k<strlen(line);k++,i++) {
+        right[i] = line[k];
+    }
+
+}
+

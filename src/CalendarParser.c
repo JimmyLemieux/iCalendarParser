@@ -31,9 +31,9 @@ char* printEvent(void *toBePrinted) {
 
 	/* We are going to have the print out the contents of the event object we just refrenced */
 	// printf("%s\n",tempEvent->UID);
-    int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + 50;
+    int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + strlen(tempEvent->creationDateTime.date) + strlen(tempEvent->creationDateTime.time) + 70;
 	tempStr = calloc(1, len);
-	sprintf(tempStr, "UID: %s, Start Time is %s\n", tempEvent->UID,tempEvent->startDateTime.date); 
+	sprintf(tempStr, "UID: %s, Start Time is %s\n The Creation date is %s, The Creation time is %s\n", tempEvent->UID,tempEvent->startDateTime.date,tempEvent->creationDateTime.date,tempEvent->creationDateTime.time); 
 	return tempStr;
 }
 /* You will have to traverse all of the properties and alarms of this event as well */ 
@@ -78,7 +78,6 @@ void deleteEvent(void *toBeDeleted) {
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
 	free(tempEvent);
-	printf("The function called the free\n"); 
 
 }
 
@@ -521,12 +520,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(strcmp(left,"end") == 0 && strcmp(right,"vevent") == 0) {
             open--;
             /*Print out the contents of the event */
-            printf("The UID is : %s\n", new_event->UID);
-            printf("The start time is : %s\n", new_event->startDateTime.date);
-            printf("The creation date is : Will fix this later\n");
-            printf("----------------------------------------\n");
-            printf("\n\n\n");
-            printf("Inserted the item into the linked list!\n");
+            // printf("The UID is : %s\n", new_event->UID);
+            // printf("The start time is : %s\n", new_event->startDateTime.date);
+            // printf("The creation date is : %s\n", new_event->creationDateTime.date);
+            // printf("The creation date time is : %s\n", new_event->creationDateTime.time);
+            // printf("----------------------------------------\n");
+            // printf("\n\n\n");
             insertBack(eventList,(void *)new_event);
             free(right);
             free(left);
@@ -541,10 +540,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
 
-        if(strcmp(left,"dtstart") == 0 && open) {
+        if(strcmp(left,"dtstart") == 0 && open) { 
             /*Making a new Datetime structure */ 
             strcpy(new_event->startDateTime.date, right);
-            printf("The date has been made\n");
             free(right);
             free(left);
             continue;
@@ -553,7 +551,19 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         if(strcmp(left, "dtstamp") == 0 && open) { //This finds an abort trap
             //This is where the abort trap
-            printf("The creation date has been added\n");
+            char *leftStamp;
+            char *rightStamp;
+
+            leftStamp = calloc(1,30 * sizeof(char));
+            rightStamp = calloc(1, 30 * sizeof(char));
+
+            splitByFirstOccurence(right,leftStamp,rightStamp,'t');
+
+            strcpy(new_event->creationDateTime.date, leftStamp);
+            strcpy(new_event->creationDateTime.time, rightStamp);
+            
+            free(leftStamp);
+            free(rightStamp);
             free(right);
             free(left);
             continue;
@@ -562,11 +572,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     free(left);
     }
 
-    printf("Printing the linked list\n");
 
 
     obj->events = eventList;
-    printf("The events have been put into the cal object\n");
     
     return OK;
 }
