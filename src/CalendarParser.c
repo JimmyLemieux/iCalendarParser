@@ -886,6 +886,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
         free_fields(test,arraySize);
+        free(*obj);
+        free(obj);
         return INV_FILE;
     }
 
@@ -907,6 +909,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
+        free(*obj);
+        free(obj);
         return INV_FILE;
     }
 
@@ -923,6 +927,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("Found an error while parsing the version and proID\n");
         free_fields(test,arraySize);
+        free(*obj);
+        free(obj);
         return OTHER_ERROR;
     }
 
@@ -936,6 +942,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("Found an error while looking for the events\n");
         free_fields(test,arraySize);
+        free(*obj);
+        free(obj);
         return OTHER_ERROR;
     }
 
