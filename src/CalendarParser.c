@@ -570,9 +570,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }   
 
         if(strcmp(left,"trigger") == 0 && open && alarmOpen) {
-            new_alarm->trigger = malloc(sizeof(char) * strlen(right)+1);
+            //new_alarm->trigger = malloc(sizeof(char) * strlen(right)+1);
             stringToUpper(right);
-            strcpy(new_alarm->trigger, right);
+            //strcpy(new_alarm->trigger, right);
+            new_alarm->trigger = right;
             free(left);
             free(right);
             continue;
@@ -592,7 +593,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             printf("The Trigger = %s\n", new_alarm->trigger);
             printf("The Action = %s\n",new_alarm->action);
             /* Instead this should be pushed onto the alarm list at the current event */
-            free(new_alarm->trigger);
             free(new_alarm);
             free(left);
             free(right);
