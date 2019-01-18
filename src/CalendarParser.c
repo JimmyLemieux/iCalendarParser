@@ -128,9 +128,53 @@ void deleteAlarm(void *toBeDeleted) {
 
 /*Ending the functions for the linked list */
 
+char *printProperty(void *toBePrinted) {
+    char * str; 
+    int len;
+    Property *tempProp;
+    if(toBePrinted == NULL) {
+        return NULL;
+    }
 
+    tempProp = (Property *)toBePrinted;
 
+    len = strlen(tempProp->propDescr) + strlen(tempProp->propName) + 90;
 
+    str = calloc(1, len * sizeof(char));
+
+    sprintf(str, "Property name:%s\nProperty Desc:%s\n", tempProp->propName,tempProp->propDescr);
+
+    return str;
+}
+
+int compareProperties(const void *first, const void *second) {
+    Property *prop1;
+    Property *prop2;
+    if(first == NULL || second == NULL) {
+        return 0;
+    }
+
+    prop1 = (Property *)first;
+    prop2 = (Property *)second;
+
+    if(strcmp(prop1->propDescr,prop2->propDescr) != 0) {
+        return 0;
+    }
+
+    if(strcmp(prop1->propName,prop2->propName) != 0) {
+        return 0;
+    }
+    return 1;
+}
+
+void deleteProperty(void *toBeDeleted) {
+    Property *tempProp;
+
+    if(toBeDeleted == NULL) {
+        return;
+    }
+    free(tempProp);
+}
 
 
 
@@ -248,9 +292,6 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
     stringToLower(lines[0]);
     stringToLower(lines[arraySize - 1]);
-
-    printf("%s\n", lines[0]);
-    printf("%s\n", lines[arraySize - 1]); 
 
     if(strcmp(lines[0],"begin:vcalendar") != 0 || strcmp(lines[arraySize - 1], "end:vcalendar") != 0) {
         printf("The calendar does not start and end properly\n");
@@ -445,6 +486,13 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
     int index;
     char *left;
     char *right;
+    int open = 0;
+    Property *new_prop;
+    List *calProps;
+
+
+    calProps = initializeList(&printProperty, &deleteProperty, &compareProperties);
+
     if(lines == NULL || obj == NULL) {
         return OTHER_ERROR;
     }
@@ -456,7 +504,6 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
         }
 
         if(index == strlen(lines[i])) {
-            printf("The token was not found on this line\n");
             continue;
         }
 
@@ -475,6 +522,19 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
         stringToLower(left);
         stringToLower(right);
 
+        if(strcmp(left,"begin") == 0) {
+            open++;
+            free(left);
+            free(right);
+            continue;
+        }
+
+        if(strcmp(left, "end") == 0) {
+            open--;
+            free(left);
+            free(right);
+            continue;
+        }
 
         if(strcmp(left,"version") == 0) { // This is a version that should be parsed, when it is parsed add to the calendar object
             obj->version = atof(right);
@@ -489,7 +549,13 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
             free(right);
             continue;
         }
-        
+
+        /* This section will be for the other properties for now */
+
+        if(open == 1) {
+            /* This is where we should insert into the calendars linked list */
+            printf("Other prop %s : %s\n", left,right);
+        }
         free(left);
         free(right);
 
