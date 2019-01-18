@@ -166,7 +166,7 @@ void splitByFirstOccurence(char *line, char *left, char *right, char del) {
 }
 
 void deallocator(void *thingToFree) {
-    if(thingToFree) {
+    if(thingToFree != NULL) {
        // printf("Freeing %s\n", (char *)thingToFree);
         free(thingToFree);
     }
