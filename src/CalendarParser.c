@@ -443,17 +443,19 @@ ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
 /* There will need to be checking for alarms in the events as well */
 /* It should be noted that events are not required to have alarms */
 /* This function could make a sub call to another function that will parse the alarms out of the function*/
+/* This function will also look for alarms */
 ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     int i;
     int j;
     int k;
     int index;
     int open = 0;
+    int alarmOpen = 0;
     char *left;
     char *right;
     Event *new_event;
+    Alarm *new_alarm;
     List *eventList;
-    Node *new_event_node;
 
     if(obj == NULL || lines == NULL) {
         return OTHER_ERROR;
@@ -512,26 +514,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-
-        /* There needs to be an end to the event in order for this to work */
-        /* I am going to have to make a validation of mismatches to make sure that everything is fine */
-        /* This is where the event should be added to the linked list*/
-        /* Somehow pass the List into the function and push the list */ 
-        if(strcmp(left,"end") == 0 && strcmp(right,"vevent") == 0) {
-            open--;
-            /*Print out the contents of the event */
-            // printf("The UID is : %s\n", new_event->UID);
-            // printf("The start time is : %s\n", new_event->startDateTime.date);
-            // printf("The creation date is : %s\n", new_event->creationDateTime.date);
-            // printf("The creation date time is : %s\n", new_event->creationDateTime.time);
-            // printf("----------------------------------------\n");
-            // printf("\n\n\n");
-            insertBack(eventList,(void *)new_event);
-            free(right);
-            free(left);
-            continue;
-        }
-
         if(strcmp(left,"uid") == 0 && open) {
             strcpy(new_event->UID,right);
             free(right);
@@ -568,6 +550,68 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             free(left);
             continue;
         }
+
+
+
+        /*An alarm is usually located withing the event. This is assuming everything is fine with the calendar
+        I am going to have to provide check functions that will check the quality of the list before parsing */
+
+        /* If you find an alarm you should then loop through the REST of the lines until you find the end alarm tag */
+        /* From that point you can begin the parsing */
+
+        /* These need a trigger and an action */
+        if(strcmp(left,"begin") == 0 && strcmp(right,"valarm") == 0 && open) {
+            alarmOpen++;
+            printf("Found where an alarm begins!\n");
+            new_alarm = malloc(sizeof(Alarm));
+            free(left);
+            free(right);
+            continue;
+        }   
+
+        if(strcmp(left,"trigger") == 0 && open && alarmOpen) {
+            new_alarm->trigger = malloc(sizeof(char) * strlen(right));
+            stringToUpper(right);
+            strcpy(new_alarm->trigger, right);
+            free(left);
+            free(right);
+            continue;
+        }
+
+        if(strcmp(left,"action") == 0 && open && alarmOpen) {
+            stringToUpper(right);
+            strcpy(new_alarm->action,right);
+            free(left);
+            free(right);
+            continue;
+        }
+
+        if(strcmp(left,"end") == 0 && strcmp(right,"valarm") == 0 && open && alarmOpen) {
+            alarmOpen--;
+            printf("In an event with a UID of %s\n",new_event->UID);
+            printf("The Trigger = %s\n", new_alarm->trigger);
+            printf("The Action = %s\n",new_alarm->action);
+            /* Instead this should be pushed onto the alarm list at the current event */
+            free(new_alarm->trigger);
+            free(new_alarm);
+            free(left);
+            free(right);
+            continue;
+        }
+
+        /* There needs to be an end to the event in order for this to work */
+        /* I am going to have to make a validation of mismatches to make sure that everything is fine */
+        /* This is where the event should be added to the linked list*/
+        /* Somehow pass the List into the function and push the list */ 
+        if(strcmp(left,"end") == 0 && strcmp(right,"vevent") == 0) {
+            open--;
+            insertBack(eventList,(void *)new_event);        //This will be freed in the freelist
+            free(right);
+            free(left);
+            continue;
+        }
+
+
     free(right);
     free(left);
     }
