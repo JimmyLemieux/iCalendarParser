@@ -662,7 +662,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             /* Push this to the property list here */
             insertBack(calProps,new_prop);
         }
-        deallocator((char *)left);
+        deallocator ((char *)left);
         deallocator((char *)right);
     }
 
@@ -736,6 +736,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         /* change the right and left to lowercase */
         stringToLower(left);
         stringToLower(right);
+
 
         /* Check if there is an opening for the event */
         if(strcmp(left,"begin") == 0 && strcmp(right,"vevent") == 0) {
@@ -880,6 +881,14 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     char **test = readFileChar(fileName, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
    
+    printf("Reading the file\n");
+
+    for(i = 0 ; i<arraySize;i++) {
+        printf("%s", test[i]);
+    } 
+
+
+
     error = validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
@@ -930,12 +939,15 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
+    D;
 
     // Look for the events
     /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
     /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
 
     error = fetchCalEvents(*obj, test,arraySize);
+
+    D;
 
     if(error != 0) {
         printf("Found an error while looking for the events\n");

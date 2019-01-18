@@ -6,7 +6,7 @@
 #include "CalendarParser.h"
 
 int main() {
-    createCalendar("test.ics", NULL); 
+    createCalendar("sample1.ics", NULL); 
     //printf("Error Code: %u\n", createCalendar("badFile.ical", NULL));
     return 0;
 }
