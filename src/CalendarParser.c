@@ -31,7 +31,7 @@ char* printEvent(void *toBePrinted) {
 
 	/* We are going to have the print out the contents of the event object we just refrenced */
 	// printf("%s\n",tempEvent->UID);
-    int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + strlen(tempEvent->startDateTime.time);
+    int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + 50;
 	tempStr = calloc(1, len);
 	sprintf(tempStr, "UID: %s, Start Time is %s\n", tempEvent->UID,tempEvent->startDateTime.date); 
 	return tempStr;
@@ -725,8 +725,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         Event *tmp = (Event*)elem;
         char *str = (*obj)->events->printData(tmp);
         printf("%s\n", str);
+        free(str);
     }
-
 
     freeList((*obj)->events);
     printf("List has been freed!\n");
