@@ -14,10 +14,6 @@
 
 //Add a MISMATCH CHECKER that will check BEGIN and END tags
 
-
-Calendar cal;
-List list;
-
 /* Starting the functions for the Linked List */
 
 /* make the compare functions for the linked list */
@@ -179,10 +175,109 @@ void deleteProperty(void *toBeDeleted) {
     free(tempProp);
 }
 
+/* Starting helper functions for basic file checking */
 
+
+
+/* End the functions for basic file checking */
+
+ICalErrorCode validateFile(char *fileName) {
+    FILE *file;
+    int errnum;
+    int j;
+    int index;
+    char *tempFile = NULL;
+    char *fileExtension = NULL;
+
+    if(fileName == NULL) {
+        printf("The file name is null\n");
+        return INV_FILE;
+    }
+
+    tempFile = (char *)malloc(strlen(fileName) + 1);
+    strcpy(tempFile,fileName);
+
+    index = 0;
+
+    while(index < strlen(tempFile) && tempFile[index] != '.') {
+        index++;
+    }
+
+    if(index == strlen(tempFile)) {
+        printf("There is no file extension\n");
+        free(tempFile);
+        free(fileExtension);
+        return INV_FILE;
+    }
+
+    if(tempFile[index] == '.') {
+        j = 0;
+        index++;
+        fileExtension = (char *)malloc((strlen(tempFile) - index) + 1);
+        while(index < strlen(tempFile)) {
+            fileExtension[j] = tempFile[index];
+            index++;
+            j++;
+        }
+        fileExtension[j] = '\0';
+
+        if(strcmp(fileExtension,"ics") != 0) {
+            free(fileExtension);
+            free(tempFile);
+            printf("The file is not a ical file\n"); 
+            return INV_FILE;
+        }
+    }
+
+    //Open the file and read the contents line by line
+
+    file = fopen(fileName,"r");
+    if(file == NULL) {  //The file did not open properly
+        errnum = errno;
+        printf("There was an error on the file load\n");
+        fprintf(stderr,"Error opening file: %s\n",strerror(errnum));
+        return INV_FILE;
+    }
+
+    //End of pen test for file
+    fclose(file);
+    
+    return OK;
+}
 
 
 /* Starting the helper functions for parsing the calendar  */
+
+
+/* This function will remove the line folds and an empty lines */
+void unfoldLines(char **lines, int arraySize) {
+    int i;
+    char **tempLines;
+    if(lines == NULL || arraySize == 0) {
+        printf("There are no lines to unfold!\n");
+        return;
+    }
+
+    tempLines = (char **)malloc(sizeof(char *) * arraySize);
+    for(i = 0;i<arraySize;i++) {
+        /* Any line that is not the first that has a space at the front is a potential line fold
+        Also any line that has a strlen of zero should be removed from the list */ 
+        // if(isspace(lines[i][0])) {
+        //     printf("Potential Line fold on line : %s\n", lines[i]);
+        // }
+        tempLines[i] = calloc(1,sizeof(char) * strlen(lines[i]) + 1);
+        strcpy(tempLines[i], lines[i]);
+    }
+
+    printf("Printing the temp array!\n");
+
+    for(i = 0;i<arraySize;i++) {
+        printf("%s\n",tempLines[i]);
+    }
+
+
+}
+
 
 //This works with big input
 char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool tokenizer and memleak fix
@@ -756,8 +851,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 }
 
 /* Ending the functions that help with parsing the linked list*/
-
-
 /* Starting the mandatory functions for the assignment */
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
@@ -765,82 +858,33 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     Also make sure that the actual file opens and that you can read contents from the file
     */
     ICalErrorCode error;
-    char *tempFile = NULL;
-    char *fileExtension = NULL;
-    FILE *file;
     int i;
-    int j;
-    int index;
-    int errnum;
     int arraySize;
     int fileLines;
     obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
-    
-    if(fileName == NULL) {
-        printf("The file name is null\n");
+
+
+    /* START OF FILE FUNCTIONS */
+    error = validateFile(fileName);
+
+    if(error != 0) {
+        free(*obj);
+        free(obj);
         return INV_FILE;
     }
 
-    tempFile = (char *)malloc(strlen(fileName) + 1);
-    strcpy(tempFile,fileName);
+    /* End OF FILE FUNCTIONS */
 
-    index = 0;
-
-    while(index < strlen(tempFile) && tempFile[index] != '.') {
-        index++;
-    }
-
-    if(index == strlen(tempFile)) {
-        printf("There is no file extension\n");
-        free(tempFile);
-        free(fileExtension);
-        return INV_FILE;
-    }
-
-    if(tempFile[index] == '.') {
-        j = 0;
-        index++;
-        fileExtension = (char *)malloc((strlen(tempFile) - index) + 1);
-        while(index < strlen(tempFile)) {
-            fileExtension[j] = tempFile[index];
-            index++;
-            j++;
-        }
-        fileExtension[j] = '\0';
-
-        if(strcmp(fileExtension,"ics") != 0) {
-            free(fileExtension);
-            free(tempFile);
-            printf("The file is not a ical file\n"); 
-            return INV_FILE;
-        }
-    }
-
-    //Open the file and read the contents line by line
-
-    file = fopen(fileName,"r");
-    if(file == NULL) {  //The file did not open properly
-        errnum = errno;
-        printf("There was an error on the file load\n");
-        fprintf(stderr,"Error opening file: %s\n",strerror(errnum));
-        return INV_FILE;
-    }
-
-    //End of pen test for file
-    fclose(file);
-
-    char **test = readFileChar(tempFile, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
-
+    char **test = readFileChar(fileName, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
+   
     error = validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
-
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
         free_fields(test,arraySize);
-        free(tempFile);
-        free(fileExtension);
         return INV_FILE;
     }
+
 
     //If there is a pass, continue to look at the calendar contents
     // The calendar contents are supposed to be specified inside the text
@@ -852,16 +896,17 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     for(i = 0;i<arraySize;i++) {
         test[i] = trimSpecialChars(test[i]);
     }
+    //unfoldLines(test,arraySize);
 
     error = checkCalendarHead(test,arraySize);
 
     if(error != 0) {
         printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
-        free(tempFile);
-        free(fileExtension);
         return INV_FILE;
     }
+
+
 
     /* Check for events and other things later, start the parser for now */
     printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
@@ -874,8 +919,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("Found an error while parsing the version and proID\n");
         free_fields(test,arraySize);
-        free(tempFile); 
-        free(fileExtension);
         return OTHER_ERROR;
     }
 
@@ -889,8 +932,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("Found an error while looking for the events\n");
         free_fields(test,arraySize);
-        free(tempFile);
-        free(fileExtension);
         return OTHER_ERROR;
     }
 
@@ -929,18 +970,13 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     /* Just test for now */
 
 
-    freeList((*obj)->properties);
+    freeList((*obj)->properties); 
     freeList((*obj)->events);
     printf("List has been freed!\n");
 
     free_fields(test,arraySize);
-    free(tempFile);
-    free(fileExtension);
     free(*obj);
     free(obj);
     return OK;
 }
-
-
 /* Ending the mandatory functions for the assignment */
-
