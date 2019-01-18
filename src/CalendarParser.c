@@ -79,9 +79,7 @@ void deleteEvent(void *toBeDeleted) {
 	/* for now just free the main event pointer */
     freeList(tempEvent->alarms);
 	free(tempEvent);
-
 }
-
 
 char *printAlarm(void *toBePrinted) {
     char *tempStr;
@@ -100,25 +98,18 @@ char *printAlarm(void *toBePrinted) {
 int compareAlarms(const void *first, const void *second) {
     Alarm *alarm1;
     Alarm *alarm2;
-
     if(first == NULL || second == NULL) {
         return 0;
     }
-    
-
     alarm1 = (Alarm*)first;
     alarm2 = (Alarm*)second;
-
     if(strcmp(alarm1->trigger,alarm2->trigger) != 0) {
         return 0;
     }
-
     if(strcmp(alarm1->action,alarm2->action) != 0) {
         return 0;
     }
-
     /* I am also going to have to look through all of the properties */
-
     return 1;
 }
 
@@ -128,13 +119,15 @@ void deleteAlarm(void *toBeDeleted) {
     if(toBeDeleted == NULL) {
         return;
     }
-
     tempAlarm = (Alarm*)toBeDeleted;
-
     /* I will also have to go through the properties for this and free */
     free(tempAlarm->trigger);
     free(tempAlarm);
 }
+
+
+
+
 
 
 
@@ -830,17 +823,15 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     void *elem;
     ListIterator iter = createIterator((*obj)->events);
 
-
     while((elem = nextElement(&iter)) != NULL) {
         Event *tmp = (Event*)elem;
         char *str = (*obj)->events->printData(tmp);
         printf("%s\n", str);
-        printf("\n\n");
         Alarm *tempAlarm = getFromFront(tmp->alarms);
         printf("The first alarm in the event is:\n");
-        
         printf("Action: %s\n", tempAlarm->action);
         printf("Trigger: %s\n" ,tempAlarm->trigger);
+        printf("\n");
         free(str);
     }
 
