@@ -804,7 +804,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }   
 
         if(strcmp(left,"trigger") == 0 && open && alarmOpen) {
-            new_alarm->trigger = malloc(sizeof(char) * strlen(right)+1);
+            new_alarm->trigger = calloc(1,sizeof(char) * strlen(right) + 1);
             stringToUpper(right);
             strcpy(new_alarm->trigger, right);
             //new_alarm->trigger = right;
@@ -939,15 +939,12 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
-    D;
 
     // Look for the events
     /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
     /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
 
     error = fetchCalEvents(*obj, test,arraySize);
-
-    D;
 
     if(error != 0) {
         printf("Found an error while looking for the events\n");
@@ -967,7 +964,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         char *str = (*obj)->events->printData(tmp);
         printf("%s\n", str);
         Alarm *tempAlarm = getFromFront(tmp->alarms);
-        if(tempAlarm != NULL ) {
+        if(tempAlarm != NULL) {
             printf("The alarm in this event is\n");
             printf("Trigger: %s\n" ,tempAlarm->trigger);
             printf("Action: %s\n", tempAlarm->action);
@@ -980,7 +977,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     void *elem2;
     ListIterator propIter = createIterator((*obj)->properties);
-
 
     while((elem2 = nextElement(&propIter)) != NULL) {
         Property *tmp = (Property *)elem2;
