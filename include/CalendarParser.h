@@ -26,7 +26,7 @@ typedef struct prop {
 	char 	propName[200];
 	//Property description.  We use a C99 flexible array member, which we will discuss in class.
 	//Must not be empty
-	char	propDescr[]; 
+	char	propDescr[200]; /* will need to change this, just testing ! */ 
 } Property;
 
 //Represents an iCalendar alarm component

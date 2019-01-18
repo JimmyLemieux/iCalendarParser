@@ -510,8 +510,8 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         }
 
         /* If the : is found, then we need to make a right and left */
-        left = calloc(1, (index+1) *sizeof(char));
-        right = calloc(1, (strlen(lines[i]) - index) * sizeof(char));
+        left = calloc(1, (index+2) *sizeof(char));
+        right = calloc(1, ((strlen(lines[i]) - index)+1) * sizeof(char));
         for(j = 0;j<index;j++) {
             left[j] = lines[i][j]; 
         }
@@ -553,15 +553,22 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         }
 
         /* This section will be for the other properties for now */
-
         if(open == 1) {
             /* This is where we should insert into the calendars linked list */
             printf("Other prop %s : %s\n", left,right);
+            new_prop = malloc(sizeof(Property));
+            /* The prop description is a flexible array member */
+            strcpy(new_prop->propName,left);
+            strcpy(new_prop->propDescr,right);
+            /* Push this to the property list here */
+            insertBack(calProps,new_prop);
         }
         free(left);
         free(right);
 
     }
+
+    obj->properties = calProps;
     return OK;
 }
 
@@ -690,7 +697,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         /* These need a trigger and an action */
         if(strcmp(left,"begin") == 0 && strcmp(right,"valarm") == 0 && open) {
             alarmOpen++;
-            printf("Found where an alarm begins!\n");
             new_alarm = malloc(sizeof(Alarm));
             free(left);
             free(right);
@@ -717,9 +723,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         if(strcmp(left,"end") == 0 && strcmp(right,"valarm") == 0 && open && alarmOpen) {
             alarmOpen--;
-            printf("In an event with a UID of %s\n",new_event->UID);
-            printf("The Trigger = %s\n", new_alarm->trigger);
-            printf("The Action = %s\n",new_alarm->action);
 
             insertBack(alarmList, (void *)new_alarm);
             /* Instead this should be pushed onto the alarm list at the current event */
@@ -862,6 +865,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Check for events and other things later, start the parser for now */
     printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
+    printf("NOW PARSING THE CALENDAR CONTENTS!\n\n\n");
 
     /* Make functions to return the version and proID into the calendar object */
 
@@ -875,11 +879,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
-    printf("THE REQUIRED COMPONENETS OF THE CALENDAR\n\n");
-    printf("----------------------------------------\n");
-    printf("The version is %f\n", (*obj)->version);
-    printf("The proID is %s\n\n\n",(*obj)->prodID);
-    printf("----------------------------------------\n");
 
     // Look for the events
     /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
@@ -910,6 +909,25 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("\n");
         free(str);
     }
+
+    printf("Printing the properties that are apart of the calendar object!\n");
+
+
+    void *elem2;
+    ListIterator propIter = createIterator((*obj)->properties);
+
+
+    while((elem2 = nextElement(&propIter)) != NULL) {
+        Property *tmp = (Property *)elem2;
+        char *str = (*obj)->properties->printData(tmp);
+        printf("%s\n", str);
+        free(str);
+    }
+
+    /* I am going to have to call free list on the list of properties */
+
+    /* Just test for now */
+
 
     freeList((*obj)->events);
     printf("List has been freed!\n");
