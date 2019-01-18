@@ -205,8 +205,8 @@ ICalErrorCode validateFile(char *fileName) {
 
     if(index == strlen(tempFile)) {
         printf("There is no file extension\n");
-        free(tempFile);
-        free(fileExtension);
+        deallocator(tempFile);
+        deallocator(fileExtension);
         return INV_FILE;
     }
 
@@ -222,8 +222,8 @@ ICalErrorCode validateFile(char *fileName) {
         fileExtension[j] = '\0';
 
         if(strcmp(fileExtension,"ics") != 0) {
-            free(fileExtension);
-            free(tempFile);
+            deallocator(fileExtension);
+            deallocator(tempFile);
             printf("The file is not a ical file\n"); 
             return INV_FILE;
         }
@@ -236,12 +236,15 @@ ICalErrorCode validateFile(char *fileName) {
         errnum = errno;
         printf("There was an error on the file load\n");
         fprintf(stderr,"Error opening file: %s\n",strerror(errnum));
+        deallocator(tempFile);
+        deallocator(fileExtension);
         return INV_FILE;
     }
 
     //End of pen test for file
     fclose(file);
-    
+    deallocator(tempFile);
+    deallocator(fileExtension);
     return OK;
 }
 
