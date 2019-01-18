@@ -953,7 +953,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     printf("Printing the properties that are apart of the calendar object!\n");
 
-
     void *elem2;
     ListIterator propIter = createIterator((*obj)->properties);
 
