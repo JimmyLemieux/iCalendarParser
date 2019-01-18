@@ -76,7 +76,7 @@ void deleteEvent(void *toBeDeleted) {
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
     freeList(tempEvent->alarms);
-	free(tempEvent);
+    deallocator((Event *)tempEvent);
 }
 
 char *printAlarm(void *toBePrinted) {
@@ -119,8 +119,8 @@ void deleteAlarm(void *toBeDeleted) {
     }
     tempAlarm = (Alarm*)toBeDeleted;
     /* I will also have to go through the properties for this and free */
-    free(tempAlarm->trigger);
-    free(tempAlarm);
+    deallocator((Alarm*)tempAlarm->trigger);
+    deallocator((Alarm*)tempAlarm);
 }
 
 /*Ending the functions for the linked list */
@@ -172,7 +172,7 @@ void deleteProperty(void *toBeDeleted) {
     }
 
     tempProp = (Property *)toBeDeleted;
-    free(tempProp);
+    deallocator((Property*)tempProp);
 }
 
 /* Starting helper functions for basic file checking */
@@ -939,12 +939,12 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
-
     // Look for the events
     /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
     /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
 
     error = fetchCalEvents(*obj, test,arraySize);
+
 
     if(error != 0) {
         printf("Found an error while looking for the events\n");
