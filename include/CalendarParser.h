@@ -10,7 +10,6 @@
 
 //Error codes that indicate what went wrong during parsing
 typedef enum ers {OK, INV_FILE, INV_CAL, INV_VER, DUP_VER, INV_PRODID, DUP_PRODID, INV_EVENT, INV_DT, INV_ALARM, WRITE_ERROR, OTHER_ERROR } ICalErrorCode;
-
 //Represents iCalendar Date-time
 typedef struct dt {
 	//YYYYMMDD
@@ -57,7 +56,6 @@ typedef struct evt {
 	//List of alarms associated with the event.  
 	//All objects in the list will be of type Alarm.  It must not be NULL.  It may be empty.
     List*        alarms;
-	
 } Event;
 
 
@@ -130,7 +128,6 @@ char* printError(ICalErrorCode err);
  *@param obj - a pointer to a Calendar struct
  **/
 ICalErrorCode writeCalendar(char* fileName, const Calendar* obj);
-
 
 /** Function to validating an existing a Calendar object
  *@pre Calendar object exists and is not null

@@ -31,8 +31,9 @@ char* printEvent(void *toBePrinted) {
 
 	/* We are going to have the print out the contents of the event object we just refrenced */
 	// printf("%s\n",tempEvent->UID);
-	tempStr = calloc(1, 50);
-	sprintf(tempStr, "UID: %s", tempEvent->UID); 
+    int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + strlen(tempEvent->startDateTime.time);
+	tempStr = calloc(1, len);
+	sprintf(tempStr, "UID: %s, Start Time is %s\n", tempEvent->UID,tempEvent->startDateTime.date); 
 	return tempStr;
 }
 /* You will have to traverse all of the properties and alarms of this event as well */ 
@@ -76,8 +77,8 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
-	printf("The object was freed!\n"); 
 	free(tempEvent);
+	printf("The function called the free\n"); 
 
 }
 
@@ -462,8 +463,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     /* Initialize the list that will store all of the events that have been parsed */
     /* The list needs to have the required functions that will be used to compare,print and delete */
 
-    //eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
+    eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
 
+    if(eventList == NULL) {
+        printf("The list was not init properly!\n");
+        return OTHER_ERROR;
+    } 
 
 
     /* Loop through all of the calendar events and parse all of the contents */
@@ -521,10 +526,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             printf("The creation date is : Will fix this later\n");
             printf("----------------------------------------\n");
             printf("\n\n\n");
-
-            //new_event_node = initializeNode((void *)new_event);
-            //insertBack(eventList,new_event_node);
-            free(new_event);
+            printf("Inserted the item into the linked list!\n");
+            insertBack(eventList,(void *)new_event);
             free(right);
             free(left);
             continue;
@@ -558,6 +561,13 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     free(right);
     free(left);
     }
+
+    printf("Printing the linked list\n");
+
+
+    obj->events = eventList;
+    printf("The events have been put into the cal object\n");
+    
     return OK;
 }
 
@@ -705,7 +715,22 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
 
 
-    printf("The object worked\n");
+
+    printf("Printing the events that are in the cal obj\n");
+    void *elem;
+    ListIterator iter = createIterator((*obj)->events);
+
+
+    while((elem = nextElement(&iter)) != NULL) {
+        Event *tmp = (Event*)elem;
+        char *str = (*obj)->events->printData(tmp);
+        printf("%s\n", str);
+    }
+
+
+    freeList((*obj)->events);
+    printf("List has been freed!\n");
+
     free_fields(test,arraySize);
     free(tempFile);
     free(fileExtension);

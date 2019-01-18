@@ -70,7 +70,7 @@ Node* initializeNode(void* data){
 *@param toBeAdded a pointer to data that is to be added to the linked list
 **/
 void insertBack(List* list, void* toBeAdded){
-	if (list == NULL || toBeAdded == NULL){
+	if (list== NULL || toBeAdded == NULL){
 		return;
 	}
 	
