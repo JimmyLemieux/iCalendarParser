@@ -462,16 +462,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     /* Initialize the list that will store all of the events that have been parsed */
     /* The list needs to have the required functions that will be used to compare,print and delete */
 
-    eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
-
-    if(eventList == NULL) {
-        printf("The list was NULL\n");
-        return OTHER_ERROR;
-    }
-
-
-
-
+    //eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
 
 
 
@@ -531,8 +522,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             printf("----------------------------------------\n");
             printf("\n\n\n");
 
-            new_event_node = initializeNode((void *)new_event);
-            insertBack(eventList,new_event_node);
+            //new_event_node = initializeNode((void *)new_event);
+            //insertBack(eventList,new_event_node);
             free(new_event);
             free(right);
             free(left);
@@ -659,7 +650,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     //If there is a pass, continue to look at the calendar contents
     // The calendar contents are supposed to be specified inside the text
 
-    
     
     printf("\\THIS FILE WAS FLAGGED AS VALID\\\n");
 
