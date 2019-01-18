@@ -393,6 +393,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     stringToLower(lines[0]);
     stringToLower(lines[arraySize - 1]);
 
+    printf("%s %s\n", lines[0], lines[arraySize - 1]); 
+
     if(strcmp(lines[0],"begin:vcalendar") != 0 || strcmp(lines[arraySize - 1], "end:vcalendar") != 0) {
         printf("The calendar does not start and end properly\n");
         return INV_CAL;
@@ -790,7 +792,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         /* From that point you can begin the parsing */
 
         /* These need a trigger and an action */
-        if(strcmp(left,"begin") == 0 && strcmp(right,"valarm") == 0 && open) {
+        if(strcmp(left,"begin") == 0 && strcmp(right,"valarm") == 0 && open == 1) {
             alarmOpen++;
             new_alarm = malloc(sizeof(Alarm));
             free(left);
@@ -810,7 +812,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcmp(left,"action") == 0 && open && alarmOpen) {
+        if(strcmp(left,"action") == 0 && open == 1 && alarmOpen == 1) {
             stringToUpper(right);
             strcpy(new_alarm->action,right);
             deallocator((char *)left);
@@ -818,13 +820,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcmp(left,"end") == 0 && strcmp(right,"valarm") == 0 && open && alarmOpen) {
+        if(strcmp(left,"end") == 0 && strcmp(right,"valarm") == 0 && open == 1 && alarmOpen == 1) {
             alarmOpen--;
-
             insertBack(alarmList, (void *)new_alarm);
-            /* Instead this should be pushed onto the alarm list at the current event */
-            // free(new_alarm->trigger);
-            // free(new_alarm);
             deallocator((char *)left);
             deallocator((char *) right);
             continue;
@@ -958,6 +956,10 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("%s\n", str);
         Alarm *tempAlarm = getFromFront(tmp->alarms);
         printf("The first alarm in the  event is:\n");
+        if(tempAlarm == NULL ) {
+            printf("The alarm is empty\n");
+            continue;
+        }
         printf("Trigger: %s\n" ,tempAlarm->trigger);
         printf("\n");
         deallocator((char *)str); 
