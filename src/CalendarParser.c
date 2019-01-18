@@ -17,6 +17,7 @@
 Calendar cal;
 List list;
 
+/* Starting the functions for the Linked List */
 
 /* make the compare functions for the linked list */
 char* printEvent(void *toBePrinted) {
@@ -125,11 +126,16 @@ void deleteAlarm(void *toBeDeleted) {
     free(tempAlarm);
 }
 
+/*Ending the functions for the linked list */
 
 
 
 
 
+
+
+
+/* Starting the helper functions for parsing the calendar  */
 
 //This works with big input
 char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool tokenizer and memleak fix
@@ -426,6 +432,10 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
 }
 
 
+/*This function will go through the properties that will be used with the calendar*/
+/*This includes the required PRODID and VERSION, as well as any other property on the top level of the iCal */
+/* Now adding the required functionality for parsing the "other props" */
+
 ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
     //The object needs to be malloced 
     // All of the things have been checked, then we can just look for the version and proID
@@ -674,8 +684,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     return OK;
 }
 
+/* Ending the functions that help with parsing the linked list*/
 
 
+/* Starting the mandatory functions for the assignment */
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
     /*First step, when opening the file make sure it is of valid file extension
@@ -817,8 +829,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     }
 
 
-
-
     printf("Printing the events that are in the cal obj\n");
     void *elem;
     ListIterator iter = createIterator((*obj)->events);
@@ -845,4 +855,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     free(obj);
     return OK;
 }
+
+
+/* Ending the mandatory functions for the assignment */
 
