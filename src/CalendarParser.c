@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <math.h>
 #include <ctype.h>
+#include <strings.h>
 #include "LinkedListAPI.h"
 #include "CalendarParser.h"
 #include "helper.c"
@@ -173,6 +174,8 @@ void deleteProperty(void *toBeDeleted) {
     if(toBeDeleted == NULL) {
         return;
     }
+
+    tempProp = (Property *)toBeDeleted;
     free(tempProp);
 }
 
@@ -472,12 +475,11 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
     return OK;
 }
 
-
 /*This function will go through the properties that will be used with the calendar*/
 /*This includes the required PRODID and VERSION, as well as any other property on the top level of the iCal */
 /* Now adding the required functionality for parsing the "other props" */
 
-ICalErrorCode fetchCalRequiredProps(Calendar * obj,char **lines,int arraySize) {
+ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     //The object needs to be malloced 
     // All of the things have been checked, then we can just look for the version and proID
     int i;
@@ -829,7 +831,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     error = validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
 
-
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
         free_fields(test,arraySize);
@@ -864,7 +865,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Make functions to return the version and proID into the calendar object */
 
-    error = fetchCalRequiredProps(*obj,test,arraySize);
+    error = fetchCalendarProps(*obj,test,arraySize);
 
     if(error != 0) {
         printf("Found an error while parsing the version and proID\n");
@@ -904,8 +905,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         char *str = (*obj)->events->printData(tmp);
         printf("%s\n", str);
         Alarm *tempAlarm = getFromFront(tmp->alarms);
-        printf("The first alarm in the event is:\n");
-        printf("Action: %s\n", tempAlarm->action);
+        printf("The first alarm in the  event is:\n");
         printf("Trigger: %s\n" ,tempAlarm->trigger);
         printf("\n");
         free(str);
