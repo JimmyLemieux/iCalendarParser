@@ -54,13 +54,6 @@ char ** init_str_array(int N, int K) {
     return a;
 }
 
-void free_fields(char **ptr, int size) {
-    int i;
-    for(i = 0;i<size;i++) {
-        free(ptr[i]);
-    }
-    free(ptr);
-}
 
 void stringToLower(char *string) {
     int index = 0; 
@@ -176,5 +169,13 @@ void deallocator(void *thingToFree) {
     if(thingToFree) {
         free(thingToFree);
     }
+}
+
+void free_fields(char **ptr, int size) {
+    int i;
+    for(i = 0;i<size;i++) {
+        free(ptr[i]);
+    }
+    free(ptr);
 }
 

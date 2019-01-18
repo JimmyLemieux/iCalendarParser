@@ -566,8 +566,8 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
 
         //Now that we have the right and left begin to look for the open and closed events 
         printf("LEFT:%s :::: RIGHT:%s\n",left,right);
-        free(left);
-        free(right);
+        deallocator((char *)left);
+        deallocator((char *)right); 
     } // end loop
     return OK;
 }
@@ -623,29 +623,29 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
         if(strcmp(left,"begin") == 0) {
             open++;
-            free(left);
-            free(right);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
 
         if(strcmp(left, "end") == 0) {
             open--;
-            free(left);
-            free(right);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
 
         if(strcmp(left,"version") == 0) { // This is a version that should be parsed, when it is parsed add to the calendar object
             obj->version = atof(right);
-            free(right);
-            free(left);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
 
         if(strcmp(left,"prodid") == 0) {
             strcpy(obj->prodID,right);
-            free(left);
-            free(right);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
 
@@ -660,9 +660,8 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             /* Push this to the property list here */
             insertBack(calProps,new_prop);
         }
-        free(left);
-        free(right);
-
+        deallocator((char *)left);
+        deallocator((char *)right);
     }
 
     obj->properties = calProps;
@@ -741,15 +740,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             open++;
             new_event = malloc(sizeof(Event));
             alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
-            free(right);
-            free(left);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
 
         if(strcmp(left,"uid") == 0 && open) {
             strcpy(new_event->UID,right);
-            free(right);
-            free(left);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
 
@@ -757,8 +756,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(strcmp(left,"dtstart") == 0 && open) { 
             /*Making a new Datetime structure */ 
             strcpy(new_event->startDateTime.date, right);
-            free(right);
-            free(left);
+            deallocator((char *)left);
+            deallocator((char *)right); 
             continue;
         }
 
@@ -775,11 +774,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
             strcpy(new_event->creationDateTime.date, leftStamp);
             strcpy(new_event->creationDateTime.time, rightStamp);
-            
-            free(leftStamp);
-            free(rightStamp);
-            free(right);
-            free(left);
+            deallocator((char *) leftStamp);
+            deallocator((char *)rightStamp);
+            deallocator((char *)left);
+            deallocator((char *) right);
             continue;
         }
 
@@ -797,6 +795,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             new_alarm = malloc(sizeof(Alarm));
             free(left);
             free(right);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }   
 
@@ -805,16 +805,16 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             stringToUpper(right);
             strcpy(new_alarm->trigger, right);
             //new_alarm->trigger = right;
-            free(left);
-            free(right);
+            deallocator((char *)left);
+            deallocator((char*)right);
             continue;
         }
 
         if(strcmp(left,"action") == 0 && open && alarmOpen) {
             stringToUpper(right);
             strcpy(new_alarm->action,right);
-            free(left);
-            free(right);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
 
@@ -825,8 +825,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             /* Instead this should be pushed onto the alarm list at the current event */
             // free(new_alarm->trigger);
             // free(new_alarm);
-            free(left);
-            free(right);
+            deallocator((char *)left);
+            deallocator((char *) right);
             continue;
         }
 
@@ -838,14 +838,14 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             open--;
             new_event->alarms = alarmList;                  //Each event block will have a list of alarms
             insertBack(eventList,(void *)new_event);        //This will be freed in the freelist
-            free(right);
-            free(left);
+            deallocator((char *) left);
+            deallocator((char *) right);
             continue;
         }
 
 
-    free(right);
-    free(left);
+    deallocator((char *) left);
+    deallocator((char *) right); 
     }
     obj->events = eventList;
     
@@ -873,6 +873,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         free(*obj);
         free(obj);
+        // deallocator((Calendar*)(*obj));
+        // deallocator((Calendar**)obj);
         return INV_FILE;
     }
 
@@ -950,7 +952,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("The first alarm in the  event is:\n");
         printf("Trigger: %s\n" ,tempAlarm->trigger);
         printf("\n");
-        free(str);
+        deallocator((char *)str); 
     }
 
     printf("Printing the properties that are apart of the calendar object!\n");
@@ -963,7 +965,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         Property *tmp = (Property *)elem2;
         char *str = (*obj)->properties->printData(tmp);
         printf("%s\n", str);
-        free(str);
+        deallocator((char *)str);
     }
 
     /* I am going to have to call free list on the list of properties */
@@ -977,7 +979,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     free_fields(test,arraySize);
     free(*obj);
-    free(obj);
+    free(obj); 
     return OK;
 }
 /* Ending the mandatory functions for the assignment */
