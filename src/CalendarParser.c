@@ -955,15 +955,13 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         char *str = (*obj)->events->printData(tmp);
         printf("%s\n", str);
         Alarm *tempAlarm = getFromFront(tmp->alarms);
-        printf("The first alarm in the  event is:\n");
-        if(tempAlarm == NULL ) {
-            printf("The alarm is empty\n");
-            continue;
+        if(tempAlarm != NULL ) {
+            printf("The alarm in this event is\n");
+            printf("Trigger: %s\n" ,tempAlarm->trigger);
+            printf("Action: %s\n", tempAlarm->action);
         }
-        printf("Trigger: %s\n" ,tempAlarm->trigger);
         printf("\n");
-        free(str);
-       // deallocator((char *)str); 
+        deallocator((char *)str); 
     }
 
     printf("Printing the properties that are apart of the calendar object!\n");
