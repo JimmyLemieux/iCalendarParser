@@ -205,8 +205,8 @@ ICalErrorCode validateFile(char *fileName) {
 
     if(index == strlen(tempFile)) {
         printf("There is no file extension\n");
-        deallocator(tempFile);
-        deallocator(fileExtension);
+        deallocator((char *)tempFile);
+        deallocator((char *)fileExtension);
         return INV_FILE;
     }
 
@@ -222,8 +222,8 @@ ICalErrorCode validateFile(char *fileName) {
         fileExtension[j] = '\0';
 
         if(strcmp(fileExtension,"ics") != 0) {
-            deallocator(fileExtension);
-            deallocator(tempFile);
+            deallocator((char *)fileExtension);
+            deallocator((char *)tempFile);
             printf("The file is not a ical file\n"); 
             return INV_FILE;
         }
@@ -236,15 +236,15 @@ ICalErrorCode validateFile(char *fileName) {
         errnum = errno;
         printf("There was an error on the file load\n");
         fprintf(stderr,"Error opening file: %s\n",strerror(errnum));
-        deallocator(tempFile);
-        deallocator(fileExtension);
+        deallocator((char *)tempFile);
+        deallocator((char *)fileExtension);
         return INV_FILE;
     }
 
     //End of pen test for file
     fclose(file);
-    deallocator(tempFile);
-    deallocator(fileExtension);
+    deallocator((char *)tempFile);
+    deallocator((char *)fileExtension);
     return OK;
 }
 
@@ -328,7 +328,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
                 index+=2;
                 tempStart = index;
                 //Free the string
-                free(temp);
+                deallocator((char *)temp);
                 temp = NULL;
                 continue;
             }
@@ -337,13 +337,12 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
         index++;
     }
 
-    free(stringBuffer);
-    free(temp);
+    deallocator((char *)stringBuffer);
+    deallocator((char *)temp);
 
     *fileLines = fileLineCount;
     *arraySize = lineSize;
     fclose(file);
-
 
     return lines;
 }
@@ -427,12 +426,12 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
         if((strcmp(left,"begin") == 0 || strcmp(left,"end") == 0) && (strcmp(right,"vcalendar") == 0)) {
             printf("There is a duplicate property in the file\n");
-            free(left);
-            free(right);
+            deallocator((char *)left);
+            deallocator((char *)right);
             return INV_CAL;
         }
-        free(left);
-        free(right);
+        deallocator((char *)left);
+        deallocator((char *) right);
     }
 
     //If we made it through the above iterations then check if the calendar has a version and UID
@@ -465,22 +464,22 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
         if(open < 0) {
             printf("THERE WAS A BEGIN END MISMATCH");
-            free(right);
-            free(left);
+            deallocator((char *)left);
+            deallocator((char *)right);
             return INV_CAL;
         }
 
         if(strcmp(left,"begin") == 0) {
             open++;
-            free(right);
-            free(left);
+            deallocator((char *) left);
+            deallocator((char *)right);
             continue; // to the next line
         }
 
         if(strcmp(left,"end") == 0) {
             open--;
-            free(right);
-            free(left);
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
         
@@ -489,8 +488,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             if(!foundVersion) {
                 foundVersion = 1;
             } else {
-                free(left);
-                free(right);
+                deallocator((char *)left);
+                deallocator((char *)right);
                 return DUP_VER;
             }
         }
@@ -499,13 +498,13 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             if(!foundPRODID) {
                 foundPRODID = 1;
             } else {
-                free(left);
-                free(right);
+                deallocator((char *)left);
+                deallocator((char *)right);
                 return DUP_PRODID;
             }
         }
-        free(left);
-        free(right);
+        deallocator((char *)left);
+        deallocator((char *)right);
     }
 
 
