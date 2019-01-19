@@ -324,8 +324,8 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
                 index+=2;
                 tempStart = index;
                 //Free the string
-                temp = NULL;
                 deallocator((char *)temp);
+                temp = NULL;
                 continue;
             }
 
@@ -337,6 +337,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     *fileLines = fileLineCount;
     *arraySize = lineSize;
     fclose(file);
+    deallocator(temp);
     deallocator((char *)stringBuffer);
     return lines;
 }
