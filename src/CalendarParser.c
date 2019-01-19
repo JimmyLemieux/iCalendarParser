@@ -75,7 +75,7 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
-    deallocator(tempEvent);
+    deallocator(tempEvent); 
 }
 
 char *printAlarm(void *toBePrinted) {
