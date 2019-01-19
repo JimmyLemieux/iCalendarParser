@@ -575,11 +575,14 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     char *left;
     char *right;
 
-    List *props;
     Property *new_prop;
+    List *props;
 
     new_prop = malloc(sizeof(Property));
-    props = initializeList(&printProperty, &deleteProperty,&compareProperties);
+    props = initializeList(&printProperty,&deleteProperty,&compareProperties);
+    if(obj->properties != NULL) {
+        printf("This has been allocated!\n");
+    }
     for(i = 0;i<arraySize;i++) {
         if(!containsChar(lines[i],':')) {
             continue;
@@ -627,7 +630,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             } else {
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
-
+                insertBack(obj->properties, new_prop);
             }
         }
 
@@ -635,7 +638,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         deallocator(right);
     }
     deallocator(new_prop);
-    freeList(props);
+    obj->properties = props;
     return OK;
 }
 
@@ -946,6 +949,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Make functions to return the version and proID into the calendar object */
 
+    //(*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
     error = fetchCalendarProps(*obj,test,arraySize);
 
     if(error != 0) {
@@ -983,6 +987,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     printf("%s\n", (*obj)->prodID);
     printf("List has been freed!\n");
     free_fields(test,arraySize);
+    freeList((*obj)->properties);
     free(*obj);
     free(obj); 
     return OK;
