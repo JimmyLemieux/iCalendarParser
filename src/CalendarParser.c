@@ -700,6 +700,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
             new_event = malloc(sizeof(Event));
+            alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
             eventOpen++;
             deallocator(left);
             deallocator(right);
@@ -710,13 +711,13 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             eventOpen--;
             deallocator(left);
             deallocator(right);
+            new_event->alarms = alarmList;
             insertBack(eventList,new_event);
             continue;
         }
 
         if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VALARM") == 0) {
             new_alarm = malloc(sizeof(Alarm));
-            alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
             alarmOpen++;
             deallocator(left);
             deallocator(right);
@@ -724,7 +725,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
         if(strcmp(left,"END") == 0 && strcmp(right,"VALARM") == 0) {
-            new_event->alarms = alarmList;
+            insertBack(alarmList, new_alarm);
             alarmOpen--;
             deallocator(left);
             deallocator(right);
