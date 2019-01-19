@@ -733,6 +733,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
+        /* Getting the event */
         if(calOpen == 1 && eventOpen == 1) {
             //printf("An Event property\n");
             if(strcmp(left,"UID") == 0 && new_event != NULL) {
@@ -789,7 +790,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             }
         }
 
-
+        /* Getting the Alarm */
         if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
             /* The properties that are in the alarm comp */
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
