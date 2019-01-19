@@ -75,6 +75,7 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
+    freeList(tempEvent->alarms);
     deallocator(tempEvent); 
 }
 
@@ -118,6 +119,8 @@ void deleteAlarm(void *toBeDeleted) {
     }
     tempAlarm = (Alarm*)toBeDeleted;
     /* I will also have to go through the properties for this and free */
+    deallocator(tempAlarm->trigger);
+    deallocator(tempAlarm);
 }
 
 /*Ending the functions for the linked list */
@@ -654,7 +657,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     char *right;
 
     Event *new_event;
+    Alarm *new_alarm;
     List *eventList;
+    List *alarmList;
 
     eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
     for(i = 0;i<arraySize;i++) {
@@ -695,6 +700,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
             new_event = malloc(sizeof(Event));
+            new_alarm = malloc(sizeof(Alarm));
+            alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
             eventOpen++;
             deallocator(left);
             deallocator(right);
@@ -717,6 +724,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
         if(strcmp(left,"END") == 0 && strcmp(right,"VALARM") == 0) {
+            new_event->alarms = alarmList;
             alarmOpen--;
             deallocator(left);
             deallocator(right);
@@ -783,7 +791,14 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
             /* The properties that are in the alarm comp */
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
-
+            if(strcmp(left,"ACTION") == 0) {
+                strcpy(new_alarm->action,right);
+            }else if(strcmp(left,"TRIGGER") == 0) {
+                new_alarm->trigger = calloc(1, sizeof(char) * 500);
+                strcpy(new_alarm->trigger, right);
+            } else {
+                //Pass
+            }
         }
         deallocator(left);
         deallocator(right);
