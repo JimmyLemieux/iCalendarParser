@@ -29,9 +29,9 @@ char* printEvent(void *toBePrinted) {
 
 	/* We are going to have the print out the contents of the event object we just refrenced */
 	// printf("%s\n",tempEvent->UID);
-    int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + strlen(tempEvent->creationDateTime.date) + strlen(tempEvent->creationDateTime.time) + 70;
+    int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + strlen(tempEvent->creationDateTime.date) + strlen(tempEvent->creationDateTime.time) + 500;
 	tempStr = calloc(1, len);
-	sprintf(tempStr, "UID: %s, Start Time is %s\n The Creation date is %s, The Creation time is %s\n", tempEvent->UID,tempEvent->startDateTime.date,tempEvent->creationDateTime.date,tempEvent->creationDateTime.time); 
+	sprintf(tempStr, "UID:%s\nDTSTARTDATE:%s\nDTSTAMPDATE:%s\nDTSTAMPTIME:%s\nDTSTAMP:UTC:%d\nDTSTART:UTC:%d\n", tempEvent->UID,tempEvent->startDateTime.date,tempEvent->creationDateTime.date,tempEvent->creationDateTime.time,tempEvent->creationDateTime.UTC,tempEvent->startDateTime.UTC); 
 	return tempStr;
 }
 /* You will have to traverse all of the properties and alarms of this event as well */ 
@@ -913,7 +913,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     int i;
     int arraySize;
     int fileLines;
-    obj = malloc(sizeof(Calendar*));
+   // obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
 
 
@@ -949,7 +949,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     // The calendar contents are supposed to be specified inside the text
 
     
-    printf("\\THIS FILE WAS FLAGGED AS VALID\\\n");
+    // printf("\\THIS FILE WAS FLAGGED AS VALID\\\n");
 
     //Remove all of the special chars on each  line
     for(i = 0;i<arraySize;i++) {
@@ -969,9 +969,9 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
 
 
-    /* Check for events and other things later, start the parser for now */
-    printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
-    printf("NOW PARSING THE CALENDAR CONTENTS!\n\n\n");
+    // /* Check for events and other things later, start the parser for now */
+    // printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
+    // printf("NOW PARSING THE CALENDAR CONTENTS!\n\n\n");
 
     /* Make functions to return the version and proID into the calendar object */
 
@@ -1009,14 +1009,57 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     //     free(obj);
     //     return OTHER_ERROR;
     // }
-    printf("%.2f\n",(*obj)->version);
-    printf("%s\n", (*obj)->prodID);
-    printf("List has been freed!\n");
+    // printf("%.2f\n",(*obj)->version);
+    // printf("%s\n", (*obj)->prodID);
+    // printf("List has been freed!\n");
     free_fields(test,arraySize);
-    freeList((*obj)->events);
-    freeList((*obj)->properties);
-    free(*obj);
-    free(obj); 
+    // freeList((*obj)->events);
+    // freeList((*obj)->properties);
+    // free(*obj);
+    // free(obj); 
     return OK;
 }
+
+
+char *printCalendar(const Calendar *obj) {
+    char *outString;
+
+    if(obj == NULL) {
+        return NULL;
+    }
+    outString = calloc(1,sizeof(outString) * (strlen(obj-> prodID)) + 70);
+    /* First put the required componenets from the calendar into the out string */
+    sprintf(outString, "Calendar Version:%.2f\nCalendar Prodid:%s\n",obj->version,obj->prodID);
+    printf("Non required components of the calendar!\n");
+
+    /* Testing printing out the non required props for the calendar */
+    void *prop;
+    ListIterator iter = createIterator(obj->properties);
+    while((prop = nextElement(&iter)) != NULL) {
+        Property *tmpProp = (Property*)prop;
+        char *str = obj->properties->printData(tmpProp);
+        printf("%s\n", str);
+        free(str);
+    }
+    /* END TEST */
+
+
+    /* Testing printing out the events for the calendar */
+    void *event;
+
+    ListIterator eIter = createIterator(obj->events);
+
+    while((event = nextElement(&eIter)) != NULL) {
+        Event *tmpEvent = (Event*)event;
+        char *str = obj->events->printData(tmpEvent);
+        printf("%s\n", str);
+        free(str);
+    }
+
+    /* END TEST */
+
+    return outString;
+}
+
+
 /* Ending the mandatory functions for the assignment */
