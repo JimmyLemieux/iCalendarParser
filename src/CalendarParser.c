@@ -658,8 +658,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
     Event *new_event;
     Alarm *new_alarm;
+    Property *new_alarm_prop;
     List *eventList;
     List *alarmList;
+    List *alarmProps;
 
     eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
     for(i = 0;i<arraySize;i++) {
@@ -719,6 +721,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VALARM") == 0) {
             new_alarm = malloc(sizeof(Alarm));
+            alarmProps = initializeList(&printProperty, &deleteProperty,&compareProperties);
             alarmOpen++;
             deallocator(left);
             deallocator(right);
@@ -726,10 +729,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
         if(strcmp(left,"END") == 0 && strcmp(right,"VALARM") == 0) {
+            new_alarm->properties = alarmProps;
             insertBack(alarmList, new_alarm);
             alarmOpen--;
             deallocator(left);
             deallocator(right);
+            alarmProps = NULL;
             continue;
         }
 
@@ -800,6 +805,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 new_alarm->trigger = calloc(1, sizeof(char) * 500);
                 strcpy(new_alarm->trigger, right);
             } else {
+                new_alarm_prop = malloc(sizeof(Property));
+                strcpy(new_alarm_prop->propName,left);
+                strcpy(new_alarm_prop->propDescr,right);
+                insertBack(alarmProps,new_alarm_prop);
                 //Pass
             }
         }
