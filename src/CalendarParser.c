@@ -119,7 +119,8 @@ void deleteAlarm(void *toBeDeleted) {
     }
     tempAlarm = (Alarm*)toBeDeleted;
     /* I will also have to go through the properties for this and free */
-    deallocator(tempAlarm->trigger);
+    freeList(tempAlarm->properties);
+    deallocator(tempAlarm->trigger); 
     deallocator(tempAlarm);
 }
 
