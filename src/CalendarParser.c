@@ -706,6 +706,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             eventOpen--;
             deallocator(left);
             deallocator(right);
+            deallocator(new_event);
             continue;
         }
 
@@ -787,7 +788,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
         deallocator(left);
         deallocator(right);
+
     }
+    freeList(eventList);
     return OK;
 }
 
