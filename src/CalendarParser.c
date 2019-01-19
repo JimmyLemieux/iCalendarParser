@@ -75,7 +75,7 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
-    freeList(tempEvent->alarms);
+    //freeList(tempEvent->alarms);
     deallocator(tempEvent); 
 }
 
@@ -988,20 +988,20 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
-    error = fetchCalAlarms(*obj, test,arraySize);
+    // error = fetchCalAlarms(*obj, test,arraySize);
 
-    if(error != 0) {
-        printf("Found an error while looking for the events\n");
-        free_fields(test,arraySize);
-        free(*obj);
-        free(obj);
-        return OTHER_ERROR;
-    }
+    // if(error != 0) {
+    //     printf("Found an error while looking for the events\n");
+    //     free_fields(test,arraySize);
+    //     free(*obj);
+    //     free(obj);
+    //     return OTHER_ERROR;
+    // }
     printf("%.2f\n",(*obj)->version);
     printf("%s\n", (*obj)->prodID);
     printf("List has been freed!\n");
     free_fields(test,arraySize);
-    //freeList((*obj)->events);
+    freeList((*obj)->events);
     freeList((*obj)->properties);
     free(*obj);
     free(obj); 
