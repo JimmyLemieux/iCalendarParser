@@ -659,7 +659,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     List *eventList;
 
     eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
-
     for(i = 0;i<arraySize;i++) {
         if(!containsChar(lines[i],':')) {
             continue;
@@ -708,7 +707,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             eventOpen--;
             deallocator(left);
             deallocator(right);
-            deallocator(new_event);
+            insertBack(eventList,new_event);
             continue;
         }
 
@@ -785,14 +784,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
             /* The properties that are in the alarm comp */
-            printf("LEFT:%s\tRIGHT:%s\n",left,right);
+            //printf("LEFT:%s\tRIGHT:%s\n",left,right);
 
         }
         deallocator(left);
         deallocator(right);
 
     }
-    freeList(eventList);
+
+    obj->events = eventList;
     return OK;
 }
 
@@ -987,6 +987,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     printf("%s\n", (*obj)->prodID);
     printf("List has been freed!\n");
     free_fields(test,arraySize);
+    freeList((*obj)->events);
     freeList((*obj)->properties);
     free(*obj);
     free(obj); 
