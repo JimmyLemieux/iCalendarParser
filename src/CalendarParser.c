@@ -579,7 +579,6 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     List *props;
 
     props = initializeList(&printProperty,&deleteProperty,&compareProperties);
-    new_prop = malloc(sizeof(Property));
     for(i = 0;i<arraySize;i++) {
         if(!containsChar(lines[i],':')) {
             continue;
@@ -619,6 +618,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
         /* These are the properties that belong to the calendar! */
         if(open == 1) {
+            new_prop = malloc(sizeof(Property));
             //printf("left:%s\tright:%s\n",left,right);
             if(strcmp(left, "VERSION") == 0) {
                 obj->version = atof(right);
