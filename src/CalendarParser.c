@@ -622,8 +622,10 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             //printf("left:%s\tright:%s\n",left,right);
             if(strcmp(left, "VERSION") == 0) {
                 obj->version = atof(right);
+                deallocator(new_prop);
             }else if(strcmp(left,"PRODID") == 0) {
                 strcpy(obj->prodID,right);
+                deallocator(new_prop); 
             } else {
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
