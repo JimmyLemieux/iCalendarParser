@@ -75,7 +75,7 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
-    //freeList(tempEvent->alarms);
+    freeList(tempEvent->alarms);
     deallocator(tempEvent); 
 }
 
@@ -713,6 +713,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             deallocator(right);
             new_event->alarms = alarmList;
             insertBack(eventList,new_event);
+            alarmList = NULL;
             continue;
         }
 
