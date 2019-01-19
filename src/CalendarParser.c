@@ -318,6 +318,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
                 tempStart = index;
                 //Free the string
                 temp = NULL;
+                deallocator((char *)temp);
                 continue;
             }
 
@@ -329,7 +330,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     *fileLines = fileLineCount;
     *arraySize = lineSize;
     fclose(file);
-
+    deallocator((char *)stringBuffer);
     return lines;
 }
 
@@ -379,8 +380,6 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     stringToLower(lines[0]);
     stringToLower(lines[arraySize - 1]);
 
-    printf("%s %s\n", lines[0], lines[arraySize - 1]); 
-
     if(strcmp(lines[0],"begin:vcalendar") != 0 || strcmp(lines[arraySize - 1], "end:vcalendar") != 0) {
         printf("The calendar does not start and end properly\n");
         return INV_CAL;
@@ -418,6 +417,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         }
     }
 
+    deallocator((char *)left);
+    deallocator((char *)right);
     //If we made it through the above iterations then check if the calendar has a version and UID
     //If the calendar has both of these things in the top directory then you want to parse them
 
@@ -448,16 +449,22 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
         if(open < 0) {
             printf("THERE WAS A BEGIN END MISMATCH");
+            deallocator((char *)left);
+            deallocator((char *)right);
             return INV_CAL;
         }
 
         if(strcmp(left,"begin") == 0) {
             open++;
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue; // to the next line
         }
 
         if(strcmp(left,"end") == 0) {
             open--;
+            deallocator((char *)left);
+            deallocator((char *)right);
             continue;
         }
         
@@ -466,6 +473,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             if(!foundVersion) {
                 foundVersion = 1;
             } else {
+                deallocator((char *)left);
+                deallocator((char *)right);
                 return DUP_VER;
             }
         }
@@ -474,11 +483,13 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             if(!foundPRODID) {
                 foundPRODID = 1;
             } else {
-                free((char *)left);
-                free((char *)right);
+                deallocator((char *)left);
+                deallocator((char *)right); 
                 return DUP_PRODID;
             }
         }
+        deallocator((char *)right);
+        deallocator((char *)left);
     }
 
 
@@ -549,84 +560,54 @@ ICalErrorCode checkEvents(char **lines, int arraySize) {
 /* Now adding the required functionality for parsing the "other props" */
 
 ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
-    //The object needs to be malloced 
-    // All of the things have been checked, then we can just look for the version and proID
     int i;
-    int j;
-    int k;
-    int index;
+    int open = 0;
     char *left;
     char *right;
-    int open = 0;
-    Property *new_prop;
-    List *calProps;
-
-
-    calProps = initializeList(&printProperty, &deleteProperty, &compareProperties);
-
-    if(lines == NULL || obj == NULL) {
-        return OTHER_ERROR;
-    }
-
     for(i = 0;i<arraySize;i++) {
-        index = 0;
-        while(index < strlen(lines[i]) && lines[i][index] != ':') {
-            index++;
-        }
-
-        if(index == strlen(lines[i])) {
+        if(!containsChar(lines[i],':')) {
             continue;
         }
+        left = calloc(1,sizeof(char) * strlen(lines[i]) +50);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 50);
+        /* The string contains the char */
 
-        /* If the : is found, then we need to make a right and left */
-        left = calloc(1, (index+2) *sizeof(char));
-        right = calloc(1, ((strlen(lines[i]) - index)+1) * sizeof(char));
-        for(j = 0;j<index;j++) {
-            left[j] = lines[i][j]; 
+        //splitByFirstOccurence(lines[i],left,right,':');
+
+        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
+            /* We are going to split by first occurence of the ; */
+            splitByFirstOccurence(lines[i], left,right,';');
+
+        } else {
+            /* we are going to split by first occurence of the : */
+            splitByFirstOccurence(lines[i], left,right,':');
         }
 
-        for(j=index+1,k=0;j<strlen(lines[i]);j++,k++) {
-            right[k] = lines[i][j];
-        }
+        stringToUpper(left);
+        stringToUpper(right);
 
-        /* The right and left need to converted into lower */
-        stringToLower(left);
-        stringToLower(right);
-
-        if(strcmp(left,"begin") == 0) {
+        if(strcmp(left,"BEGIN") == 0) {
             open++;
+            deallocator(left);
+            deallocator(right);
             continue;
         }
 
-        if(strcmp(left, "end") == 0) {
+        if(strcmp(left,"END") == 0) {
             open--;
+            deallocator(left);
+            deallocator(right);
             continue;
         }
 
-        if(strcmp(left,"version") == 0) { // This is a version that should be parsed, when it is parsed add to the calendar object
-            obj->version = atof(right);
-            continue;
-        }
-
-        if(strcmp(left,"prodid") == 0) {
-            strcpy(obj->prodID,right);
-            continue;
-        }
-
-        /* This section will be for the other properties for now */
         if(open == 1) {
-            /* This is where we should insert into the calendars linked list */
-            printf("Other prop %s : %s\n", left,right);
-            new_prop = malloc(sizeof(Property));
-            /* The prop description is a flexible array member */
-            strcpy(new_prop->propName,left);
-            strcpy(new_prop->propDescr,right);
-            /* Push this to the property list here */
-            insertBack(calProps,new_prop);
+            //printf("left:%s\tright:%s\n",left,right);
         }
-    }
 
-    obj->properties = calProps;
+
+        deallocator(left);
+        deallocator(right);
+    }
     return OK;
 }
 
@@ -637,151 +618,149 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 /* This function will also look for alarms */
 ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     int i;
-    int j;
-    int k;
-    int index;
-    int open = 0;
+    int calOpen = 0;
+    int eventOpen = 0;
+    char *left;
+    char *right;
+    for(i = 0;i<arraySize;i++) {
+        if(!containsChar(lines[i],':')) {
+            continue;
+        }
+        left = calloc(1,sizeof(char) * strlen(lines[i]) +50);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 50);
+        /* The string contains the char */
+
+        //splitByFirstOccurence(lines[i],left,right,':');
+
+        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
+            /* We are going to split by first occurence of the ; */
+            splitByFirstOccurence(lines[i], left,right,';');
+
+        } else {
+            /* we are going to split by first occurence of the : */
+            splitByFirstOccurence(lines[i], left,right,':');
+        }
+
+        stringToUpper(left);
+        stringToUpper(right);
+
+        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VCALENDAR") == 0) {
+            calOpen++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcmp(left,"END") == 0 && strcmp(right,"VCALENDAR") == 0) {
+            calOpen--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
+            eventOpen++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcmp(left,"END") == 0 && strcmp(right,"VEVENT") == 0) {
+            eventOpen--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+        if(calOpen == 1 && eventOpen == 1) {
+            //printf("An Event property\n");
+            //printf("left:%s\tright:%s\n",left,right);
+        }
+        deallocator(left);
+        deallocator(right);
+    }
+    return OK;
+}
+
+ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
+    int i;
+    int calOpen = 0;
+    int eventOpen = 0;
     int alarmOpen = 0;
     char *left;
     char *right;
-    Event *new_event;
-    Alarm *new_alarm;
-    List *eventList;
-    List *alarmList;
-
-    if(obj == NULL || lines == NULL) {
-        return OTHER_ERROR;
-    }
-
-    /* Initialize the list that will store all of the events that have been parsed */
-    /* The list needs to have the required functions that will be used to compare,print and delete */
-
-    eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
-    
-    if(eventList == NULL) {
-        printf("The list was not init properly!\n");
-        return OTHER_ERROR;
-    } 
-
-
-    /* Loop through all of the calendar events and parse all of the contents */
-    /* Assume that all of the contents of the event are proper and in order */
-    /* I need to make a check for the events later */
-
-
     for(i = 0;i<arraySize;i++) {
-        index = 0;
-        while(index < strlen(lines[i]) && lines[i][index] != ':') {
-            index++;
+        if(!containsChar(lines[i],':')) {
+            continue;
         }
-        if(index == strlen(lines[i])) {
+        left = calloc(1,sizeof(char) * strlen(lines[i]) +50);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 50);
+        /* The string contains the char */
+
+        //splitByFirstOccurence(lines[i],left,right,':');
+
+        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
+            /* We are going to split by first occurence of the ; */
+            splitByFirstOccurence(lines[i], left,right,';');
+
+        } else {
+            /* we are going to split by first occurence of the : */
+            splitByFirstOccurence(lines[i], left,right,':');
+        }
+
+        stringToUpper(left);
+        stringToUpper(right);
+
+        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VCALENDAR") == 0) {
+            calOpen++;
+            deallocator(left);
+            deallocator(right);
             continue;
         }
 
-        /* The character was found then we have to see if the conponent is a VEVENT*/
-
-        left = calloc(1, (index+1000) * sizeof(char));
-        right = calloc(1, ((strlen(lines[i]) - index)+1000) * sizeof(char));
-
-        /* Populate the left and right char * */
-
-        for(j = 0;j<index;j++) {
-            left[j] = lines[i][j];
-        }
-         
-        for(j = index+1,k=0;j<strlen(lines[i]);j++,k++) {
-            right[k] = lines[i][j];
-        }
-
-        /* change the right and left to lowercase */
-        stringToLower(left);
-        stringToLower(right);
-
-
-        /* Check if there is an opening for the event */
-        if(strcmp(left,"begin") == 0 && strcmp(right,"vevent") == 0) {
-            open++;
-            new_event = malloc(sizeof(Event));
-            alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
+        if(strcmp(left,"END") == 0 && strcmp(right,"VCALENDAR") == 0) {
+            calOpen--;
+            deallocator(left);
+            deallocator(right);
             continue;
         }
 
-        if(strcmp(left,"uid") == 0 && open) {
-            strcpy(new_event->UID,right);
+        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
+            eventOpen++;
+            deallocator(left);
+            deallocator(right);
             continue;
         }
 
-
-        if(strcmp(left,"dtstart") == 0 && open) { 
-            /*Making a new Datetime structure */ 
-            strcpy(new_event->startDateTime.date, right);
+        if(strcmp(left,"END") == 0 && strcmp(right,"VEVENT") == 0) {
+            eventOpen--;
+            deallocator(left);
+            deallocator(right);
             continue;
         }
 
-
-        if(strcmp(left, "dtstamp") == 0 && open) { //This finds an abort trap
-            //This is where the abort trap
-            char *leftStamp;
-            char *rightStamp;
-
-            leftStamp = calloc(1,300 * sizeof(char));
-            rightStamp = calloc(1, 300 * sizeof(char));
-
-            splitByFirstOccurence(right,leftStamp,rightStamp,'t');
-
-            strcpy(new_event->creationDateTime.date, leftStamp);
-            strcpy(new_event->creationDateTime.time, rightStamp);
-            continue;
-        }
-
-
-        /*An alarm is usually located withing the event. This is assuming everything is fine with the calendar
-        I am going to have to provide check functions that will check the quality of the list before parsing */
-
-        /* If you find an alarm you should then loop through the REST of the lines until you find the end alarm tag */
-        /* From that point you can begin the parsing */
-
-        /* These need a trigger and an action */
-        if(strcmp(left,"begin") == 0 && strcmp(right,"valarm") == 0 && open == 1) {
+        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VALARM") == 0) {
             alarmOpen++;
-            new_alarm = malloc(sizeof(Alarm));
-            continue;
-        }   
-
-        if(strcmp(left,"trigger") == 0 && open == 1 && alarmOpen == 1) {
-            new_alarm->trigger = calloc(1,sizeof(char) * strlen(right) + 1000);
-            stringToUpper(right);
-            strcpy(new_alarm->trigger, right);
-            //new_alarm->trigger = right;
+            deallocator(left);
+            deallocator(right);
             continue;
         }
 
-        if(strcmp(left,"action") == 0 && open == 1 && alarmOpen == 1) {
-            stringToUpper(right);
-            strcpy(new_alarm->action,right);
-            continue;
-        }
-
-        if(strcmp(left,"end") == 0 && strcmp(right,"valarm") == 0 && open == 1 && alarmOpen == 1) {
+        if(strcmp(left,"END") == 0 && strcmp(right,"VALARM") == 0) {
             alarmOpen--;
-            insertBack(alarmList, (void *)new_alarm);
+            deallocator(left);
+            deallocator(right);
             continue;
         }
 
-        /* There needs to be an end to the event in order for this to work */
-        /* I am going to have to make a validation of mismatches to make sure that everything is fine */
-        /* This is where the event should be added to the linked list*/
-        /* Somehow pass the List into the function and push the list */ 
-        if(strcmp(left,"end") == 0 && strcmp(right,"vevent") == 0) {
-            open--;
-            new_event->alarms = alarmList;                  //Each event block will have a list of alarms
-            insertBack(eventList,(void *)new_event);        //This will be freed in the freelist
-            continue;
+        if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
+            printf("An Alarm property\n");
+            printf("left:%s\tright:%s\n",left,right);
         }
+        deallocator(left);
+        deallocator(right);
     }
-    obj->events = eventList;
-    
     return OK;
+
 }
 
 /* Ending the functions that help with parsing the linked list*/
@@ -812,17 +791,12 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* End OF FILE FUNCTIONS */
 
-    char **test = readFileChar(fileName, &arraySize,&fileLines);//This needs to be freed and checked for memleaks
+    /* This method has been fixed */
+    char **test = readFileChar(fileName, &arraySize,&fileLines);
    
-    printf("Reading the file\n");
 
-    for(i = 0 ; i<arraySize;i++) {
-        printf("%s", test[i]);
-    } 
-
-
-
-    error = validateFileLines(test,arraySize,fileLines); // Validation of the lines in the file and the tokenizer
+    /* This function has been fixed */
+    error = validateFileLines(test,arraySize,fileLines); 
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
         free_fields(test,arraySize);
@@ -878,6 +852,15 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     error = fetchCalEvents(*obj, test,arraySize);
 
+    if(error != 0) {
+        printf("Found an error while looking for the events\n");
+        free_fields(test,arraySize);
+        free(*obj);
+        free(obj);
+        return OTHER_ERROR;
+    }
+
+    error = fetchCalAlarms(*obj, test,arraySize);
 
     if(error != 0) {
         printf("Found an error while looking for the events\n");
@@ -887,41 +870,14 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return OTHER_ERROR;
     }
 
-
-    printf("Printing the events that are in the cal obj\n");
-    void *elem = NULL;
-    ListIterator iter = createIterator((*obj)->events);
-    while((elem = nextElement(&iter)) != NULL) {
-        Event *tmp = (Event*)elem;
-        char *str = (*obj)->events->printData(tmp);
-        printf("%s\n", str);
-        Alarm *tempAlarm = getFromFront(tmp->alarms);
-        if(tempAlarm != NULL) {
-            printf("The alarm in this event is\n");
-            printf("Trigger: %s\n" ,tempAlarm->trigger);
-            printf("Action: %s\n", tempAlarm->action);
-        }
-        printf("\n");
-    }
-
-    printf("Printing the properties that are apart of the calendar object!\n");
-
-    void *elem2;
-    ListIterator propIter = createIterator((*obj)->properties);
-
-    while((elem2 = nextElement(&propIter)) != NULL) {
-        Property *tmp = (Property *)elem2;
-        char *str = (*obj)->properties->printData(tmp);
-        printf("%s\n", str);
-    }
-
+    
     /* I am going to have to call free list on the list of properties */
 
     /* Just test for now */
 
 
-    freeList((*obj)->properties); 
-    freeList((*obj)->events);
+    // freeList((*obj)->properties); 
+    // freeList((*obj)->events);
     printf("List has been freed!\n");
 
     free_fields(test,arraySize);

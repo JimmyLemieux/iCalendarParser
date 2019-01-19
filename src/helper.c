@@ -146,15 +146,10 @@ void splitByFirstOccurence(char *line, char *left, char *right, char del) {
     int i;
     int k;
     int find = indexOf(line,del);
-    
-
 
     if(find == -1) {
-        printf("Whoops\n");
         return;
     }
-
-
     for(i = 0;i<find;i++) {
         left[i] = line[i];
     }
@@ -180,3 +175,30 @@ void free_fields(char **ptr, int size) {
     free(ptr);
 }
 
+int isEmpty(char * string) {
+    if(string == NULL || strlen(string) == 0) {
+        return 1;
+    }
+    return 0;
+}
+
+
+int containsChar(char *line,char c) {
+    int i;
+    for(i = 0;i<strlen(line);i++) {
+        if(line[i] == c) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int checkBefore(char *line , char del1, char del2) {
+
+    int index1 = indexOf(line,';');
+    int index2 = indexOf(line,':');
+    if(index1 < index2 && (index1 != -1) && (index2 != -1)) {
+        return 1;
+    }
+    return 0;
+}

@@ -17,7 +17,7 @@ CATEGORIES:U.S. Presidents,Civil War People
 LOCATION:Hodgenville\, Kentucky
 GEO:37.5739497;-85.7399606
 DESCRIPTION:Born February 12\, 1809\nSixteenth President (1861-1865)\n\n\n
- \nhttp://AmericanHistoryCalendar.com
+ \nhttp//:AmericanHi;storyCalendar.com
 URL:http://americanhistorycalendar.com/peoplecalendar/1,328-abraham-lincol
  n
 BEGIN:VALARM
@@ -46,5 +46,6 @@ DTSTAMP:19970610T172345Z
 DTSTART:19970714T170000Z
 DTEND:19970715T040000Z
 SUMMARY:Bastille Day Party
+ORGANIZER;CN=SomeDude;mailto:some_dude@mywebmail.com
 END:VEVENT
 END:VCALENDAR
