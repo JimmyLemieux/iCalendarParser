@@ -425,10 +425,12 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             deallocator(right);
             return INV_CAL;
         }
+        deallocator(left);
+        deallocator(right);
     }
 
-    deallocator((char *)left);
-    deallocator((char *)right);
+    deallocator(left);
+    deallocator(right);
     //If we made it through the above iterations then check if the calendar has a version and UID
     //If the calendar has both of these things in the top directory then you want to parse them
 
