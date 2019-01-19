@@ -574,6 +574,11 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     int open = 0;
     char *left;
     char *right;
+
+    List *props;
+    Property *new_prop;
+    props = initializeList(&printProperty, &deleteProperty,&compareProperties);
+
     for(i = 0;i<arraySize;i++) {
         if(!containsChar(lines[i],':')) {
             continue;
@@ -598,10 +603,13 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
         if(strcmp(left,"BEGIN") == 0) {
             open++;
+            new_prop = malloc(sizeof(Property));
             deallocator(left);
             deallocator(right);
             continue;
         }
+
+
 
         if(strcmp(left,"END") == 0) {
             open--;
@@ -610,10 +618,21 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             continue;
         }
 
+
+        /* These are the properties that belong to the calendar! */
         if(open == 1) {
             //printf("left:%s\tright:%s\n",left,right);
+            if(strcmp(left, "VERSION") == 0) {
+                obj->version = atof(right);
+            }
+
+            if(strcmp(left,"PRODID") == 0) {
+                strcpy(obj->prodID,right);
+            }
         }
 
+        strcpy(new_prop->propName,left);
+        strcpy(new_prop->propDescr,right);
 
         deallocator(left);
         deallocator(right);
@@ -630,8 +649,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     int i;
     int calOpen = 0;
     int eventOpen = 0;
+    int alarmOpen = 0;
     char *left;
     char *right;
+
+    Event *new_event;
+    List *eventList;
+
+    eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
+
     for(i = 0;i<arraySize;i++) {
         if(!containsChar(lines[i],':')) {
             continue;
@@ -669,6 +695,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
         if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
+            new_event = malloc(sizeof(Event));
             eventOpen++;
             deallocator(left);
             deallocator(right);
@@ -681,9 +708,82 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             deallocator(right);
             continue;
         }
+
+        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VALARM") == 0) {
+            alarmOpen++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcmp(left,"END") == 0 && strcmp(right,"VALARM") == 0) {
+            alarmOpen--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
         if(calOpen == 1 && eventOpen == 1) {
             //printf("An Event property\n");
-            //printf("left:%s\tright:%s\n",left,right);
+            if(strcmp(left,"UID") == 0 && new_event != NULL) {
+                strcpy(new_event->UID,right);
+            } 
+
+            if(strcmp(left,"DTSTART") == 0 && new_event != NULL) {
+                if(containsChar(right,'T')) {//If there is a local time, or UTC
+                    /*Take right and split */
+                    char *date = calloc(1,sizeof(char) * 50);
+                    char *time = calloc(1, sizeof(char)* 50);
+
+                    splitByFirstOccurence(right,date,time,'T');
+                    if(containsChar(time,'Z')) {
+                        new_event->startDateTime.UTC = true;
+                        time[strlen(time) - 1] = '\0';
+                    } else {
+                        new_event->startDateTime.UTC = false;
+                    }
+
+                    strcpy(new_event->startDateTime.date, date);
+                    strcpy(new_event->startDateTime.time, time);
+                    deallocator(date);
+                    deallocator(time);
+                } else {
+                    strcpy(new_event->startDateTime.date,right);
+                    // deallocator(left);
+                    // deallocator(right);
+                }
+            }
+
+            if(strcmp(left,"DTSTAMP") == 0 && new_event != NULL) {
+                if(containsChar(right,'T')) {//If there is a local time, or UTC
+                    /*Take right and split */
+                    char *date = calloc(1,sizeof(char) * 50);
+                    char *time = calloc(1, sizeof(char)* 50);
+
+                    splitByFirstOccurence(right,date,time,'T');
+                    if(containsChar(time,'Z')) {
+                        new_event->creationDateTime.UTC = true;
+                        time[strlen(time) - 1] = '\0';
+                    } else {
+                        new_event->creationDateTime.UTC = false;
+                    }
+                    strcpy(new_event->creationDateTime.date, date);
+                    strcpy(new_event->creationDateTime.time, time);
+                    deallocator(date);
+                    deallocator(time);
+                } else {
+                    strcpy(new_event->creationDateTime.date,right);
+                    // deallocator(left);
+                    // deallocator(right);
+                }
+            }
+        }
+
+
+        if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
+            /* The properties that are in the alarm comp */
+            printf("LEFT:%s\tRIGHT:%s\n",left,right);
+
         }
         deallocator(left);
         deallocator(right);
@@ -763,8 +863,6 @@ ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
         }
 
         if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
-            printf("An Alarm property\n");
-            printf("left:%s\tright:%s\n",left,right);
         }
         deallocator(left);
         deallocator(right);
@@ -879,17 +977,9 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         free(obj);
         return OTHER_ERROR;
     }
-
-
-    /* I am going to have to call free list on the list of properties */
-
-    /* Just test for now */
-
-
-    // freeList((*obj)->properties); 
-    // freeList((*obj)->events);
+    printf("%.2f\n",(*obj)->version);
+    printf("%s\n", (*obj)->prodID);
     printf("List has been freed!\n");
-
     free_fields(test,arraySize);
     free(*obj);
     free(obj); 
