@@ -578,7 +578,6 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     List *props;
     Property *new_prop;
     props = initializeList(&printProperty, &deleteProperty,&compareProperties);
-
     for(i = 0;i<arraySize;i++) {
         if(!containsChar(lines[i],':')) {
             continue;
@@ -637,6 +636,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         deallocator(left);
         deallocator(right);
     }
+    clearList(props);
     return OK;
 }
 
