@@ -580,9 +580,6 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
     new_prop = malloc(sizeof(Property));
     props = initializeList(&printProperty,&deleteProperty,&compareProperties);
-    if(obj->properties != NULL) {
-        printf("This has been allocated!\n");
-    }
     for(i = 0;i<arraySize;i++) {
         if(!containsChar(lines[i],':')) {
             continue;
