@@ -636,7 +636,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         deallocator(left);
         deallocator(right);
     }
-    clearList(props);
+    freeList(props);
     return OK;
 }
 
