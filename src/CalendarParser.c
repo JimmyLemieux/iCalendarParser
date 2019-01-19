@@ -578,8 +578,8 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     Property *new_prop;
     List *props;
 
-    new_prop = malloc(sizeof(Property));
     props = initializeList(&printProperty,&deleteProperty,&compareProperties);
+    new_prop = malloc(sizeof(Property));
     for(i = 0;i<arraySize;i++) {
         if(!containsChar(lines[i],':')) {
             continue;
@@ -627,14 +627,13 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             } else {
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
-                insertBack(obj->properties, new_prop);
+                insertBack(props, new_prop);
             }
         }
 
         deallocator(left);
         deallocator(right);
     }
-    deallocator(new_prop);
     obj->properties = props;
     return OK;
 }
