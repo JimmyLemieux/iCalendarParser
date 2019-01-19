@@ -420,6 +420,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
         if((strcmp(left,"begin") == 0 || strcmp(left,"end") == 0) && (strcmp(right,"vcalendar") == 0)) {
             printf("There is a duplicate property in the file\n");
+            deallocator(left);
+            deallocator(right);
             return INV_CAL;
         }
     }
