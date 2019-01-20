@@ -31,12 +31,25 @@ char* printEvent(void *toBePrinted) {
 	// printf("%s\n",tempEvent->UID);
     int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + strlen(tempEvent->creationDateTime.date) + strlen(tempEvent->creationDateTime.time) + 500;
 	tempStr = calloc(1, len);
+
     if(isEmpty(tempEvent->UID) && isEmpty(tempEvent->startDateTime.date) && isEmpty(tempEvent->creationDateTime.date) && isEmpty(tempEvent->creationDateTime.time)) {
         return tempStr;
-    } else {
-        
+    } 
+    if(!isEmpty(tempEvent->UID)) {
+        char *temp = calloc(1, sizeof(char) * 50);
+        sprintf(temp, "UID:%s",tempEvent->UID);
+        strcat(tempStr, temp);
+        deallocator(temp);
+        //sprintf(tempStr, "UID:%s\nDTSTARTDATE:%s\nDTSTAMPDATE:%s\nDTSTAMPTIME:%s\nDTSTAMP:UTC:%d\nDTSTART:UTC:%d\n", tempEvent->UID,tempEvent->startDateTime.date,tempEvent->creationDateTime.date,tempEvent->creationDateTime.time,tempEvent->creationDateTime.UTC,tempEvent->startDateTime.UTC); 
+    } 
+    
+    if(!isEmpty(tempEvent->creationDateTime.date)) {
+        char *temp = calloc(1,sizeof(char) * 50);
+        sprintf(temp, "DTSTARTDATE:%s", tempEvent->startDateTime.date);
+        strcat(tempStr,temp);
+        deallocator(temp);
     }
-	sprintf(tempStr, "UID:%s\nDTSTARTDATE:%s\nDTSTAMPDATE:%s\nDTSTAMPTIME:%s\nDTSTAMP:UTC:%d\nDTSTART:UTC:%d\n", tempEvent->UID,tempEvent->startDateTime.date,tempEvent->creationDateTime.date,tempEvent->creationDateTime.time,tempEvent->creationDateTime.UTC,tempEvent->startDateTime.UTC); 
+
 	return tempStr;
 }
 /* You will have to traverse all of the properties and alarms of this event as well */ 

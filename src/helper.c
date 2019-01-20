@@ -164,6 +164,7 @@ void deallocator(void *thingToFree) {
     if(thingToFree != NULL) {
        // printf("Freeing %s\n", (char *)thingToFree);
         free(thingToFree);
+        thingToFree = NULL;
     }
 }
 
