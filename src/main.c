@@ -7,7 +7,7 @@ int main() {
     Calendar *obj;
     ICalErrorCode error;
     char * outString;
-    error = createCalendar("mLineProp1.ics", &obj); 
+    error = createCalendar("test.ics", &obj); 
     if(error == 0) {
         printf("OK!\n");
     }
