@@ -540,6 +540,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             } else {
                 deallocator((char *)left);
                 deallocator((char *)right);
+                printf("Dupe Version\n");
                 return DUP_VER;
             }
         }
@@ -550,6 +551,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             } else {
                 deallocator((char *)left);
                 deallocator((char *)right); 
+                printf("Dupe prodid\n");
                 return DUP_PRODID;
             }
         }
@@ -559,6 +561,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
 
     if(!foundPRODID || !foundVersion) {
+        printf("Could't find prodid or version\n");
         return INV_CAL;
     } 
 
@@ -638,8 +641,8 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         if(!containsChar(lines[i],':')) {
             continue;
         }
-        left = calloc(1,sizeof(char) * strlen(lines[i]) +50);
-        right = calloc(1,sizeof(char) * strlen(lines[i]) + 50);
+        left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
         /* The string contains the char */
 
         //splitByFirstOccurence(lines[i],left,right,':');
@@ -720,8 +723,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(!containsChar(lines[i],':')) {
             continue;
         }
-        left = calloc(1,sizeof(char) * strlen(lines[i]) +50);
-        right = calloc(1,sizeof(char) * strlen(lines[i]) + 50);
+        left = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
         /* The string contains the char */
 
         //splitByFirstOccurence(lines[i],left,right,':');
@@ -798,10 +801,23 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             } 
 
             if(strcmp(left,"DTSTART") == 0 && new_event != NULL) {
+
+                if(containsChar(right,':')) {
+                    char *tempLeft = calloc(1,sizeof(char) * strlen(left));
+                    char *tempRight = calloc(1, sizeof(char) * strlen(right));
+                    splitByFirstOccurence(right,tempLeft,tempRight,':');
+                    strcpy(right,tempRight);
+                    strcpy(left,tempLeft);
+                    deallocator(tempLeft);
+                    deallocator(tempRight);
+                }
+
+       
+
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
-                    char *date = calloc(1,sizeof(char) * 50);
-                    char *time = calloc(1, sizeof(char)* 50);
+                    char *date = calloc(1,sizeof(char) * 100);
+                    char *time = calloc(1, sizeof(char) * 100);
 
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
@@ -811,13 +827,16 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         new_event->startDateTime.UTC = false;
                         time[strlen(time) - 1] = '\0';
                     }
+                    // printf("%s\n", right);
+                    // printf("The length of the date is %lu\n", strlen(date));
+                    // printf("The length of the time is %lu %s\n", strlen(time), time);
                     strcpy(new_event->startDateTime.date, date);
                     strcpy(new_event->startDateTime.time, time);
                     deallocator(date);
                     deallocator(time);
                 } else {
                     strcpy(new_event->startDateTime.date,right);
-                    strcpy(new_event->startDateTime.time,"NONE");
+                    strcpy(new_event->startDateTime.time,"\0");
                     new_event->startDateTime.UTC = false;
                     // deallocator(left);
                     // deallocator(right);
@@ -827,8 +846,18 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             if(strcmp(left,"DTSTAMP") == 0 && new_event != NULL) {
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
-                    char *date = calloc(1,sizeof(char) * 50);
-                    char *time = calloc(1, sizeof(char)* 50);
+                    char *date = calloc(1,sizeof(char) * 500);
+                    char *time = calloc(1, sizeof(char)* 500);
+
+                if(containsChar(right,':')) {
+                    char *tempLeft = calloc(1,sizeof(char) * strlen(left));
+                    char *tempRight = calloc(1, sizeof(char) * strlen(right));
+                    splitByFirstOccurence(right,tempLeft,tempRight,':');
+                    strcpy(right,tempRight);
+                    strcpy(left,tempLeft);
+                    deallocator(tempRight);
+                    deallocator(tempLeft);
+                }
 
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
@@ -838,13 +867,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         new_event->creationDateTime.UTC = false;
                         time[strlen(time) - 1] = '\0';
                     }
+                    // printf("The length of the dateS is %lu\n", strlen(date));
+                    // printf("The length of the timeS is %lu\n", strlen(time));
                     strcpy(new_event->creationDateTime.date, date);
                     strcpy(new_event->creationDateTime.time, time);
                     deallocator(date);
                     deallocator(time);
                 } else {
                     strcpy(new_event->creationDateTime.date,right);
-                    strcpy(new_event->creationDateTime.time,"NONE");
+                    strcpy(new_event->creationDateTime.time,"\0");
                     new_event->creationDateTime.UTC = false;
                     // deallocator(left);
                     // deallocator(right);
@@ -1015,7 +1046,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
-        deallocator(obj);
+        //FREE
         return INV_FILE;
     }
 
@@ -1029,11 +1060,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     //(*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
     error = fetchCalendarProps(*obj,test,arraySize);
-
     if(error != 0) {
         printf("Found an error while parsing the version and proID\n");
         free_fields(test,arraySize);
-        deallocator(obj);
+        // deallocator(obj);
+        //FREE
         return OTHER_ERROR;
     }
 
@@ -1042,15 +1073,16 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
 
     error = fetchCalEvents(*obj, test,arraySize);
-
     if(error != 0) {
         printf("Found an error while looking for the events\n");
         free_fields(test,arraySize);
-        deallocator(obj);
+        // deallocator(obj);
+        //FREE
         return OTHER_ERROR;
     }
 
     free_fields(test,arraySize);
+    //D;
     return OK;
 }
 
