@@ -19,6 +19,7 @@
 /* make the compare functions for the linked list */
 char* printEvent(void *toBePrinted) {
 	char *tempStr;
+    char *temp; 
 
 	Event *tempEvent;
 	if(toBePrinted == NULL) {
@@ -57,12 +58,10 @@ char* printEvent(void *toBePrinted) {
         deallocator(temp);
     }
 
-    if(tempEvent->creationDateTime.UTC || !tempEvent->creationDateTime.UTC) {
-        char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp,"DTSTAMPUTC:%d\n", tempEvent->creationDateTime.UTC);
-        strcat(tempStr, temp);
-        deallocator(temp);
-    }
+    temp = calloc(1, sizeof(char) * 50);
+    sprintf(temp,"DTSTAMPUTC:%d\n", tempEvent->creationDateTime.UTC);
+    strcat(tempStr, temp);
+    deallocator(temp);
 
     if(!isEmpty(tempEvent->startDateTime.date)) {
         char *temp = calloc(1, sizeof(char) * 50);
@@ -78,12 +77,11 @@ char* printEvent(void *toBePrinted) {
         deallocator(temp); 
     }
 
-    if(tempEvent->startDateTime.UTC || !tempEvent->startDateTime.UTC) {
-        char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp,"DTSTARTUTC:%d\n", tempEvent->startDateTime.UTC);
-        strcat(tempStr, temp);
-        deallocator(temp);
-    }
+    temp = calloc(1, sizeof(char) * 50);
+    sprintf(temp,"DTSTARTUTC:%d\n", tempEvent->startDateTime.UTC);
+    strcat(tempStr, temp);
+    deallocator(temp);
+
 
 	return tempStr;
 }
