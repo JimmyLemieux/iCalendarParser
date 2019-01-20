@@ -836,7 +836,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(time);
                 } else {
                     strcpy(new_event->startDateTime.date,right);
-                    strcpy(new_event->startDateTime.time,"\0");
+                    strcpy(new_event->startDateTime.time,"NONE");
                     new_event->startDateTime.UTC = false;
                     // deallocator(left);
                     // deallocator(right);
@@ -875,7 +875,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(time);
                 } else {
                     strcpy(new_event->creationDateTime.date,right);
-                    strcpy(new_event->creationDateTime.time,"\0");
+                    strcpy(new_event->creationDateTime.time,"NONE");
                     new_event->creationDateTime.UTC = false;
                     // deallocator(left);
                     // deallocator(right);
