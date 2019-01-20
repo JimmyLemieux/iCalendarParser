@@ -29,8 +29,7 @@ char* printEvent(void *toBePrinted) {
 
 	/* We are going to have the print out the contents of the event object we just refrenced */
 	// printf("%s\n",tempEvent->UID);
-    int len = strlen(tempEvent->UID) + strlen(tempEvent->startDateTime.date) + strlen(tempEvent->creationDateTime.date) + strlen(tempEvent->creationDateTime.time) + 500;
-	tempStr = calloc(1, len);
+	tempStr = calloc(1, 500);
 
     if(isEmpty(tempEvent->UID) && isEmpty(tempEvent->startDateTime.date) && isEmpty(tempEvent->creationDateTime.date) && isEmpty(tempEvent->creationDateTime.time)) {
         return tempStr;
