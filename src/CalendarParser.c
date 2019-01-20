@@ -45,21 +45,21 @@ char* printEvent(void *toBePrinted) {
     
     if(!isEmpty(tempEvent->creationDateTime.date)) {
         char *temp = calloc(1,sizeof(char) * 50);
-        sprintf(temp, "DTSTAMPDATE:%s\n", tempEvent->startDateTime.date);
+        sprintf(temp, "DTSTAMPDATE:%s\n", tempEvent->creationDateTime.date);
         strcat(tempStr,temp);
         deallocator(temp);
     }
 
     if(!isEmpty(tempEvent->creationDateTime.time)) {
         char *temp = calloc(1,sizeof(char) * 50);
-        printf("The length of tempEvent creation time %lu\n", strlen(tempEvent->startDateTime.time)); 
-        sprintf(temp,"DTSTAMPTIME:%s\n",tempEvent->startDateTime.time);
+        printf("The length of tempEvent creation time %lu\n", strlen(tempEvent->creationDateTime.time)); 
+        sprintf(temp,"DTSTAMPTIME:%s\n",tempEvent->creationDateTime.time);
         strcat(tempStr, temp);
         deallocator(temp);
     }
 
     temp = calloc(1, sizeof(char) * 50);
-    sprintf(temp,"DTSTAMPUTC:%d\n", tempEvent->creationDateTime.UTC);
+    sprintf(temp,"DTSTAMPUTC:%d\n", tempEvent->startDateTime.UTC);
     strcat(tempStr, temp);
     deallocator(temp);
 
@@ -633,8 +633,8 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     char *left;
     char *right;
 
-    Property *new_prop;
-    List *props;
+    Property *new_prop = NULL;
+    List *props = NULL;
 
     props = initializeList(&printProperty,&deleteProperty,&compareProperties);
     for(i = 0;i<arraySize;i++) {
@@ -711,12 +711,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     char *left;
     char *right;
 
-    Event *new_event;
-    Alarm *new_alarm;
-    Property *new_alarm_prop;
-    List *eventList;
-    List *alarmList;
-    List *alarmProps;
+    Event *new_event = NULL;
+    Alarm *new_alarm = NULL;
+    Property *new_alarm_prop = NULL;
+    List *eventList = NULL;
+    List *alarmList = NULL;
+    List *alarmProps = NULL;
 
     eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
     for(i = 0;i<arraySize;i++) {
@@ -803,8 +803,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             if(strcmp(left,"DTSTART") == 0 && new_event != NULL) {
 
                 if(containsChar(right,':')) {
-                    char *tempLeft = calloc(1,sizeof(char) * strlen(left));
-                    char *tempRight = calloc(1, sizeof(char) * strlen(right));
+                    char *tempLeft = calloc(1,sizeof(char) * strlen(left) + 50);
+                    char *tempRight = calloc(1, sizeof(char) * strlen(right) + 50);
                     splitByFirstOccurence(right,tempLeft,tempRight,':');
                     strcpy(right,tempRight);
                     strcpy(left,tempLeft);
@@ -1099,37 +1099,42 @@ char *printCalendar(const Calendar *obj) {
     printf("Non required components of the calendar!\n");
 
     /* Testing printing out the non required props for the calendar */
-    void *prop;
-    ListIterator iter = createIterator(obj->properties);
-    while((prop = nextElement(&iter)) != NULL) {
-        Property *tmpProp = (Property*)prop;
-        char *str = obj->properties->printData(tmpProp);
-        printf("%s\n", str);
-        deallocator(str);
+    if(obj->properties != NULL) {
+        void *prop;
+        ListIterator iter = createIterator(obj->properties);
+        D;
+        while((prop = nextElement(&iter)) != NULL) {
+            Property *tmpProp = (Property*)prop;
+            char *str = obj->properties->printData(tmpProp);
+            printf("%s\n", str);
+            deallocator(str);
+        }
     }
     /* END TEST */
 
 
     /* Testing printing out the events for the calendar */
     void *event;
+    if(obj->events != NULL) {
 
     ListIterator eIter = createIterator(obj->events);
 
-    while((event = nextElement(&eIter)) != NULL) {
-        Event *tmpEvent = (Event*)event;
-        char *str = obj->events->printData(tmpEvent);
-        printf("%s\n", str);
-        deallocator(str);
+        while((event = nextElement(&eIter)) != NULL) {
+            Event *tmpEvent = (Event*)event;
+            char *str = obj->events->printData(tmpEvent);
+            printf("%s\n", str);
+            deallocator(str);
 
-        /* Each of these events can possibly have an alarm */
-        void *alarm;
-        ListIterator aIter = createIterator(tmpEvent->alarms); 
-        while((alarm = nextElement(&aIter)) != NULL) {
-            Alarm *tmpAlarm = (Alarm*)alarm;
-            printf("The event with alarm action: %s\n", tmpAlarm->action);
-            printf("The event with trigger: %s\n", tmpAlarm->trigger);
+            /* Each of these events can possibly have an alarm */
+            void *alarm;
+            ListIterator aIter = createIterator(tmpEvent->alarms); 
+            while((alarm = nextElement(&aIter)) != NULL) {
+                Alarm *tmpAlarm = (Alarm*)alarm;
+                printf("The event with alarm action: %s\n", tmpAlarm->action);
+                printf("The event with trigger: %s\n", tmpAlarm->trigger);
+            }
+            printf("END OF EVENT!\n");
         }
-        printf("END OF EVENT!\n");
     }
 
     /* END TEST */

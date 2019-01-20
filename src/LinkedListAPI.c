@@ -40,6 +40,37 @@ void freeList(List* list){
 	free(list);
 }
 
+/** Clears the list: frees the contents of the list - Node structs and data stored in them - 
+ * without deleting the List struct
+ * uses the supplied function pointer to release allocated memory for the data
+ * @pre 'List' type must exist and be used in order to keep track of the linked list.
+ * @post List struct still exists, list head = list tail = NULL, list length = 0
+ * @param list pointer to the List-type dummy node
+ * @return  on success: NULL, on failure: head of list
+**/
+void clearList(List* list){	
+    if (list == NULL){
+		return;
+	}
+	
+	if (list->head == NULL && list->tail == NULL){
+		return;
+	}
+	
+	Node* tmp;
+	
+	while (list->head != NULL){
+		list->deleteData(list->head->data);
+		tmp = list->head;
+		list->head = list->head->next;
+		free(tmp);
+	}
+	
+	list->head = NULL;
+	list->tail = NULL;
+	list->length = 0;
+}
+
 /**Function for creating a node for the linked list. 
 * This node contains abstracted (void *) data as well as previous and next
 * pointers to connect to other nodes in the list
@@ -70,7 +101,7 @@ Node* initializeNode(void* data){
 *@param toBeAdded a pointer to data that is to be added to the linked list
 **/
 void insertBack(List* list, void* toBeAdded){
-	if (list== NULL || toBeAdded == NULL){
+	if (list == NULL || toBeAdded == NULL){
 		return;
 	}
 	
@@ -122,6 +153,7 @@ void* getFromFront(List * list){
 	if (list->head == NULL){
 		return NULL;
 	}
+	
 	return list->head->data;
 }
 
@@ -138,17 +170,6 @@ void* getFromBack(List * list){
 	return list->tail->data;
 }
 
-
-/** Removes data from from the list, deletes the node and frees the memory,
- * changes pointer values of surrounding nodes to maintain list structure.
- * returns the data 
- * You can assume that the list contains no duplicates
- *@pre List must exist and have memory allocated to it
- *@post toBeDeleted will have its memory freed if it exists in the list.
- *@param list - a pointer to the List struct
- *@param toBeDeleted - a pointer to data that is to be removed from the list
- *@return on success: void * pointer to data  on failure: NULL
- **/
 void* deleteDataFromList(List* list, void* toBeDeleted){
 	if (list == NULL || toBeDeleted == NULL){
 		return NULL;
@@ -249,7 +270,7 @@ void insertSorted(List *list, void *toBeAdded){
 }
 
 /**Returns a string that contains a string representation of the list traversed from  head to tail. 
-Utilizes an iterator and the list's printData function pointer to create the string.
+Utilize an iterator and the list's printData function pointer to create the string.
 returned string must be freed by the calling function.
  *@pre List must exist, but does not have to have elements.
  *@param list Pointer to linked list dummy head.
@@ -276,29 +297,29 @@ char* toString(List * list){
 	return str;
 }
 
+ListIterator createIterator(List* list){
+    ListIterator iter;
 
-/**Returns the number of elements in the list.
- *@pre List must exist, but does not have to have elements.
- *@param list - a pointer to the List struct.
- *@return on success: number of eleemnts in the list (0 or more).  on failure: -1 (e.g. list not initlized correctly)
- **/
+    iter.current = list->head;
+    
+    return iter;
+}
+
+void* nextElement(ListIterator* iter){
+    Node* tmp = iter->current;
+    
+    if (tmp != NULL){
+        iter->current = iter->current->next;
+        return tmp->data;
+    }else{
+        return NULL;
+    }
+}
+
 int getLength(List* list){
 	return list->length;
 }
 
-
-/** Function that searches for an element in the list using a comparator function.
- * If an element is found, a pointer to the data of that element is returned
- * Returns NULL if the element is not found.
- *@pre List exists and is valid.  Comparator function has been provided.
- *@post List remains unchanged.
- *@return The data associated with the list element that matches the search criteria.  If element is not found, return NULL.
- *@param list - a pointer to the List sruct
- *@param customCompare - a pointer to comparator function for customizing the search
- *@param searchRecord - a pointer to search data, which contains seach criteria
- *Note: while the arguments of compare() and searchRecord are all void, it is assumed that records they point to are
- *      all of the same type - just like arguments to the compare() function in the List struct
- **/
 void* findElement(List * list, bool (*customCompare)(const void* first,const void* second), const void* searchRecord){
 	if (customCompare == NULL)
 		return NULL;
@@ -316,52 +337,3 @@ void* findElement(List * list, bool (*customCompare)(const void* first,const voi
 
 	return NULL;
 }
-void clearList(List * list){
-	if (list == NULL){
-		return;
-	}
-	
-	if (list->head == NULL && list->tail == NULL){
-		
-		return;
-	}
-	
-	Node* tmp = NULL;
-	
-	while (list->head != NULL){
-		//printf("heredddd\n");
-		list->deleteData(list->head->data);
-		tmp = list->head;
-		list->head = list->head->next;
-		free(tmp);
-		
-	}
-	
-	list->head = NULL;
-	list->tail = NULL;
-}
-ListIterator createIterator(List * list){
-	ListIterator iter;
-	if(list == NULL){
-		iter.current = NULL;
-		return iter;
-	}
-	ListIterator listIterator;
-    listIterator.current = list->head;
-    return listIterator;
-}
-void * nextElement(ListIterator * iter){
-	 void *data = NULL;
-    if(iter->current != NULL ){
-
-        data = iter->current->data;
-        iter->current = iter->current->next;
-
-    }
-    return data;
-}
-
-/* Implement the print event object function */
-/* This function will print the contents of the event object in human readible code */
-/*Here as well you will need to go through all of the alarms and properties*/
-
