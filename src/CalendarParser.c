@@ -808,10 +808,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempLeft);
                     deallocator(tempRight);
                 }
-
-                printf("For the DTSTART\n");
-                printf("LEFT: %s\n",left);
-                printf("RIGHT: %s\n",right);
        
 
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
@@ -853,10 +849,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempRight);
                     deallocator(tempLeft);
                 }
-
-                printf("For the DTSTAMP\n");
-                printf("LEFT: %s\n",left);
-                printf("RIGHT: %s\n",right);
 
 
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
