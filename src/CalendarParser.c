@@ -1054,11 +1054,29 @@ char *printCalendar(const Calendar *obj) {
         char *str = obj->events->printData(tmpEvent);
         printf("%s\n", str);
         free(str);
+
+        /* Each of these events can possibly have an alarm */
+        void *alarm;
+        ListIterator aIter = createIterator(tmpEvent->alarms); 
+        while((alarm = nextElement(&aIter)) != NULL) {
+            Alarm *tmpAlarm = (Alarm*)alarm;
+            printf("The event with alarm action: %s\n", tmpAlarm->action);
+            printf("The event with trigger: %s\n", tmpAlarm->trigger);
+        }
+        printf("END OF EVENT!\n");
     }
 
     /* END TEST */
 
     return outString;
+}
+
+/* Freeing all of the contents of the Calendar */
+void deleteCalendar(Calendar *obj) {
+    freeList(obj->events);
+    freeList(obj->properties);
+    free(obj);
+    printf("The object was freed!\n");
 }
 
 

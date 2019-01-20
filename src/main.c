@@ -18,5 +18,6 @@ int main() {
     outString = printCalendar(obj);
     printf("%s",outString);
     free(outString);
+    deleteCalendar(obj);
     return 0;
 }
