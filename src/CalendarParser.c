@@ -45,8 +45,43 @@ char* printEvent(void *toBePrinted) {
     
     if(!isEmpty(tempEvent->creationDateTime.date)) {
         char *temp = calloc(1,sizeof(char) * 50);
-        sprintf(temp, "DTSTARTDATE:%s", tempEvent->startDateTime.date);
+        sprintf(temp, "DTSTAMPDATE:%s", tempEvent->startDateTime.date);
         strcat(tempStr,temp);
+        deallocator(temp);
+    }
+
+    if(!isEmpty(tempEvent->creationDateTime.time)) {
+        char *temp = calloc(1,sizeof(char) * 50);
+        sprintf(temp,"DTSTAMPTIME:%s",tempEvent->startDateTime.time);
+        strcat(tempStr, temp);
+        deallocator(temp);
+    }
+
+    if(tempEvent->creationDateTime.UTC || !tempEvent->creationDateTime.UTC) {
+        char *temp = calloc(1, sizeof(char) * 50);
+        sprintf(temp,"DTSTAMPUTC:%d", tempEvent->creationDateTime.UTC);
+        strcat(tempStr, temp);
+        deallocator(temp);
+    }
+
+    if(!isEmpty(tempEvent->startDateTime.date)) {
+        char *temp = calloc(1, sizeof(char) * 50);
+        sprintf(temp,"DTSTARTDATE:%s",tempEvent->startDateTime.date);
+        strcat(tempStr,temp);
+        deallocator(temp);
+    }
+
+    if(!isEmpty(tempEvent->startDateTime.time)) {
+        char *temp = calloc(1, sizeof(char) * 50);
+        sprintf(temp,"DTSTARTTIME:%s",tempEvent->startDateTime.time);
+        strcat(tempStr,temp);
+        deallocator(temp); 
+    }
+
+    if(tempEvent->startDateTime.UTC || !tempEvent->startDateTime.UTC) {
+        char *temp = calloc(1, sizeof(char) * 50);
+        sprintf(temp,"DTSTARTUTC:%d", tempEvent->startDateTime.UTC);
+        strcat(tempStr, temp);
         deallocator(temp);
     }
 
