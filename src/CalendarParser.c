@@ -36,7 +36,7 @@ char* printEvent(void *toBePrinted) {
     } 
     if(!isEmpty(tempEvent->UID)) {
         char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp, "UID:%s",tempEvent->UID);
+        sprintf(temp, "UID:%s\n",tempEvent->UID);
         strcat(tempStr, temp);
         deallocator(temp);
         //sprintf(tempStr, "UID:%s\nDTSTARTDATE:%s\nDTSTAMPDATE:%s\nDTSTAMPTIME:%s\nDTSTAMP:UTC:%d\nDTSTART:UTC:%d\n", tempEvent->UID,tempEvent->startDateTime.date,tempEvent->creationDateTime.date,tempEvent->creationDateTime.time,tempEvent->creationDateTime.UTC,tempEvent->startDateTime.UTC); 
@@ -44,42 +44,43 @@ char* printEvent(void *toBePrinted) {
     
     if(!isEmpty(tempEvent->creationDateTime.date)) {
         char *temp = calloc(1,sizeof(char) * 50);
-        sprintf(temp, "DTSTAMPDATE:%s", tempEvent->startDateTime.date);
+        sprintf(temp, "DTSTAMPDATE:%s\n", tempEvent->startDateTime.date);
         strcat(tempStr,temp);
         deallocator(temp);
     }
 
     if(!isEmpty(tempEvent->creationDateTime.time)) {
         char *temp = calloc(1,sizeof(char) * 50);
-        sprintf(temp,"DTSTAMPTIME:%s",tempEvent->startDateTime.time);
+        printf("The length of tempEvent creation time %lu\n", strlen(tempEvent->startDateTime.time)); 
+        sprintf(temp,"DTSTAMPTIME:%s\n",tempEvent->startDateTime.time);
         strcat(tempStr, temp);
         deallocator(temp);
     }
 
     if(tempEvent->creationDateTime.UTC || !tempEvent->creationDateTime.UTC) {
         char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp,"DTSTAMPUTC:%d", tempEvent->creationDateTime.UTC);
+        sprintf(temp,"DTSTAMPUTC:%d\n", tempEvent->creationDateTime.UTC);
         strcat(tempStr, temp);
         deallocator(temp);
     }
 
     if(!isEmpty(tempEvent->startDateTime.date)) {
         char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp,"DTSTARTDATE:%s",tempEvent->startDateTime.date);
+        sprintf(temp,"DTSTARTDATE:%s\n",tempEvent->startDateTime.date);
         strcat(tempStr,temp);
         deallocator(temp);
     }
 
     if(!isEmpty(tempEvent->startDateTime.time)) {
         char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp,"DTSTARTTIME:%s",tempEvent->startDateTime.time);
+        sprintf(temp,"DTSTARTTIME:%s\n",tempEvent->startDateTime.time);
         strcat(tempStr,temp);
         deallocator(temp); 
     }
 
     if(tempEvent->startDateTime.UTC || !tempEvent->startDateTime.UTC) {
         char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp,"DTSTARTUTC:%d", tempEvent->startDateTime.UTC);
+        sprintf(temp,"DTSTARTUTC:%d\n", tempEvent->startDateTime.UTC);
         strcat(tempStr, temp);
         deallocator(temp);
     }
@@ -810,14 +811,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         time[strlen(time) - 1] = '\0';
                     } else {
                         new_event->startDateTime.UTC = false;
+                        time[strlen(time) - 1] = '\0';
                     }
-
                     strcpy(new_event->startDateTime.date, date);
                     strcpy(new_event->startDateTime.time, time);
                     deallocator(date);
                     deallocator(time);
                 } else {
                     strcpy(new_event->startDateTime.date,right);
+                    strcpy(new_event->startDateTime.time,"NONE");
                     // deallocator(left);
                     // deallocator(right);
                 }
@@ -835,6 +837,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         time[strlen(time) - 1] = '\0';
                     } else {
                         new_event->creationDateTime.UTC = false;
+                        time[strlen(time) - 1] = '\0';
                     }
                     strcpy(new_event->creationDateTime.date, date);
                     strcpy(new_event->creationDateTime.time, time);
@@ -842,6 +845,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(time);
                 } else {
                     strcpy(new_event->creationDateTime.date,right);
+                    strcpy(new_event->creationDateTime.time,"NONE");
                     // deallocator(left);
                     // deallocator(right);
                 }
@@ -862,7 +866,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 strcpy(new_alarm_prop->propName,left);
                 strcpy(new_alarm_prop->propDescr,right);
                 insertBack(alarmProps,new_alarm_prop);
-                //Pass
             }
         }
         deallocator(left);

@@ -21,6 +21,9 @@ main:
 	$(CC) $(CFLAGS) ./bin/parser.o ./bin/LL.o -g -o ./bin/main.o ./src/main.c
 
 
+clean:
+	rm -rf ./bin/*.o
+
 runM:
 	./bin/main.o
 
