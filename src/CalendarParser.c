@@ -818,10 +818,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
                         new_event->startDateTime.UTC = true;
-                        time[strlen(time) - 1] = '\0';
+                        //time[strlen(time) - 1] = '\0';
                     } else {
                         new_event->startDateTime.UTC = false;
-                        time[strlen(time) - 1] = '\0';
+                        //time[strlen(time) - 1] = '\0';
                     }
                     // printf("%s\n", right);
                     // printf("The length of the date is %lu\n", strlen(date));
