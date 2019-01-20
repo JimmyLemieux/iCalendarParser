@@ -20,7 +20,6 @@
 char* printEvent(void *toBePrinted) {
 	char *tempStr;
     char *temp; 
-
 	Event *tempEvent;
 	if(toBePrinted == NULL) {
 		return NULL;
@@ -52,7 +51,6 @@ char* printEvent(void *toBePrinted) {
 
     if(!isEmpty(tempEvent->creationDateTime.time)) {
         char *temp = calloc(1,sizeof(char) * 50);
-        printf("The length of tempEvent creation time %lu\n", strlen(tempEvent->creationDateTime.time)); 
         sprintf(temp,"DTSTAMPTIME:%s\n",tempEvent->creationDateTime.time);
         strcat(tempStr, temp);
         deallocator(temp);
@@ -81,7 +79,6 @@ char* printEvent(void *toBePrinted) {
     sprintf(temp,"DTSTARTUTC:%d\n", tempEvent->startDateTime.UTC);
     strcat(tempStr, temp);
     deallocator(temp);
-
 
 	return tempStr;
 }
@@ -803,8 +800,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             if(strcmp(left,"DTSTART") == 0 && new_event != NULL) {
 
                 if(containsChar(right,':')) {
-                    char *tempLeft = calloc(1,sizeof(char) * strlen(left) + 50);
-                    char *tempRight = calloc(1, sizeof(char) * strlen(right) + 50);
+                    char *tempLeft = calloc(1,sizeof(char) * strlen(left) + 100);
+                    char *tempRight = calloc(1, sizeof(char) * strlen(right) + 100);
                     splitByFirstOccurence(right,tempLeft,tempRight,':');
                     strcpy(right,tempRight);
                     strcpy(left,tempLeft);
@@ -812,6 +809,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempRight);
                 }
 
+                printf("For the DTSTART\n");
+                printf("LEFT: %s\n",left);
+                printf("RIGHT: %s\n",right);
        
 
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
@@ -844,11 +844,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             }
 
             if(strcmp(left,"DTSTAMP") == 0 && new_event != NULL) {
-                if(containsChar(right,'T')) {//If there is a local time, or UTC
-                    /*Take right and split */
-                    char *date = calloc(1,sizeof(char) * 500);
-                    char *time = calloc(1, sizeof(char)* 500);
-
                 if(containsChar(right,':')) {
                     char *tempLeft = calloc(1,sizeof(char) * strlen(left));
                     char *tempRight = calloc(1, sizeof(char) * strlen(right));
@@ -858,6 +853,16 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempRight);
                     deallocator(tempLeft);
                 }
+
+                printf("For the DTSTAMP\n");
+                printf("LEFT: %s\n",left);
+                printf("RIGHT: %s\n",right);
+
+
+                if(containsChar(right,'T')) {//If there is a local time, or UTC
+                    /*Take right and split */
+                    char *date = calloc(1,sizeof(char) * 500);
+                    char *time = calloc(1, sizeof(char)* 500);
 
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
