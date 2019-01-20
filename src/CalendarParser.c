@@ -874,8 +874,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     strcpy(new_event->creationDateTime.date,right);
                     strcpy(new_event->creationDateTime.time,"NONE");
                     new_event->creationDateTime.UTC = false;
-                    // deallocator(left);
-                    // deallocator(right);
+                    deallocator(left);
+                    deallocator(right);
                 }
             }
         }
