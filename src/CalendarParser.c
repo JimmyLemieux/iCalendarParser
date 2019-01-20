@@ -57,7 +57,7 @@ char* printEvent(void *toBePrinted) {
     }
 
     temp = calloc(1, sizeof(char) * 50);
-    sprintf(temp,"DTSTAMPUTC:%d\n", tempEvent->startDateTime.UTC);
+    sprintf(temp,"DTSTAMPUTC:%d\n", tempEvent->creationDateTime.UTC);
     strcat(tempStr, temp);
     deallocator(temp);
 
@@ -720,8 +720,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(!containsChar(lines[i],':')) {
             continue;
         }
-        left = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
-        right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
+        left = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
         /* The string contains the char */
 
         //splitByFirstOccurence(lines[i],left,right,':');
@@ -817,8 +817,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
+                        time[strlen(time) - 1] = '\0';
                         new_event->startDateTime.UTC = true;
-                        //time[strlen(time) - 1] = '\0';
                     } else {
                         new_event->startDateTime.UTC = false;
                         //time[strlen(time) - 1] = '\0';
@@ -859,7 +859,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
                         new_event->creationDateTime.UTC = true;
-                        //time[strlen(time) - 1] = '\0';
+                        time[strlen(time) - 1] = '\0';
                     } else {
                         new_event->creationDateTime.UTC = false;
                         //time[strlen(time) - 1] = '\0';
@@ -1014,7 +1014,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* This method has been fixed */
     char **test = readFileChar(fileName, &arraySize,&fileLines);
-   
 
     /* This function has been fixed */
     error = validateFileLines(test,arraySize,fileLines); 
