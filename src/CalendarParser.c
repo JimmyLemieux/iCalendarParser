@@ -921,8 +921,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     error = validateFile(fileName);
 
     if(error != 0) {
-        free(*obj);
-        free(obj);
+        deallocator(obj);
         // free((Calendar*)(*obj));
         // free((Calendar**)obj);
         return INV_FILE;
@@ -939,8 +938,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
         free_fields(test,arraySize);
-        free(*obj);
-        free(obj);
+        deallocator(obj);
         return INV_FILE;
     }
 
@@ -962,8 +960,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
-        free(*obj);
-        free(obj);
+        deallocator(obj);
         return INV_FILE;
     }
 
@@ -981,8 +978,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("Found an error while parsing the version and proID\n");
         free_fields(test,arraySize);
-        free(*obj);
-        free(obj);
+        deallocator(obj);
         return OTHER_ERROR;
     }
 
@@ -995,28 +991,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         printf("Found an error while looking for the events\n");
         free_fields(test,arraySize);
-        free(*obj);
-        free(obj);
+        deallocator(obj);
         return OTHER_ERROR;
     }
 
-    // error = fetchCalAlarms(*obj, test,arraySize);
-
-    // if(error != 0) {
-    //     printf("Found an error while looking for the events\n");
-    //     free_fields(test,arraySize);
-    //     free(*obj);
-    //     free(obj);
-    //     return OTHER_ERROR;
-    // }
-    // printf("%.2f\n",(*obj)->version);
-    // printf("%s\n", (*obj)->prodID);
-    // printf("List has been freed!\n");
     free_fields(test,arraySize);
-    // freeList((*obj)->events);
-    // freeList((*obj)->properties);
-    // free(*obj);
-    // free(obj); 
     return OK;
 }
 
@@ -1039,7 +1018,7 @@ char *printCalendar(const Calendar *obj) {
         Property *tmpProp = (Property*)prop;
         char *str = obj->properties->printData(tmpProp);
         printf("%s\n", str);
-        free(str);
+        deallocator(str);
     }
     /* END TEST */
 
@@ -1053,7 +1032,7 @@ char *printCalendar(const Calendar *obj) {
         Event *tmpEvent = (Event*)event;
         char *str = obj->events->printData(tmpEvent);
         printf("%s\n", str);
-        free(str);
+        deallocator(str);
 
         /* Each of these events can possibly have an alarm */
         void *alarm;
@@ -1075,7 +1054,7 @@ char *printCalendar(const Calendar *obj) {
 void deleteCalendar(Calendar *obj) {
     freeList(obj->events);
     freeList(obj->properties);
-    free(obj);
+    deallocator(obj);
     printf("The object was freed!\n");
 }
 
