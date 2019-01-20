@@ -859,10 +859,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
                         new_event->creationDateTime.UTC = true;
-                        time[strlen(time) - 1] = '\0';
+                        //time[strlen(time) - 1] = '\0';
                     } else {
                         new_event->creationDateTime.UTC = false;
-                        time[strlen(time) - 1] = '\0';
+                        //time[strlen(time) - 1] = '\0';
                     }
                     // printf("The length of the dateS is %lu\n", strlen(date));
                     // printf("The length of the timeS is %lu\n", strlen(time));
