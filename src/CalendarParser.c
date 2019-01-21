@@ -224,6 +224,71 @@ void deleteProperty(void *toBeDeleted) {
     free((Property*)tempProp);
 }
 
+
+char *printDate(void *toBePrinted) {
+    
+    char *str;
+    int len = 0;
+
+    DateTime *dateTime;
+
+    if(toBePrinted == NULL) {
+        return NULL;
+    }
+
+    dateTime = (DateTime*)toBePrinted;
+    if(!isEmpty(dateTime->time)) {
+        len += strlen(dateTime->time);
+    } else if(!isEmpty(dateTime->date)) {
+        len += strlen(dateTime->date);
+    }
+    str = calloc(1, sizeof(char) * len + 100);
+    sprintf(str,"The time of the date is %s\nThe date is %s\nThe UTC is %d\n", dateTime->time,dateTime->time,dateTime->UTC);
+    return str;
+}
+
+
+int compareDates(const void *first, const void *second) {
+    DateTime *date1;
+    DateTime *date2;
+    int isGood = 0;
+    if(first == NULL || second == NULL) {
+        return 0;
+    }
+
+    date1 = (DateTime*)first;
+    date2 = (DateTime*)second;
+
+    /* Need to compare the values of the date, time, and the UTC */
+
+    if(strcmp(date1->date,date2->date) == 0) {
+        isGood++;
+    }
+
+    if(strcmp(date1->time,date2->time) == 0) {
+        isGood++;
+    }
+
+    if(date1->UTC == date2->UTC) {
+        isGood++;
+    }
+
+    if(isGood == 3) {
+        return 1;
+    }
+    return 0;
+}
+
+void deleteDate(void *toBeDeleted) {
+    if(toBeDeleted == NULL) {
+        return;
+    }
+    /* I am not sure what this function does tbh */
+
+    
+}
+
+
 /* Starting helper functions for basic file checking */
 
 

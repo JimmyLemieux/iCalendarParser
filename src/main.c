@@ -4,6 +4,8 @@
 #include "CalendarParser.h"
 #define D printf("DEBUG\n");
 
+/* I am going to implement the dateTime helper functions */
+
 int main() {
     Calendar *obj;
     ICalErrorCode error;

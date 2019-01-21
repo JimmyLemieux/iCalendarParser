@@ -42,7 +42,7 @@ char *setStr(char *s) {
 }
 
 
-char ** init_str_array(int N, int K) {
+char ** initStrArray(int N, int K) {
     char **a;
     int i;
 
