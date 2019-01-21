@@ -8,10 +8,15 @@ int main() {
     Calendar *obj;
     ICalErrorCode error;
     char * outString;
+    char * errorStr;
     error = createCalendar("sample1.ics", &obj);
     outString = printCalendar(obj);
-    printf("%s\n", printError(error));
 
+
+    errorStr = printError(error); 
+    printf("%s\n", errorStr);
+
+    free(errorStr);
 
     if(outString != NULL){
         printf("%s",outString);
