@@ -292,8 +292,6 @@ void deleteDate(void *toBeDeleted) {
 
 /* Starting helper functions for basic file checking */
 
-
-
 /* End the functions for basic file checking */
 
 ICalErrorCode validateFile(char *fileName) {
@@ -1208,11 +1206,9 @@ char *printCalendar(const Calendar *obj) {
             ListIterator eventPropIter = createIterator(tmpEvent->properties);
             while((eventProp = nextElement(&eventPropIter)) != NULL) {
                 Property *tmpProp = (Property*)eventProp;
-                printf("Event Property\n");
                 printf("%s, %s\n", tmpProp->propName,tmpProp->propDescr);
             }
             
-
             /* Each of these events can possibly have an alarm */
             void *alarm;
             ListIterator aIter = createIterator(tmpEvent->alarms); 
@@ -1220,6 +1216,20 @@ char *printCalendar(const Calendar *obj) {
                 Alarm *tmpAlarm = (Alarm*)alarm;
                 printf("The event with alarm action: %s\n", tmpAlarm->action);
                 printf("The event with trigger: %s\n", tmpAlarm->trigger);
+
+                void *alarmProp;
+
+                ListIterator alarmPropIter = createIterator(tmpAlarm->properties);
+                while((alarmProp = nextElement(&alarmPropIter)) != NULL) {
+                    Property *tmpProp = (Property*)alarmProp;
+                    printf("Alarm Prop\n");
+                    printf("PropName: %s\n", tmpProp->propName);
+                    printf("PropDesc: %s\n", tmpProp->propDescr);
+
+                }
+
+
+
 
             }
             printf("END OF EVENT!\n");

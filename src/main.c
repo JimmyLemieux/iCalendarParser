@@ -11,7 +11,7 @@ int main() {
     ICalErrorCode error;
     char * outString;
     char * errorStr;
-    error = createCalendar("mLineProp1.ics", &obj);
+    error = createCalendar("sample1.ics", &obj);
     outString = printCalendar(obj);
 
 
