@@ -18,7 +18,7 @@ int main() {
     outString = printCalendar(obj);
     printf("%s",outString);
     free(outString);
-    deleteCalendar(obj);
-
+    //deleteCalendar(obj);
+    printf("The object should have been freed!\n");
     return 0;
 }
