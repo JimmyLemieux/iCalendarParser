@@ -123,6 +123,7 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
+    freeList(tempEvent->properties);
     freeList(tempEvent->alarms);
     deallocator(tempEvent); 
 }
@@ -285,7 +286,7 @@ void deleteDate(void *toBeDeleted) {
     }
     /* I am not sure what this function does tbh */
 
-    
+
 }
 
 
@@ -776,7 +777,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     Event *new_event = NULL;
     Alarm *new_alarm = NULL;
     Property *new_alarm_prop = NULL;
+    Property *newEventProp = NULL;
     List *eventList = NULL;
+    List *eventPropList = NULL;
     List *alarmList = NULL;
     List *alarmProps = NULL;
 
@@ -819,6 +822,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
         if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
             new_event = malloc(sizeof(Event));
+            eventPropList = initializeList(&printProperty,&deleteProperty,&compareProperties);
             alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
             eventOpen++;
             deallocator(left);
@@ -831,8 +835,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             deallocator(left);
             deallocator(right);
             new_event->alarms = alarmList;
+            new_event->properties = eventPropList;
             insertBack(eventList,new_event);
             alarmList = NULL;
+            eventPropList = NULL;
             continue;
         }
 
@@ -860,10 +866,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             //printf("An Event property\n");
             if(strcmp(left,"UID") == 0 && new_event != NULL) {
                 strcpy(new_event->UID,right);
-            } 
-
-            if(strcmp(left,"DTSTART") == 0 && new_event != NULL) {
-
+            } else if(strcmp(left,"DTSTART") == 0 && new_event != NULL) {
                 if(containsChar(right,':')) {
                     char *tempLeft = calloc(1,sizeof(char) * strlen(left) + 100);
                     char *tempRight = calloc(1, sizeof(char) * strlen(right) + 100);
@@ -902,9 +905,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     // deallocator(left);
                     // deallocator(right);
                 }
-            }
-
-            if(strcmp(left,"DTSTAMP") == 0 && new_event != NULL) {
+            }else if(strcmp(left,"DTSTAMP") == 0 && new_event != NULL) {
                 if(containsChar(right,':')) {
                     char *tempLeft = calloc(1,sizeof(char) * strlen(left));
                     char *tempRight = calloc(1, sizeof(char) * strlen(right));
@@ -942,7 +943,21 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(left);
                     deallocator(right);
                 }
+            } else {
+                newEventProp = malloc(sizeof(Property));
+                strcpy(newEventProp->propName, left);
+                strcpy(newEventProp->propDescr,right);
+                insertBack(eventPropList,newEventProp);
+                // printf("Calendar Prop\n");
+                // printf("left: %s\n", left);
+                // printf("right: %s\n", right);
+
             }
+
+            /* I still have to get all of the properties of the event */ 
+
+
+
         }
 
         /* Getting the Alarm */
@@ -1187,6 +1202,16 @@ char *printCalendar(const Calendar *obj) {
             char *str = obj->events->printData(tmpEvent);
             printf("%s\n", str);
             deallocator(str);
+            /* The events properties */
+
+            void *eventProp;
+            ListIterator eventPropIter = createIterator(tmpEvent->properties);
+            while((eventProp = nextElement(&eventPropIter)) != NULL) {
+                Property *tmpProp = (Property*)eventProp;
+                printf("Event Property\n");
+                printf("%s, %s\n", tmpProp->propName,tmpProp->propDescr);
+            }
+            
 
             /* Each of these events can possibly have an alarm */
             void *alarm;
@@ -1195,6 +1220,7 @@ char *printCalendar(const Calendar *obj) {
                 Alarm *tmpAlarm = (Alarm*)alarm;
                 printf("The event with alarm action: %s\n", tmpAlarm->action);
                 printf("The event with trigger: %s\n", tmpAlarm->trigger);
+
             }
             printf("END OF EVENT!\n");
         }
