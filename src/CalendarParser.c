@@ -394,7 +394,7 @@ void unfoldLines(char **lines, int arraySize) {
 }
 
 
-//This works with big input
+/* This is for reading the file into a 2D array */
 char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool tokenizer and memleak fix
     int c;
     int fileLineCount = 0;
@@ -459,6 +459,8 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
 }
 
 
+/* Used for simple validation of the file lines before I begin parsing and the basic file
+contents before parsing */
 ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
     //Declare vars
     int i;
@@ -983,6 +985,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     return OK;
 }
 
+/* As of right now, this function is kind of useless */
 ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
     int i;
     int calOpen = 0;
