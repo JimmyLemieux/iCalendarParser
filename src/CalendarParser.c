@@ -1227,12 +1227,7 @@ char *printCalendar(const Calendar *obj) {
                     printf("PropDesc: %s\n", tmpProp->propDescr);
 
                 }
-
-
-
-
             }
-            printf("END OF EVENT!\n");
         }
     }
 
