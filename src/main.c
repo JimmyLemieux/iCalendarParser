@@ -7,7 +7,7 @@ int main() {
     Calendar *obj;
     ICalErrorCode error;
     char * outString;
-    error = createCalendar("test.ics", &obj); 
+    error = createCalendar("sample1.ics", &obj); 
     if(error == 0) {
         printf("OK!\n");
     }
@@ -18,7 +18,7 @@ int main() {
     outString = printCalendar(obj);
     printf("%s",outString);
     free(outString);
-    //deleteCalendar(obj);
+    deleteCalendar(obj);
 
     return 0;
 }
