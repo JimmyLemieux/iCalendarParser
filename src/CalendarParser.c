@@ -1004,9 +1004,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     error = validateFile(fileName);
 
     if(error != 0) {
-        deallocator(obj);
-        // free((Calendar*)(*obj));
-        // free((Calendar**)obj);
+        free(*obj);
+        *obj = NULL;
         return INV_FILE;
     }
 
@@ -1020,8 +1019,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
         free_fields(test,arraySize);
-        deallocator(obj);
-        return INV_FILE;
+        // deallocator(obj);
+        return error;
     }
 
 
@@ -1035,6 +1034,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     for(i = 0;i<arraySize;i++) {
         test[i] = trimSpecialChars(test[i]);
     }
+    
     //unfoldLines(test,arraySize);
 
     error = checkCalendarHead(test,arraySize);
@@ -1043,7 +1043,9 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
         //FREE
-        return INV_FILE;
+        free(*obj);
+        *obj = NULL;
+        return error;
     }
 
 
@@ -1140,10 +1142,58 @@ char *printCalendar(const Calendar *obj) {
 
 /* Freeing all of the contents of the Calendar */
 void deleteCalendar(Calendar *obj) {
-    freeList(obj->events);
+    if(obj == NULL) {
+        return;
+    }
+    freeList(obj->events); /* This calls the free Alarms as well */
     freeList(obj->properties);
     deallocator(obj);
     printf("The object was freed!\n");
+}
+
+/* Printing errors */
+
+/* typedef enum ers {OK, INV_FILE, INV_CAL, INV_VER, DUP_VER, INV_PRODID, DUP_PRODID, INV_EVENT, INV_DT, INV_ALARM, WRITE_ERROR, OTHER_ERROR } ICalErrorCode;*/ 
+char *printError(ICalErrorCode err) {
+    char *temp = calloc(1,sizeof(char) * 30);
+    switch(err) {
+        case 0:
+            strcpy(temp,"OK");
+            break;
+        case 1:
+            strcpy(temp,"INV_FILE");
+            break;
+        case 2:
+            strcpy(temp,"INV_CAL");
+            break;
+        case 3:
+            strcpy(temp,"INV_VER");
+            break;
+        case 4:
+            strcpy(temp,"DUP_VER");
+            break;
+        case 5:
+            strcpy(temp,"INV_PRODID");
+            break;
+        case 6:
+            strcpy(temp,"DUP_PRODID");
+            break;
+        case 7:
+            strcpy(temp,"INV_EVENT");
+            break;
+        case 8:
+            strcpy(temp,"INV_DT");
+            break;
+        case 9:
+            strcpy(temp,"INV_ALARM");
+            break;
+        case 10:
+            strcpy(temp,"WRITE_ERROR");
+            break;
+        default:
+            strcpy(temp,"OTHER_ERROR");
+    }
+    return temp;
 }
 
 
