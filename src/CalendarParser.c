@@ -1161,7 +1161,8 @@ ICalErrorCode lineMisMatch(char **lines, int arraySize) {
                     deallocator(tempRight);
                     break;
                 }
-
+                deallocator(tempLeft);
+                deallocator(tempRight); 
                 j++;
             }
 
