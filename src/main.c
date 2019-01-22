@@ -21,5 +21,6 @@ int main() {
     free(errorStr);
     free(outString);
 
+    deleteCalendar(obj);
     return 0;
 }
