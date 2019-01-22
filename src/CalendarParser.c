@@ -1107,6 +1107,83 @@ void lineUnfold(char **lines, int arraySize) {
 
 }
 
+
+ICalErrorCode lineMisMatch(char **lines, int arraySize) {
+    int i;
+    int j;
+    char *openChar;
+    int openCount = 0;
+    char *left;
+    char *right;
+    for(i = 0;i<arraySize;i++) {
+        
+        left = calloc(1, sizeof(char) * (strlen(lines[i]) + 50));
+        right = calloc(1, sizeof(char) * (strlen(lines[i]) + 50));
+        
+        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
+            /* We are going to split by first occurence of the ; */
+            splitByFirstOccurence(lines[i], left,right,';');
+
+        } else {
+            /* we are going to split by first occurence of the : */
+            splitByFirstOccurence(lines[i], left,right,':');
+        }
+        printf("%s\n",left);
+        if(strcasecmp(left,"BEGIN") == 0) {
+            openCount++;
+            openChar = calloc(1, sizeof(char) * (strlen(right) + 50));
+            strcpy(openChar,right);
+
+            /* You could make this go through and find if there is an end for this tag */
+            j = i+1;
+
+            while(j < arraySize) {
+                char *tempLeft;
+                char *tempRight;
+
+                tempLeft = calloc(1, sizeof(char) * (strlen(lines[j]) + 50));
+                tempRight = calloc(1, sizeof(char) * (strlen(lines[j]) + 50));
+                
+                if(containsChar(lines[j], ';') && checkBefore(lines[j],';',':')) {
+                /* We are going to split by first occurence of the ; */
+                    splitByFirstOccurence(lines[j], tempLeft,tempRight,';');
+
+                } else {
+                    /* we are going to split by first occurence of the : */
+                    splitByFirstOccurence(lines[j], tempLeft,tempRight,':');
+                }
+
+
+                if(strcasecmp(tempLeft,"END") == 0 && strcasecmp(tempRight,openChar) == 0) {
+                    openCount--;
+                    deallocator(openChar);
+                    deallocator(tempLeft);
+                    deallocator(tempRight);
+                    break;
+                }
+
+                j++;
+            }
+
+            if(j == arraySize) {
+                deallocator(left);
+                deallocator(right);
+                return INV_CAL;
+            }
+
+
+        }
+        deallocator(left);
+        deallocator(right);
+    }
+
+    return OK;
+}
+
+
+
+
+
 /* Ending the functions that help with parsing the linked list*/
 /* Starting the mandatory functions for the assignment */
 
@@ -1139,16 +1216,9 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     char **test = readFileChar(fileName, &arraySize,&fileLines);
 
 
-    // for(i = 0;i<arraySize;i++) {
-    //     trimSpecialChars(test[i]);
-    // }
-
-    /* Start to unfold the lines here */
-    //lineUnfold(test,arraySize);
-
-
     /* This function has been fixed */
     error = validateFileLines(test,arraySize,fileLines); 
+
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
         free_fields(test,arraySize);
@@ -1157,19 +1227,19 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return error;
     }
 
-
-    //If there is a pass, continue to look at the calendar contents
-    // The calendar contents are supposed to be specified inside the text
-
-    
-    // printf("\\THIS FILE WAS FLAGGED AS VALID\\\n");
-
     //Remove all of the special chars on each  line
     for(i = 0;i<arraySize;i++) {
         test[i] = trimSpecialChars(test[i]);
     }
+
+    /* Check for line mismatches here */
+
+    error = lineMisMatch(test,arraySize);
+    if(error != 0) {
+        printf("There was a line mismatch\n");
+        return INV_CAL;
+    }
     
-    //unfoldLines(test,arraySize);
 
     error = checkCalendarHead(test,arraySize);
 
@@ -1182,10 +1252,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     }
 
 
-
-    // /* Check for events and other things later, start the parser for now */
-    // printf("\\THIS IS A GOOD CALENDAR FILE!!\\\n");
-    // printf("NOW PARSING THE CALENDAR CONTENTS!\n\n\n");
 
     /* Make functions to return the version and proID into the calendar object */
 
