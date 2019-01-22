@@ -123,8 +123,13 @@ void deleteEvent(void *toBeDeleted) {
 	tempEvent = (Event*)toBeDeleted;
 	/* We basically need to free everything that is contained inside the event object */
 	/* for now just free the main event pointer */
-    freeList(tempEvent->properties);
-    freeList(tempEvent->alarms);
+    if(tempEvent->properties != NULL)
+        freeList(tempEvent->properties);
+    
+    if(tempEvent->alarms != NULL)
+        freeList(tempEvent->alarms);
+    
+
     deallocator(tempEvent); 
 }
 
@@ -1066,6 +1071,42 @@ ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
 
 }
 
+
+
+
+
+void lineUnfold(char **lines, int arraySize) {
+    /* Here is the plan, loop through the lines and check the next line, if there is a space at the beginning
+    of the next line, this means that there is a line fold, you should then continue on each line until there is no more spaces
+    then copy that string to the current index */
+    int i;
+    int j;
+    char **newLines;
+
+    newLines = calloc(1,sizeof(char *));
+
+
+    for(i = 0;i<arraySize - 1;i++) {
+        if(isspace(lines[i+1][0])) {
+            j = i+1;
+            while(j < arraySize && isspace(lines[j][0])) {
+                /* You are going to want to realloc the line you want to fold up to */
+                lines[i] = realloc(lines[i], strlen(lines[j]) + 1);
+                strcat(lines[i], lines[j]);
+                printf("line fold for %s\n", lines[i]);
+                printf("line is %s\n", lines[j]);
+                j++;
+            }
+            i = j;  /* Skip the lines that have been folded up */
+        } else {
+            //strcpy(newLines[i], lines[i]);
+            //newLines = realloc(newLines, sizeof(char *) * )
+
+        }
+    }
+
+}
+
 /* Ending the functions that help with parsing the linked list*/
 /* Starting the mandatory functions for the assignment */
 
@@ -1085,8 +1126,10 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     error = validateFile(fileName);
 
     if(error != 0) {
-        free(*obj);
-        *obj = NULL;
+        // free(*obj);
+        // *obj = NULL;
+        //deleteCalendar(*obj);
+        deleteCalendar(*obj);
         return INV_FILE;
     }
 
@@ -1095,12 +1138,22 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     /* This method has been fixed */
     char **test = readFileChar(fileName, &arraySize,&fileLines);
 
+
+    // for(i = 0;i<arraySize;i++) {
+    //     trimSpecialChars(test[i]);
+    // }
+
+    /* Start to unfold the lines here */
+    //lineUnfold(test,arraySize);
+
+
     /* This function has been fixed */
     error = validateFileLines(test,arraySize,fileLines); 
     if(error != 0) { //Error With the file
         printf("Invalid file\n");
         free_fields(test,arraySize);
         // deallocator(obj);
+        deleteCalendar(*obj);
         return error;
     }
 
@@ -1124,8 +1177,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
         //FREE
-        free(*obj);
-        *obj = NULL;
+        deleteCalendar(*obj);
         return error;
     }
 
@@ -1144,6 +1196,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         free_fields(test,arraySize);
         // deallocator(obj);
         //FREE
+        deleteCalendar(*obj);
         return OTHER_ERROR;
     }
 
@@ -1157,6 +1210,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         free_fields(test,arraySize);
         // deallocator(obj);
         //FREE
+        deleteCalendar(*obj);
         return OTHER_ERROR;
     }
 
@@ -1175,7 +1229,7 @@ char *printCalendar(const Calendar *obj) {
     outString = calloc(1,sizeof(outString) * (strlen(obj-> prodID)) + 70);
     /* First put the required componenets from the calendar into the out string */
     sprintf(outString, "Calendar Version:%.2f\nCalendar Prodid:%s\n",obj->version,obj->prodID);
-    printf("Non required components of the calendar!\n");
+    // printf("Non required components of the calendar!\n");
 
     /* Testing printing out the non required props for the calendar */
     if(obj->properties != NULL) {
@@ -1244,10 +1298,14 @@ void deleteCalendar(Calendar *obj) {
     if(obj == NULL) {
         return;
     }
-    freeList(obj->events); /* This calls the free Alarms as well */
-    freeList(obj->properties);
-    deallocator(obj);
-    printf("The object was freed!\n");
+    if(obj->events != NULL)
+        freeList(obj->events); /* This calls the free Alarms as well */
+    
+    if (obj->properties != NULL)
+        freeList(obj->properties);
+    
+    free(obj);
+    obj = NULL;
 }
 
 /* Printing errors */

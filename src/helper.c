@@ -203,3 +203,12 @@ int checkBefore(char *line , char del1, char del2) {
     }
     return 0;
 }
+
+
+void removeFirstChar(char *temp) {
+    if(temp == NULL) {
+        return;
+    }
+    temp += 1;
+    printf("%s",temp); 
+}

@@ -11,8 +11,13 @@ int main() {
     ICalErrorCode error;
     char * outString;
     char * errorStr;
-    error = createCalendar("garb.ics", &obj);
+    error = createCalendar("test.ics", &obj);
+    if(obj == NULL) {
+        return 0;
+    }
     outString = printCalendar(obj);
+
+
 
 
     errorStr = printError(error); 
@@ -20,13 +25,7 @@ int main() {
 
     free(errorStr);
 
-    if(outString != NULL){
-        printf("%s",outString);
-        free(outString);
-    }
-
-
-    deleteCalendar(obj);
+    free(outString);
 
     return 0;
 }
