@@ -508,10 +508,10 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 
     /* Checking if the first and last lines are valid */
 
-    stringToLower(lines[0]);
-    stringToLower(lines[arraySize - 1]);
+    // stringToLower(lines[0]);
+    // stringToLower(lines[arraySize - 1]);
 
-    if(strcmp(lines[0],"begin:vcalendar") != 0 || strcmp(lines[arraySize - 1], "end:vcalendar") != 0) {
+    if(strcasecmp(lines[0],"begin:vcalendar") != 0 || strcasecmp(lines[arraySize - 1], "end:vcalendar") != 0) {
         printf("The calendar does not start and end properly\n");
         return INV_CAL;
     }
@@ -539,10 +539,10 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         }
 
         /*Change the left and right to lowerCase */
-        stringToLower(left); 
-        stringToLower(right);
+        // stringToLower(left); 
+        // stringToLower(right);
 
-        if((strcmp(left,"begin") == 0 || strcmp(left,"end") == 0) && (strcmp(right,"vcalendar") == 0)) {
+        if((strcasecmp(left,"begin") == 0 || strcasecmp(left,"end") == 0) && (strcasecmp(right,"vcalendar") == 0)) {
             printf("There is a duplicate property in the file\n");
             deallocator(left);
             deallocator(right);
@@ -577,8 +577,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         }    
 
         /* Set the right and left to be lowercase */
-        stringToLower(left);
-        stringToLower(right);
+        // stringToLower(left);
+        // stringToLower(right);
 
         if(open < 0) {
             printf("THERE WAS A BEGIN END MISMATCH");
@@ -587,14 +587,14 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             return INV_CAL;
         }
 
-        if(strcmp(left,"begin") == 0) {
+        if(strcasecmp(left,"begin") == 0) {
             open++;
             deallocator((char *)left);
             deallocator((char *)right);
             continue; // to the next line
         }
 
-        if(strcmp(left,"end") == 0) {
+        if(strcasecmp(left,"end") == 0) {
             open--;
             deallocator((char *)left);
             deallocator((char *)right);
@@ -602,7 +602,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         }
         
         
-        if(strcmp(left,"version") == 0 && open == 1) {
+        if(strcasecmp(left,"version") == 0 && open == 1) {
             if(!foundVersion) {
                 foundVersion = 1;
             } else {
@@ -613,7 +613,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
             }
         }
 
-        if(strcmp(left,"prodid") == 0 && open == 1) {
+        if(strcasecmp(left,"prodid") == 0 && open == 1) {
             if(!foundPRODID) {
                 foundPRODID = 1;
             } else {
@@ -724,17 +724,17 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             splitByFirstOccurence(lines[i], left,right,':');
         }
 
-        stringToUpper(left);
-        stringToUpper(right);
+        // stringToUpper(left);
+        // stringToUpper(right);
 
-        if(strcmp(left,"BEGIN") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0) {
             open++;
             deallocator(left);
             deallocator(right);
             continue;
         }
 
-        if(strcmp(left,"END") == 0) {
+        if(strcasecmp(left,"END") == 0) {
             open--;
             deallocator(left);
             deallocator(right);
@@ -746,10 +746,10 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         if(open == 1) {
             new_prop = malloc(sizeof(Property));
             //printf("left:%s\tright:%s\n",left,right);
-            if(strcmp(left, "VERSION") == 0) {
+            if(strcasecmp(left, "VERSION") == 0) {
                 obj->version = atof(right);
                 deallocator(new_prop);
-            }else if(strcmp(left,"PRODID") == 0) {
+            }else if(strcasecmp(left,"PRODID") == 0) {
                 strcpy(obj->prodID,right);
                 deallocator(new_prop); 
             } else {
@@ -808,24 +808,24 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             splitByFirstOccurence(lines[i], left,right,':');
         }
 
-        stringToUpper(left);
-        stringToUpper(right);
+        // stringToUpper(left);
+        // stringToUpper(right);
 
-        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VCALENDAR") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VCALENDAR") == 0) {
             calOpen++;
             deallocator(left);
             deallocator(right);
             continue;
         }
 
-        if(strcmp(left,"END") == 0 && strcmp(right,"VCALENDAR") == 0) {
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VCALENDAR") == 0) {
             calOpen--;
             deallocator(left);
             deallocator(right);
             continue;
         }
 
-        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
             new_event = malloc(sizeof(Event));
             eventPropList = initializeList(&printProperty,&deleteProperty,&compareProperties);
             alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
@@ -835,7 +835,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcmp(left,"END") == 0 && strcmp(right,"VEVENT") == 0) {
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0) {
             eventOpen--;
             deallocator(left);
             deallocator(right);
@@ -847,7 +847,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VALARM") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VALARM") == 0) {
             new_alarm = malloc(sizeof(Alarm));
             alarmProps = initializeList(&printProperty, &deleteProperty,&compareProperties);
             alarmOpen++;
@@ -856,7 +856,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcmp(left,"END") == 0 && strcmp(right,"VALARM") == 0) {
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0) {
             new_alarm->properties = alarmProps;
             insertBack(alarmList, new_alarm);
             alarmOpen--;
@@ -869,9 +869,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         /* Getting the event */
         if(calOpen == 1 && eventOpen == 1) {
             //printf("An Event property\n");
-            if(strcmp(left,"UID") == 0 && new_event != NULL) {
+            if(strcasecmp(left,"UID") == 0 && new_event != NULL) {
                 strcpy(new_event->UID,right);
-            } else if(strcmp(left,"DTSTART") == 0 && new_event != NULL) {
+            } else if(strcasecmp(left,"DTSTART") == 0 && new_event != NULL) {
                 if(containsChar(right,':')) {
                     char *tempLeft = calloc(1,sizeof(char) * strlen(left) + 100);
                     char *tempRight = calloc(1, sizeof(char) * strlen(right) + 100);
@@ -910,7 +910,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     // deallocator(left);
                     // deallocator(right);
                 }
-            }else if(strcmp(left,"DTSTAMP") == 0 && new_event != NULL) {
+            }else if(strcasecmp(left,"DTSTAMP") == 0 && new_event != NULL) {
                 if(containsChar(right,':')) {
                     char *tempLeft = calloc(1,sizeof(char) * strlen(left));
                     char *tempRight = calloc(1, sizeof(char) * strlen(right));
@@ -969,9 +969,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
             /* The properties that are in the alarm comp */
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
-            if(strcmp(left,"ACTION") == 0) {
+            if(strcasecmp(left,"ACTION") == 0) {
                 strcpy(new_alarm->action,right);
-            }else if(strcmp(left,"TRIGGER") == 0) {
+            }else if(strcasecmp(left,"TRIGGER") == 0) {
                 new_alarm->trigger = calloc(1, sizeof(char) * 500);
                 strcpy(new_alarm->trigger, right);
             } else {

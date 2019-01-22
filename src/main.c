@@ -11,20 +11,14 @@ int main() {
     ICalErrorCode error;
     char * outString;
     char * errorStr;
-    error = createCalendar("test.ics", &obj);
+    error = createCalendar("sample1.ics", &obj);
     if(obj == NULL) {
         return 0;
     }
     outString = printCalendar(obj);
-
-
-
-
     errorStr = printError(error); 
-    printf("%s\n", errorStr);
-
+    printf("Error - > %s\n", errorStr);
     free(errorStr);
-
     free(outString);
 
     return 0;
