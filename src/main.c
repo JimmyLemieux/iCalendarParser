@@ -9,17 +9,21 @@
 int main() {
     Calendar *obj;
     ICalErrorCode error;
-    char * outString;
     char * errorStr;
+    char *outString;
     error = createCalendar("mLineProp1.ics", &obj);
+    if(error == 0) {
+        outString = printCalendar(obj);
+        free(outString);
+    }
     if(obj == NULL) {
         return 0;
     }
-    outString = printCalendar(obj);
+    //outString = printCalendar(obj);
     errorStr = printError(error); 
     printf("Error - > %s\n", errorStr);
     free(errorStr);
-    free(outString);
+    //free(outString);
 
     //deleteCalendar(obj);
     return 0;
