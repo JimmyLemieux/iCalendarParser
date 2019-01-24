@@ -174,8 +174,8 @@ void deleteAlarm(void *toBeDeleted) {
     tempAlarm = (Alarm*)toBeDeleted;
     /* I will also have to go through the properties for this and free */
     freeList(tempAlarm->properties);
-    deallocator(tempAlarm->trigger); 
-    deallocator(tempAlarm);
+    free(tempAlarm->trigger); 
+    free(tempAlarm);
 }
 
 /*Ending the functions for the linked list */
@@ -1458,8 +1458,12 @@ void deleteCalendar(Calendar *obj) {
     if(obj == NULL) {
         return;
     }
-    freeList(obj->events); /* This calls the free Alarms as well */
-    freeList(obj->properties);
+    if(obj->events != NULL)
+        freeList(obj->events); /* This calls the free Alarms as well */
+    
+    if (obj->properties != NULL)
+        freeList(obj->properties);
+    
     free(obj);
     obj = NULL;
 }
