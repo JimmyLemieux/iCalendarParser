@@ -393,7 +393,6 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     int stringSize = 0;
     int index = 0;
     int tempStart = 0;
-    int k = 0;
     char *stringBuffer = calloc(1,sizeof(stringBuffer));
     char *temp; 
     char **lines = calloc(1, sizeof(char *));
@@ -413,7 +412,6 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     while(index < strlen(stringBuffer) - 1) {
         if(stringBuffer[index] == '\r') {
             if(stringBuffer[index+1] == '\n') {
-                k = 0;
                 int startIndex = tempStart;
                 int endIndex = index+2;
 
