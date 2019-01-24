@@ -1194,59 +1194,6 @@ ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
 
 /* I still have to implement this function here as well */
 void lineUnfold(char **lines, int arraySize) {
-    /* Here is the plan, loop through the lines and check the next line, if there is a space at the beginning
-    of the next line, this means that there is a line fold, you should then continue on each line until there is no more spaces
-    then copy that string to the current index */
-    int i;
-    int j;
-    int newCount = arraySize;
-    char **newLines;
-
-    newLines = calloc(newCount,sizeof(char *));
-
-
-
-    for(i = 0;i<arraySize - 1;i++) {
-        if(isspace(lines[i+1][0])) {
-            j = i+1;
-            while(j < arraySize && isspace(lines[j][0])) {
-                /* You are going to want to realloc the line you want to fold up to */
-                lines[i] = realloc(lines[i], strlen(lines[j]) + 50);
-                /* Remove the leading white space first */
-                lines[j] += 1;
-                strcat(lines[i], lines[j]);
-                // printf("line fold for %s\n", lines[i]);
-                // printf("line is %s\n", lines[j]);
-                /* The lines at j will have to concatenated to the lines[i] */
-                newCount--;
-                j++;
-            }
-            newLines[i] = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
-            //printf("The unfolded line is %s\n", lines[i]);
-            strcpy(newLines[i], lines[i]);
-            i = j;  /* Skip the lines that have been folded up */
-        } else {
-            if(!isEmpty(lines[i])) 
-                newLines[i] = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
-                strcpy(newLines[i], lines[i]);
-        }
-    }
-    // if(isEmpty(newLines[arraySize - 1])) {
-    //     strcpy(newLines[newCount - 1], lines[arraySize - 1]);
-    // }
-
-    printf("The new count of the array is %d\n", newCount);
-
-
-    /* We can maybe put this into another array put that would be bad practice */
-    /* This is bad practice */
-
-
-    for(int i = 0;i<newCount;i++) {
-        if(!isEmpty(newLines[i]))
-            printf("%s\n", newLines[i]);
-    }
-
 }
 
 
