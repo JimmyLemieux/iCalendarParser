@@ -301,14 +301,12 @@ void deleteDate(void *toBeDeleted) {
 
 ICalErrorCode validateFile(char *fileName) {
     FILE *file;
-    int errnum;
     int j;
     int index;
     char *tempFile = NULL;
     char *fileExtension = NULL;
 
-    if(fileName == NULL) {
-        printf("The file name is null\n");
+    if(fileName == NULL || strlen(fileName) == 0 || strcmp(fileName,".ics") == 0 || strcmp(fileName,"ics") == 0) {
         return INV_FILE;
     }
 
@@ -350,9 +348,6 @@ ICalErrorCode validateFile(char *fileName) {
 
     file = fopen(fileName,"r");
     if(file == NULL) {  //The file did not open properly
-        errnum = errno;
-        printf("There was an error on the file load\n");
-        fprintf(stderr,"Error opening file: %s\n",strerror(errnum));
         deallocator(tempFile);
         deallocator(fileExtension);
         return INV_FILE;
@@ -370,34 +365,6 @@ ICalErrorCode validateFile(char *fileName) {
 
 
 /* This function will remove the line folds and an empty lines */
-void unfoldLines(char **lines, int arraySize) {
-    int i;
-    char **tempLines;
-    if(lines == NULL || arraySize == 0) {
-        printf("There are no lines to unfold!\n");
-        return;
-    }
-
-    tempLines = (char **)malloc(sizeof(char *) * arraySize);
-    for(i = 0;i<arraySize;i++) {
-        /* Any line that is not the first that has a space at the front is a potential line fold
-        Also any line that has a strlen of zero should be removed from the list */ 
-        // if(isspace(lines[i][0])) {
-        //     printf("Potential Line fold on line : %s\n", lines[i]);
-        // }
-        tempLines[i] = calloc(1,sizeof(char) * strlen(lines[i]) + 1);
-        strcpy(tempLines[i], lines[i]);
-    }
-
-    printf("Printing the temp array!\n");
-
-    for(i = 0;i<arraySize;i++) {
-        printf("%s\n",tempLines[i]);
-    }
-
-
-}
-
 
 /* This is for reading the file into a 2D array */
 char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool tokenizer and memleak fix
@@ -470,12 +437,10 @@ ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
     //Declare vars
     int i;
     if(lines == NULL || (arraySize < fileLines) || fileLines == 0 || arraySize == 0) {
-        printf("This is an invalid file!\n");
         return INV_FILE;
     }
     for(i = 0;i<arraySize;i++) {
         if(lines[i][strlen(lines[i]) - 1] != '\n' && lines[i][strlen(lines[i]) - 2] != '\r') {
-            printf("This is an invalid file due to no CRLF\n");
             return INV_FILE;
         }
     }
@@ -623,6 +588,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
                 return DUP_PRODID;
             }
         }
+
         deallocator((char *)right);
         deallocator((char *)left);
     }
@@ -646,48 +612,168 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
 //This function will check if all of the events in the file are good
 
 
-//I should make a find first occurence function that will find the first occurence of a char and split to left and right
-ICalErrorCode checkEvents(char **lines, int arraySize) {
+/* Check if the event contains the basic properties UID,DTSTART,DTSTAMP */
+ICalErrorCode checkEventHead(char **lines, int arraySize) {
     int i;
-    int j;
-    int k;
-    int index;
     char *right;
     char *left;
+    int openEvent = 0;
+    int uidCount = 0;
+    int dtStart = 0;
+    int dtStamp = 0;
     if(lines == NULL || arraySize == 0) {
         printf("This is an invalid file\n");
         return INV_FILE;
     }
     //Only need to check the lines between the first and last lines
     //It has been confirmed that the basic calendar components have been confirmed
-    for(i = 1;i<arraySize - 1;i++) {
-        index = 0;
-        while(index < strlen(lines[i]) && lines[i][index] != ':') {
-            index++;
-        }
+    for(i = 0;i<arraySize;i++) {
+        /* Do the regular split of the left and right, once you are in an event you can check for the required
+        fields, such as UID, DTSTART and the DTSTAMP */
 
-        if(index == strlen(lines[i])) {
+        if(!containsChar(lines[i],':')) {
             continue;
         }
-        
-        left = calloc(1, (index+1) * sizeof(char));
-        right = calloc(1, ((strlen(lines[i]) - index)+1) * sizeof(char));
+        left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
+        /* The string contains the char */
 
-        for(k = 0;k<index;k++) {
-            left[k] = lines[i][k];
+        //splitByFirstOccurence(lines[i],left,right,':');
+
+        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
+            /* We are going to split by first occurence of the ; */
+            splitByFirstOccurence(lines[i], left,right,';');
+        } else {
+            /* we are going to split by first occurence of the : */
+            splitByFirstOccurence(lines[i], left,right,':');
         }
 
-        for(k=index+1,j=0;k<strlen(lines[i]);k++,j++) {
-            right[j] = lines[i][k];
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
+            openEvent++;
+            deallocator(left);
+            deallocator(right);
+            continue;
         }
-        /* chage the right and left to lowercase */
-        /* This is for checking for case insensitive things in the properties */
-        stringToLower(left);
-        stringToLower(right);
 
-        //Now that we have the right and left begin to look for the open and closed events 
-        printf("LEFT:%s :::: RIGHT:%s\n",left,right);
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0 && openEvent == 1) {
+            if(uidCount != 1 || dtStart != 1 || dtStamp != 1) {
+                return INV_EVENT;
+            }
+            uidCount = 0;
+            dtStart = 0;
+            dtStamp = 0;
+            openEvent--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"UID") == 0 && openEvent == 1) {
+            uidCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"DTSTART") == 0 && openEvent == 1) {
+            dtStart++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"DTSTAMP") == 0 && openEvent == 1) {
+            dtStamp++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        deallocator(left);
+        deallocator(right);
+
     } // end loop
+
+    if(openEvent != 0) {
+        return INV_EVENT;
+    }
+    return OK;
+}
+
+ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
+    int openAlarm = 0;
+    int actionCount = 0;
+    int triggerCount = 0;
+    int i;
+    char *left;
+    char *right;
+
+    if(lines == NULL || arraySize == 0) {
+        printf("This is an invalid file\n");
+        return INV_FILE;
+    }
+
+    for(i = 0;i<arraySize;i++) {
+        if(!containsChar(lines[i],':')) {
+            continue;
+        }
+        left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
+        /* The string contains the char */
+
+        //splitByFirstOccurence(lines[i],left,right,':');
+
+        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
+            /* We are going to split by first occurence of the ; */
+            splitByFirstOccurence(lines[i], left,right,';');
+        } else {
+            /* we are going to split by first occurence of the : */
+            splitByFirstOccurence(lines[i], left,right,':');
+        }
+
+
+        /* Here just check for the alarms required props */
+
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VALARM") == 0) {
+            openAlarm++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"ACTION") == 0 && openAlarm == 1) {
+            actionCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "TRIGGER") == 0 && openAlarm == 1) {
+            triggerCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0) {
+            if(triggerCount != 1 || actionCount != 1) {
+                return INV_ALARM;
+            }
+            triggerCount = 0;
+            actionCount = 0;
+            openAlarm--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        } 
+        deallocator(left);
+        deallocator(right);
+    }
+
+    if(openAlarm != 0) {
+        return INV_ALARM;
+    }
+
     return OK;
 }
 
@@ -1109,78 +1195,54 @@ void lineUnfold(char **lines, int arraySize) {
 
 
 ICalErrorCode lineMisMatch(char **lines, int arraySize) {
+    
+    return OK;
+}
+
+
+ICalErrorCode checkIfCalendarEvent(char **lines, int arraySize) {
     int i;
-    int j;
-    char *openChar;
-    int openCount = 0;
     char *left;
     char *right;
+    int eventCount = 0;
+    if(lines == NULL || arraySize == 0) {
+        return INV_CAL;
+    }
+
+    /* This function will check to see if the calendar has an event component */
     for(i = 0;i<arraySize;i++) {
-        
-        left = calloc(1, sizeof(char) * (strlen(lines[i]) + 50));
-        right = calloc(1, sizeof(char) * (strlen(lines[i]) + 50));
-        
+        if(!containsChar(lines[i],':')) {
+            continue;
+        }
+        left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
+        /* The string contains the char */
+
+        //splitByFirstOccurence(lines[i],left,right,':');
+
         if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
             /* We are going to split by first occurence of the ; */
             splitByFirstOccurence(lines[i], left,right,';');
-
         } else {
             /* we are going to split by first occurence of the : */
             splitByFirstOccurence(lines[i], left,right,':');
         }
-        printf("%s\n",left);
-        if(strcasecmp(left,"BEGIN") == 0) {
-            openCount++;
-            openChar = calloc(1, sizeof(char) * (strlen(right) + 50));
-            strcpy(openChar,right);
 
-            /* You could make this go through and find if there is an end for this tag */
-            j = i+1;
-
-            while(j < arraySize) {
-                char *tempLeft;
-                char *tempRight;
-
-                tempLeft = calloc(1, sizeof(char) * (strlen(lines[j]) + 50));
-                tempRight = calloc(1, sizeof(char) * (strlen(lines[j]) + 50));
-                
-                if(containsChar(lines[j], ';') && checkBefore(lines[j],';',':')) {
-                /* We are going to split by first occurence of the ; */
-                    splitByFirstOccurence(lines[j], tempLeft,tempRight,';');
-
-                } else {
-                    /* we are going to split by first occurence of the : */
-                    splitByFirstOccurence(lines[j], tempLeft,tempRight,':');
-                }
-
-
-                if(strcasecmp(tempLeft,"END") == 0 && strcasecmp(tempRight,openChar) == 0) {
-                    openCount--;
-                    deallocator(openChar);
-                    deallocator(tempLeft);
-                    deallocator(tempRight);
-                    break;
-                }
-                deallocator(tempLeft);
-                deallocator(tempRight); 
-                j++;
-            }
-
-            if(j == arraySize) {
-                deallocator(left);
-                deallocator(right);
-                return INV_CAL;
-            }
-
-
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
+            eventCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
         }
-        deallocator(left);
-        deallocator(right);
+        
+    }
+
+    if(eventCount == 0) {
+        return INV_CAL;
     }
 
     return OK;
 }
-
 
 
 
@@ -1235,11 +1297,13 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Check for line mismatches here */
 
-    error = lineMisMatch(test,arraySize);
-    if(error != 0) {
-        printf("There was a line mismatch\n");
-        return INV_CAL;
-    }
+    // error = lineMisMatch(test,arraySize);
+    // if(error != 0) {
+    //     printf("There was a line mismatch\n");
+    //     return INV_CAL;
+    // }
+
+    /* Test valid prop names */
     
 
     error = checkCalendarHead(test,arraySize);
@@ -1252,6 +1316,30 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return error;
     }
 
+    error = checkIfCalendarEvent(test, arraySize);
+
+    if(error != 0) {
+        free_fields(test,arraySize);
+        deleteCalendar(*obj);
+        return error;
+    }
+
+    /*Start to validate the events and the alarms */
+    error = checkEventHead(test,arraySize);
+
+    if(error != 0) {
+        free_fields(test,arraySize);
+        deleteCalendar(*obj);
+        return error;
+    }
+
+    error = checkAlarmHead(test, arraySize);
+
+    if(error != 0) {
+        free_fields(test, arraySize);
+        deleteCalendar(*obj);
+        return error;
+    }
 
 
     /* Make functions to return the version and proID into the calendar object */
@@ -1270,6 +1358,10 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     // Look for the events
     /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
     /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
+
+
+    /* Check events */
+
 
     error = fetchCalEvents(*obj, test,arraySize);
     if(error != 0) {
@@ -1301,8 +1393,7 @@ char *printCalendar(const Calendar *obj) {
     /* Testing printing out the non required props for the calendar */
     if(obj->properties != NULL) {
         void *prop;
-        ListIterator iter = createIterator(obj->properties);
-        D;
+        ListIterator iter = createIterator(obj->properties);        
         while((prop = nextElement(&iter)) != NULL) {
             Property *tmpProp = (Property*)prop;
             char *str = obj->properties->printData(tmpProp);

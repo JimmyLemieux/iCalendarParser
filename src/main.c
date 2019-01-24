@@ -11,7 +11,7 @@ int main() {
     ICalErrorCode error;
     char * outString;
     char * errorStr;
-    error = createCalendar("sample1.ics", &obj);
+    error = createCalendar("mLineProp1.ics", &obj);
     if(obj == NULL) {
         return 0;
     }
@@ -21,6 +21,6 @@ int main() {
     free(errorStr);
     free(outString);
 
-    deleteCalendar(obj);
+    //deleteCalendar(obj);
     return 0;
 }
