@@ -8,7 +8,9 @@ DTSTAMP;TZID=America/New_York:19970714T170000Z
 DTSTART:19970714T170000Z
 DTEND:19970715T035959Z
 CLASS:PUBLIC
-SUMMARY:Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+SUMMARY:Lorem ipsum dolor sit amet,
+ cons
+ ectetur adipiscing elit.
 BEGIN:VALARM
 TRIGGER:wewe
 ACTION:ds

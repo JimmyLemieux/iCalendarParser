@@ -11,7 +11,7 @@ int main() {
     ICalErrorCode error;
     char * errorStr;
     char *outString;
-    error = createCalendar("garb.ics", &obj);
+    error = createCalendar("qqq.ics", &obj);
     if(error == 0) {
         outString = printCalendar(obj);
         free(outString);

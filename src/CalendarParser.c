@@ -109,9 +109,25 @@ int compareEvents(const void *first, const void *second) {
 		return 0;
 	}
 
+    if(strcmp(event1->creationDateTime.date,event2->creationDateTime.date) != 0) {
+        return 0;
+    }
+
+    if(strcmp(event1->creationDateTime.time,event2->creationDateTime.time) != 0) {
+        return 0;
+    }
+
 	if(event1->startDateTime.UTC != event2->startDateTime.UTC) {
 		return 0;
 	}
+
+    if(event1->creationDateTime.UTC != event2->creationDateTime.UTC) {
+        return 0;
+    }
+
+    /* You will have to call the compare alarms function here in order to compare the alarms and its properties */
+
+
 	return 1;
 }
 
@@ -161,7 +177,10 @@ int compareAlarms(const void *first, const void *second) {
     if(strcmp(alarm1->action,alarm2->action) != 0) {
         return 0;
     }
-    /* I am also going to have to look through all of the properties */
+    /* You are going to have to comapre all of the properties inside of the alarm as well */
+
+    /* You can just call compare properties here for each of the alarms */
+
     return 1;
 }
 
@@ -930,6 +949,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             new_event = malloc(sizeof(Event));
             eventPropList = initializeList(&printProperty,&deleteProperty,&compareProperties);
             alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
+            /* For the purpose of the trigger not being null */
             eventOpen++;
             deallocator(left);
             deallocator(right);
@@ -951,6 +971,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VALARM") == 0) {
             new_alarm = malloc(sizeof(Alarm));
             alarmProps = initializeList(&printProperty, &deleteProperty,&compareProperties);
+            new_alarm->trigger = calloc(1, sizeof(char) * 500);
             alarmOpen++;
             deallocator(left);
             deallocator(right);
@@ -1068,7 +1089,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             if(strcasecmp(left,"ACTION") == 0) {
                 strcpy(new_alarm->action,right);
             }else if(strcasecmp(left,"TRIGGER") == 0) {
-                new_alarm->trigger = calloc(1, sizeof(char) * 500);
+                /* The trigger was initialized in the top to restrict it from being null */
+                //new_alarm->trigger = calloc(1, sizeof(char) * 500);
                 strcpy(new_alarm->trigger, right);
             } else {
                 new_alarm_prop = malloc(sizeof(Property));
@@ -1170,16 +1192,18 @@ ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
 
 
 
-
+/* I still have to implement this function here as well */
 void lineUnfold(char **lines, int arraySize) {
     /* Here is the plan, loop through the lines and check the next line, if there is a space at the beginning
     of the next line, this means that there is a line fold, you should then continue on each line until there is no more spaces
     then copy that string to the current index */
     int i;
     int j;
+    int newCount = arraySize;
     char **newLines;
 
-    newLines = calloc(1,sizeof(char *));
+    newLines = calloc(newCount,sizeof(char *));
+
 
 
     for(i = 0;i<arraySize - 1;i++) {
@@ -1187,18 +1211,40 @@ void lineUnfold(char **lines, int arraySize) {
             j = i+1;
             while(j < arraySize && isspace(lines[j][0])) {
                 /* You are going to want to realloc the line you want to fold up to */
-                lines[i] = realloc(lines[i], strlen(lines[j]) + 1);
+                lines[i] = realloc(lines[i], strlen(lines[j]) + 50);
+                /* Remove the leading white space first */
+                lines[j] += 1;
                 strcat(lines[i], lines[j]);
-                printf("line fold for %s\n", lines[i]);
-                printf("line is %s\n", lines[j]);
+                // printf("line fold for %s\n", lines[i]);
+                // printf("line is %s\n", lines[j]);
+                /* The lines at j will have to concatenated to the lines[i] */
+                newCount--;
                 j++;
             }
+            newLines[i] = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
+            //printf("The unfolded line is %s\n", lines[i]);
+            strcpy(newLines[i], lines[i]);
             i = j;  /* Skip the lines that have been folded up */
         } else {
-            //strcpy(newLines[i], lines[i]);
-            //newLines = realloc(newLines, sizeof(char *) * )
-
+            if(!isEmpty(lines[i])) 
+                newLines[i] = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
+                strcpy(newLines[i], lines[i]);
         }
+    }
+    // if(isEmpty(newLines[arraySize - 1])) {
+    //     strcpy(newLines[newCount - 1], lines[arraySize - 1]);
+    // }
+
+    printf("The new count of the array is %d\n", newCount);
+
+
+    /* We can maybe put this into another array put that would be bad practice */
+    /* This is bad practice */
+
+
+    for(int i = 0;i<newCount;i++) {
+        if(!isEmpty(newLines[i]))
+            printf("%s\n", newLines[i]);
     }
 
 }
@@ -1309,6 +1355,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         test[i] = trimSpecialChars(test[i]);
     }
 
+    /* Test the line unfolding function */
+
+    //lineUnfold(test,arraySize);
+
+
     /* Check for line mismatches here */
 
     // error = lineMisMatch(test,arraySize);
@@ -1402,6 +1453,7 @@ char *printCalendar(const Calendar *obj) {
     outString = calloc(1,sizeof(outString) * (strlen(obj-> prodID)) + 70);
     /* First put the required componenets from the calendar into the out string */
     sprintf(outString, "Calendar Version:%.2f\nCalendar Prodid:%s\n",obj->version,obj->prodID);
+    printf("%s\n", outString);
     // printf("Non required components of the calendar!\n");
 
     /* Testing printing out the non required props for the calendar */
