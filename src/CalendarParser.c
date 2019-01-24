@@ -1234,6 +1234,8 @@ ICalErrorCode checkIfCalendarEvent(char **lines, int arraySize) {
             deallocator(right);
             continue;
         }
+        deallocator(left);
+        deallocator(right);
         
     }
 
