@@ -986,8 +986,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
-                    char *date = calloc(1,sizeof(char) * 100);
-                    char *time = calloc(1, sizeof(char) * 100);
+                    char *date = calloc(1,sizeof(char) * 500);
+                    char *time = calloc(1, sizeof(char) * 500);
 
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
@@ -995,11 +995,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         new_event->startDateTime.UTC = true;
                     } else {
                         new_event->startDateTime.UTC = false;
-                        //time[strlen(time) - 1] = '\0';
                     }
-                    // printf("%s\n", right);
-                    // printf("The length of the date is %lu\n", strlen(date));
-                    // printf("The length of the time is %lu %s\n", strlen(time), time);
                     strcpy(new_event->startDateTime.date, date);
                     strcpy(new_event->startDateTime.time, time);
                     deallocator(date);
@@ -1008,13 +1004,11 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     strcpy(new_event->startDateTime.date,right);
                     strcpy(new_event->startDateTime.time,"NONE");
                     new_event->startDateTime.UTC = false;
-                    // deallocator(left);
-                    // deallocator(right);
                 }
             }else if(strcasecmp(left,"DTSTAMP") == 0 && new_event != NULL) {
                 if(containsChar(right,':')) {
-                    char *tempLeft = calloc(1,sizeof(char) * strlen(left));
-                    char *tempRight = calloc(1, sizeof(char) * strlen(right));
+                    char *tempLeft = calloc(1,sizeof(char) * strlen(left) + 100);
+                    char *tempRight = calloc(1, sizeof(char) * strlen(right) + 100);
                     splitByFirstOccurence(right,tempLeft,tempRight,':');
                     strcpy(right,tempRight);
                     strcpy(left,tempLeft);
@@ -1023,11 +1017,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 }
 
 
+
+
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
                     char *date = calloc(1,sizeof(char) * 500);
                     char *time = calloc(1, sizeof(char)* 500);
-
                     splitByFirstOccurence(right,date,time,'T');
                     if(containsChar(time,'Z')) {
                         new_event->creationDateTime.UTC = true;
