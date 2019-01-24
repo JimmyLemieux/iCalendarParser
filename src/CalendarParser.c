@@ -655,8 +655,8 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
             continue;
         }
 
-        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0 && openEvent == 1) {
-            if(uidCount != 1 || dtStart != 1 || dtStamp != 1) {
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0) {
+            if(uidCount != 1 || dtStart != 1 || dtStamp != 1 || openEvent != 1) {
                 return INV_EVENT;
             }
             uidCount = 0;
@@ -742,6 +742,9 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
         }
 
         if(strcasecmp(left,"ACTION") == 0 && openAlarm == 1) {
+            if(right == NULL  || strlen(right) == 0) {
+                return INV_ALARM;
+            }
             actionCount++;
             deallocator(left);
             deallocator(right);
@@ -749,6 +752,9 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
         }
 
         if(strcasecmp(left, "TRIGGER") == 0 && openAlarm == 1) {
+            if(right == NULL || strlen(right) == 0) {
+                return INV_ALARM;
+            }
             triggerCount++;
             deallocator(left);
             deallocator(right);
@@ -756,7 +762,7 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
         }
 
         if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0) {
-            if(triggerCount != 1 || actionCount != 1) {
+            if(triggerCount != 1 || actionCount != 1 || openAlarm != 1) {
                 return INV_ALARM;
             }
             triggerCount = 0;
