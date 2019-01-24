@@ -1262,6 +1262,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     int fileLines;
    // obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
+    /* These cannot be NULL but can be empty */
     (*obj)->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
     (*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
 
