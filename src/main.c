@@ -11,7 +11,7 @@ int main() {
     ICalErrorCode error;
     char * errorStr;
     char *outString;
-    error = createCalendar("qqq.ics", &obj);
+    error = createCalendar("garb.ics", &obj);
 
     if(error == 0) {
         printf("deleting the calendar\n");
