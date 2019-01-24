@@ -15,9 +15,7 @@ int main() {
     if(error == 0) {
         outString = printCalendar(obj);
         free(outString);
-    }
-    if(obj == NULL) {
-        return 0;
+        deleteCalendar(obj);
     }
     //outString = printCalendar(obj);
     errorStr = printError(error); 
