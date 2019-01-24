@@ -1456,6 +1456,8 @@ char *printCalendar(const Calendar *obj) {
 /* Freeing all of the contents of the Calendar */
 void deleteCalendar(Calendar *obj) {
     if(obj == NULL || obj->events == NULL || obj->properties == NULL) {
+        free(obj);
+        obj = NULL;
         return;
     }
     freeList(obj->events); /* This calls the free Alarms as well */
