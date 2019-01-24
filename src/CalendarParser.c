@@ -833,11 +833,20 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             new_prop = malloc(sizeof(Property));
             //printf("left:%s\tright:%s\n",left,right);
             if(strcasecmp(left, "VERSION") == 0) {
-                obj->version = atof(right);
-                deallocator(new_prop);
+                if(sscanf(right,"%f", &(obj->version)) != 0 && strlen(right) != 0) {
+                    deallocator(new_prop);
+                } else {
+                    return INV_VER;
+                }
+                //obj->version = atof(right);
             }else if(strcasecmp(left,"PRODID") == 0) {
-                strcpy(obj->prodID,right);
-                deallocator(new_prop); 
+                if(strlen(right) != 0) {
+                    strcpy(obj->prodID,right);
+                    deallocator(new_prop); 
+                } else {
+                    return INV_PRODID;
+                }
+
             } else {
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
@@ -1356,7 +1365,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         // deallocator(obj);
         //FREE
         deleteCalendar(*obj);
-        return OTHER_ERROR;
+        return error;
     }
 
     // Look for the events
