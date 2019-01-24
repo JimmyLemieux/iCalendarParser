@@ -1262,7 +1262,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     int fileLines;
    // obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
-
+    (*obj)->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
+    (*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
 
     /* START OF FILE FUNCTIONS */
     error = validateFile(fileName);
@@ -1455,15 +1456,13 @@ char *printCalendar(const Calendar *obj) {
 
 /* Freeing all of the contents of the Calendar */
 void deleteCalendar(Calendar *obj) {
-    if(obj == NULL ) {
+    if(obj == NULL) {
         free(obj);
         obj = NULL;
         return;
     }
     freeList(obj->events); /* This calls the free Alarms as well */
-    
     freeList(obj->properties);
-    
     free(obj);
     obj = NULL;
 }
