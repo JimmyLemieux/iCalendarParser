@@ -676,6 +676,8 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
 
         if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0) {
             if(uidCount != 1 || dtStart != 1 || dtStamp != 1 || openEvent != 1) {
+                deallocator(left);
+                deallocator(right);
                 return INV_EVENT;
             }
             uidCount = 0;
@@ -762,6 +764,8 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
 
         if(strcasecmp(left,"ACTION") == 0 && openAlarm == 1) {
             if(right == NULL  || strlen(right) == 0) {
+                deallocator(left);
+                deallocator(right);
                 return INV_ALARM;
             }
             actionCount++;
@@ -772,6 +776,8 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
 
         if(strcasecmp(left, "TRIGGER") == 0 && openAlarm == 1) {
             if(right == NULL || strlen(right) == 0) {
+                deallocator(left);
+                deallocator(right);
                 return INV_ALARM;
             }
             triggerCount++;
