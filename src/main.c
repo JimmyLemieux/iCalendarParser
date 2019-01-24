@@ -12,7 +12,9 @@ int main() {
     char * errorStr;
     char *outString;
     error = createCalendar("qqq.ics", &obj);
+
     if(error == 0) {
+        printf("deleting the calendar\n");
         outString = printCalendar(obj);
         free(outString);
         deleteCalendar(obj);
@@ -21,7 +23,6 @@ int main() {
     errorStr = printError(error); 
     printf("Error - > %s\n", errorStr);
     free(errorStr);
-    //free(outString);
 
     //deleteCalendar(obj);
     return 0;
