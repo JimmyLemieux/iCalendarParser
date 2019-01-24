@@ -1458,12 +1458,8 @@ void deleteCalendar(Calendar *obj) {
     if(obj == NULL) {
         return;
     }
-    if(obj->events != NULL)
-        freeList(obj->events); /* This calls the free Alarms as well */
-    
-    if (obj->properties != NULL)
-        freeList(obj->properties);
-    
+    freeList(obj->events); /* This calls the free Alarms as well */
+    freeList(obj->properties);
     free(obj);
     obj = NULL;
 }
