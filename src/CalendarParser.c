@@ -1193,7 +1193,7 @@ ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
 
 
 /* I still have to implement this function here as well */
-void lineUnfold(char **lines, int arraySize) {
+void lineUnfold(char **lines, int arraySize) { 
 }
 
 

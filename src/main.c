@@ -17,6 +17,8 @@ int main() {
         printf("deleting the calendar\n");
         outString = printCalendar(obj);
         free(outString);
+        // freeList(obj->events);
+        // freeList(obj->properties); 
         deleteCalendar(obj);
     }
     //outString = printCalendar(obj);
