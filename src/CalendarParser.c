@@ -1657,7 +1657,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     error = validateFile(fileName);
 
     if(error != 0) {
-        deleteCalendar(*obj);
+        free(*obj);
+        *obj = NULL;
         return INV_FILE;
     }
 
@@ -1674,7 +1675,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("Invalid file\n");
         free_fields(test,arraySize);
         // deallocator(obj);
-        deleteCalendar(*obj);
+        free(*obj);
+        *obj = NULL;
         return error;
     }
 
@@ -1689,7 +1691,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     if(error != 0) {
         free_fields(test, arraySize);
-        deleteCalendar(*obj);
+        free(*obj);
+        *obj = NULL;
         return error;
     }
     
@@ -1700,7 +1703,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
         //FREE
-        deleteCalendar(*obj);
+        free(*obj);
+        *obj = NULL;
         return error;
     }
 
@@ -1709,7 +1713,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     if(error != 0) {
         free_fields(test,arraySize);
-        deleteCalendar(*obj);
+        free(*obj);
+        *obj = NULL;
         return error;
     }
 
@@ -1718,7 +1723,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     if(error != 0) {
         D;
         free_fields(test, arraySize);
-        deleteCalendar(*obj);
+        free(*obj);
+        *obj = NULL;
         return error;
     }
 
@@ -1727,7 +1733,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     if(error != 0) {
         free_fields(test,arraySize);
-        deleteCalendar(*obj);
+        free(*obj);
+        *obj = NULL;
         return error;
     }
 
@@ -1735,7 +1742,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     if(error != 0) {
         free_fields(test,arraySize);
-        deleteCalendar(*obj); 
+        free(*obj);
+        *obj = NULL;
         return error;
     }
 
