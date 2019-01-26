@@ -19,66 +19,69 @@
 /* make the compare functions for the linked list */
 char* printEvent(void *toBePrinted) {
 	char *tempStr;
-    char *temp; 
+    char *temp;
 	Event *tempEvent;
 	if(toBePrinted == NULL) {
 		return NULL;
 	}
 
 	tempEvent = (Event*)toBePrinted;
-
-	/* We are going to have the print out the contents of the event object we just refrenced */
-	// printf("%s\n",tempEvent->UID);
-	tempStr = calloc(1, 500);
-
-    if(isEmpty(tempEvent->UID) && isEmpty(tempEvent->startDateTime.date) && isEmpty(tempEvent->creationDateTime.date) && isEmpty(tempEvent->creationDateTime.time)) {
-        return tempStr;
-    } 
-    if(!isEmpty(tempEvent->UID)) {
-        char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp, "UID:%s\n",tempEvent->UID);
-        strcat(tempStr, temp);
-        deallocator(temp);
-        //sprintf(tempStr, "UID:%s\nDTSTARTDATE:%s\nDTSTAMPDATE:%s\nDTSTAMPTIME:%s\nDTSTAMP:UTC:%d\nDTSTART:UTC:%d\n", tempEvent->UID,tempEvent->startDateTime.date,tempEvent->creationDateTime.date,tempEvent->creationDateTime.time,tempEvent->creationDateTime.UTC,tempEvent->startDateTime.UTC); 
-    } 
     
-    if(!isEmpty(tempEvent->creationDateTime.date)) {
-        char *temp = calloc(1,sizeof(char) * 50);
-        sprintf(temp, "DTSTAMPDATE:%s\n", tempEvent->creationDateTime.date);
+    /* Just print out all of the event things, not any of the alarm things */
+
+    // if(tempEvent == NULL) {
+    //     return NULL;
+    // }
+    tempStr = calloc(1, sizeof(char) * 100000);
+    
+    if(!isEmpty(tempEvent->UID)) {
+        temp = calloc(1, sizeof(char) * strlen(tempEvent->UID) + 500);
+        sprintf(temp, "\tUID:%s\n",tempEvent->UID);
+        //tempStr = realloc(tempStr, sizeof(char) * strlen(temp));
         strcat(tempStr,temp);
         deallocator(temp);
     }
+
+    if(!isEmpty(tempEvent->creationDateTime.date)) {
+        temp = calloc(1,sizeof(char) * strlen(tempEvent->creationDateTime.date) + 500);
+        sprintf(temp,"\tDTSTAMPDATE:%s\n",tempEvent->creationDateTime.date);
+        //tempStr = realloc(tempStr,sizeof(char) * strlen(temp));
+        strcat(tempStr,temp);
+        deallocator(temp);
+    } 
+
 
     if(!isEmpty(tempEvent->creationDateTime.time)) {
-        char *temp = calloc(1,sizeof(char) * 50);
-        sprintf(temp,"DTSTAMPTIME:%s\n",tempEvent->creationDateTime.time);
-        strcat(tempStr, temp);
+        temp = calloc(1, sizeof(char) * strlen(tempEvent->creationDateTime.time) + 500);
+        sprintf(temp,"\tDTSTAMPTIME:%s\n", tempEvent->creationDateTime.time);
+        //tempStr = realloc(tempStr,sizeof(char) * strlen(temp));
+        strcat(tempStr,temp);
         deallocator(temp);
     }
 
-    temp = calloc(1, sizeof(char) * 50);
-    sprintf(temp,"DTSTAMPUTC:%d\n", tempEvent->creationDateTime.UTC);
+    temp = calloc(1, sizeof(char) * (500));
+    sprintf(temp,"\tDTSTAMPUTC:%d\n",tempEvent->creationDateTime.UTC);
+    //tempStr = realloc(tempStr, sizeof(char) * strlen(temp) + 1);
     strcat(tempStr, temp);
     deallocator(temp);
+
 
     if(!isEmpty(tempEvent->startDateTime.date)) {
-        char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp,"DTSTARTDATE:%s\n",tempEvent->startDateTime.date);
+        temp = calloc(1,sizeof(char) * strlen(tempEvent->startDateTime.date) + 500);
+        sprintf(temp,"\tDTSTARTDATE:%s\n",tempEvent->startDateTime.date);
+        //tempStr = realloc(tempStr,sizeof(char) * strlen(temp));
+        strcat(tempStr,temp);
+        deallocator(temp);
+    } 
+
+
+    if(!isEmpty(tempEvent->startDateTime.time)) {
+        temp = calloc(1, sizeof(char) * strlen(tempEvent->startDateTime.time) + 500);
+        sprintf(temp,"\tDTSTARTTIME:%s\n", tempEvent->startDateTime.time);
+        //tempStr = realloc(tempStr,sizeof(char) * strlen(temp));
         strcat(tempStr,temp);
         deallocator(temp);
     }
-
-    if(!isEmpty(tempEvent->startDateTime.time)) {
-        char *temp = calloc(1, sizeof(char) * 50);
-        sprintf(temp,"DTSTARTTIME:%s\n",tempEvent->startDateTime.time);
-        strcat(tempStr,temp);
-        deallocator(temp); 
-    }
-
-    temp = calloc(1, sizeof(char) * 50);
-    sprintf(temp,"DTSTARTUTC:%d\n", tempEvent->startDateTime.UTC);
-    strcat(tempStr, temp);
-    deallocator(temp);
 
 	return tempStr;
 }
@@ -156,10 +159,11 @@ char *printAlarm(void *toBePrinted) {
     if(toBePrinted == NULL) {
         return NULL;
     }
+
     tempAlarm = (Alarm *)toBePrinted;
-    len = strlen(tempAlarm->action) + strlen(tempAlarm->trigger) + 90;
+    len = strlen(tempAlarm->action) + strlen(tempAlarm->trigger) + 200;
     tempStr = calloc(1, sizeof(char) * len);
-    sprintf(tempStr, "Alarms Action is : %s, Alarms Trigger is : %s\n", tempAlarm->action, tempAlarm->trigger);
+    sprintf(tempStr, "\tACTION:%s\n\tTRIGGER:%s\n", tempAlarm->action, tempAlarm->trigger);
     return tempStr;
 }
 
@@ -209,11 +213,11 @@ char *printProperty(void *toBePrinted) {
 
     tempProp = (Property *)toBePrinted;
 
-    len = strlen(tempProp->propDescr) + strlen(tempProp->propName) + 90;
+    len = strlen(tempProp->propDescr) + strlen(tempProp->propName) + 100;
 
     str = calloc(1, len * sizeof(char));
 
-    sprintf(str, "Property name:%s\nProperty Desc:%s\n", tempProp->propName,tempProp->propDescr);
+    sprintf(str, "\tPROPNAME:%s\n\tPROPDESC:%s\n", tempProp->propName,tempProp->propDescr);
 
     return str;
 }
@@ -1781,12 +1785,29 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
 char *printCalendar(const Calendar *obj) {    
     /* END TEST */
+    char *strEvent = NULL;
     printf("BEGIN CALENDAR\n");
     printf("\tVERSION:%.2f\n", obj->version);
     printf("\tPRODID:%s\n", obj->prodID);
     printf("END CALENDAR\n");
 
-    return NULL;
+    /* FIND EVENTS AND PRINT THEM */
+    void *event;
+
+    /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
+
+    ListIterator eventIter = createIterator(obj->events);
+
+    while((event = nextElement(&eventIter)) != NULL) {
+        printf("BEGIN EVENT:\n");
+        Event *listEvent = (Event*)event;
+        char *strEvent = obj->events->printData(listEvent);
+        printf("%s", strEvent);
+        deallocator(strEvent);
+        printf("END EVENT:\n");
+    }   
+    
+    return strEvent;
 }
 
 /* Freeing all of the contents of the Calendar */
