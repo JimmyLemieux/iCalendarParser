@@ -1528,6 +1528,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 if(isEmpty(right)) {
                     deallocator(left);
                     deallocator(right);
+                    free(new_alarm->trigger);
                     free(new_alarm);
                     free(new_event);
                     freeList(alarmList);
