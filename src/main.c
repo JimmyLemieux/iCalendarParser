@@ -8,15 +8,21 @@
 int main() {
     Calendar *obj;
     ICalErrorCode error;
-    char * errorStr;
+    char * errorStr = NULL;
     char *outString;
-    error = createCalendar("qqq.ics", &obj);
+    error = createCalendar("garb.ics", &obj);
 
+    errorStr = printError(error);
+
+    printf("ERROR -> %s\n",errorStr);
+    free(errorStr);
     if(error == 0) {
         printf("deleting the calendar\n");
         outString = printCalendar(obj);
         deleteCalendar(obj);
     }
+
+
 
     return 0;
 }
