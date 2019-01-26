@@ -729,6 +729,8 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
                     endFound = 1;
                     deallocator(checkLeft);
                     deallocator(checkRight);
+                    deallocator(left);
+                    deallocator(right);
                     break;
                 }
                 j++;
@@ -747,6 +749,8 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
             }
         }
     beginFound = 0;
+    deallocator(left);
+    deallocator(right);
     }
     return OK;
 }
