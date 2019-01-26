@@ -1781,6 +1781,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
 char *printCalendar(const Calendar *obj) {    
     /* END TEST */
+    printf("BEGIN CALENDAR\n");
+    printf("\tVERSION:%.2f\n", obj->version);
+    printf("\tPRODID:%s\n", obj->prodID);
+    printf("END CALENDAR\n");
+
     return NULL;
 }
 
