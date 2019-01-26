@@ -1436,6 +1436,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 if(isEmpty(right)) {
                     deallocator(left);
                     deallocator(right);
+                    freeList(eventPropList);
+                    freeList(alarmList);
                     return INV_EVENT;
                 }
                 strcpy(new_event->UID,right);
