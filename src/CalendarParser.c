@@ -1526,10 +1526,14 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
             if(strcasecmp(left,"ACTION") == 0) {
                 if(isEmpty(right)) {
+                    deallocator(left);
+                    deallocator(right);
                     return INV_ALARM;
                 }
                 strcpy(new_alarm->action,right);
             }else if(strcasecmp(left,"TRIGGER") == 0) {
+                    deallocator(left);
+                    deallocator(right);
                 if(isEmpty(right)) {
                     return INV_ALARM;
                 }
