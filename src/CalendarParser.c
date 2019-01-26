@@ -161,7 +161,7 @@ char *printAlarm(void *toBePrinted) {
     }
 
     tempAlarm = (Alarm *)toBePrinted;
-    len = strlen(tempAlarm->action) + strlen(tempAlarm->trigger) + 200;
+    len = strlen(tempAlarm->action) + strlen(tempAlarm->trigger) + 500;
     tempStr = calloc(1, sizeof(char) * len);
     sprintf(tempStr, "\tACTION:%s\n\tTRIGGER:%s\n", tempAlarm->action, tempAlarm->trigger);
     return tempStr;
@@ -213,7 +213,7 @@ char *printProperty(void *toBePrinted) {
 
     tempProp = (Property *)toBePrinted;
 
-    len = strlen(tempProp->propDescr) + strlen(tempProp->propName) + 100;
+    len = strlen(tempProp->propDescr) + strlen(tempProp->propName) + 500;
 
     str = calloc(1, len * sizeof(char));
 
@@ -1372,9 +1372,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             splitByFirstOccurence(lines[i], left,right,':');
         }
 
-        // stringToUpper(left);
-        // stringToUpper(right);
-
         if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VCALENDAR") == 0) {
             calOpen++;
             deallocator(left);
@@ -1389,7 +1386,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0 && calOpen == 1) {
             new_event = malloc(sizeof(Event));
             eventPropList = initializeList(&printProperty,&deleteProperty,&compareProperties);
             alarmList = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
@@ -1400,7 +1397,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0) {
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0 && calOpen == 1) {
             eventOpen--;
             deallocator(left);
             deallocator(right);
@@ -1412,7 +1409,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VALARM") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VALARM") == 0 && eventOpen == 1 && calOpen == 1) {
             new_alarm = malloc(sizeof(Alarm));
             alarmProps = initializeList(&printProperty, &deleteProperty,&compareProperties);
             new_alarm->trigger = calloc(1, sizeof(char) * 500);
@@ -1422,7 +1419,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
 
-        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0) {
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0 && alarmOpen == 1 && eventOpen == 1 && calOpen == 1) {
             new_alarm->properties = alarmProps;
             insertBack(alarmList, new_alarm);
             alarmOpen--;
@@ -1433,7 +1430,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         }
 
         /* Getting the event */
-        if(calOpen == 1 && eventOpen == 1) {
+        if(calOpen == 1 && eventOpen == 1 && !alarmOpen) {
             //printf("An Event property\n");
             if(strcasecmp(left,"UID") == 0 && new_event != NULL) {
                 strcpy(new_event->UID,right);
@@ -1514,9 +1511,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
                 insertBack(eventPropList,newEventProp);
-                // printf("Calendar Prop\n");
-                // printf("left: %s\n", left);
-                // printf("right: %s\n", right);
 
             }
 
@@ -1536,8 +1530,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 /* The trigger was initialized in the top to restrict it from being null */
                 //new_alarm->trigger = calloc(1, sizeof(char) * 500);
                 strcpy(new_alarm->trigger, right);
+
             } else {
                 new_alarm_prop = malloc(sizeof(Property));
+                //printf("right:%s\n", right);
                 strcpy(new_alarm_prop->propName,left);
                 strcpy(new_alarm_prop->propDescr,right);
                 insertBack(alarmProps,new_alarm_prop);
@@ -1805,9 +1801,30 @@ char *printCalendar(const Calendar *obj) {
         printf("%s", strEvent);
         deallocator(strEvent);
 
+        void *listAlarm;
+
+        ListIterator alarmIter = createIterator(listEvent->alarms);
+
+        while((listAlarm = nextElement(&alarmIter)) != NULL) {
+            printf("BEGIN ALARM:\n");
+            Alarm *newAlarm = (Alarm*)listAlarm;
+            char *strAlarm = listEvent->alarms->printData(newAlarm);
+            printf("%s", strAlarm);
+            deallocator(strAlarm);
+
+            void *alarmProps;
+            ListIterator alarmPropsIter = createIterator(newAlarm->properties);
+            
+            while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
+                Property *alarmProperty = (Property*)alarmProps;
+                char *strAlarmProps = newAlarm->properties->printData(alarmProperty);
+                printf("%s", strAlarmProps);
+                deallocator(strAlarmProps);
+            }
+            printf("END ALARM:\n");
+        }
 
 
-        
 
 
         void *eventProps;
