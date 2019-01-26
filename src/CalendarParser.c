@@ -1538,9 +1538,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 }
                 strcpy(new_alarm->action,right);
             }else if(strcasecmp(left,"TRIGGER") == 0) {
+                if(isEmpty(right)) {
                     deallocator(left);
                     deallocator(right);
-                if(isEmpty(right)) {
+                    free(new_alarm->trigger);
+                    free(new_alarm);
+                    free(new_event);
+                    freeList(alarmList);
+                    freeList(alarmProps);
+                    freeList(eventPropList);
                     return INV_ALARM;
                 }
                 /* The trigger was initialized in the top to restrict it from being null */
