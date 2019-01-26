@@ -11,14 +11,12 @@ int main() {
     ICalErrorCode error;
     char * errorStr;
     char *outString;
-    error = createCalendar("garb.ics", &obj);
+    error = createCalendar("qqq.ics", &obj);
 
     if(error == 0) {
         printf("deleting the calendar\n");
-        outString = printCalendar(obj);
-        free(outString);
-        // freeList(obj->events);
-        // freeList(obj->properties); 
+        //outString = printCalendar(obj);
+        //free(outString);
         deleteCalendar(obj);
     }
     //outString = printCalendar(obj);

@@ -477,6 +477,7 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     int index;
     int foundVersion = 0;
     int foundPRODID = 0;
+    int calComp = 0;
     int open = 0;
     char *left = NULL;
     char *right = NULL;
@@ -570,6 +571,9 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         }
 
         if(strcasecmp(left,"begin") == 0) {
+            if(strcasecmp(right,"VEVENT") == 0) {
+                calComp++;
+            }
             open++;
             deallocator((char *)left);
             deallocator((char *)right);
@@ -611,10 +615,424 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     }
 
 
-    if(!foundPRODID || !foundVersion) {
+    if(!foundPRODID || !foundVersion || !calComp) {
         printf("Could't find prodid or version\n");
         return INV_CAL;
     } 
+
+    return OK;
+}
+
+
+ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
+    int i;
+    int j;
+    char *right;
+    char *left;
+    const char validComponents[3][50] = { "VCALENDAR", "VEVENT", "VALARM" };
+
+
+    if(lines == NULL || arraySize == 0) {
+        return OTHER_ERROR;
+    }
+
+    for(i = 0;i<arraySize;i++) {
+        if(!containsChar(lines[i], ':') || lines[i][0] == ';') {
+            continue;
+        }
+
+        left = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
+        right = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
+
+        splitContentLine(lines[i], left,right);
+
+        if(strcasecmp(left, "BEGIN") == 0 || strcasecmp(left,"END") == 0) {
+            int found = 0;
+            for(j = 0;j<3;j++) {
+                if(strcasecmp(validComponents[j], right) == 0) {
+                    found = 1;
+                    break;
+                }   
+            }
+            if(found == 1) {
+                deallocator(left);
+                deallocator(right);
+                continue; 
+            } else {
+                deallocator(left);
+                deallocator(right);
+                return INV_CAL; 
+            }
+
+        }
+        deallocator(left);
+        deallocator(right);
+    } 
+    return OK;
+}
+
+
+ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
+    int i;
+    int j;
+    char *right;
+    char *left;
+    int beginFound = 0;
+    if(lines == NULL || arraySize == 0) {
+        return OTHER_ERROR;
+    }
+
+    for(i = 0;i<arraySize;i++) {
+        if(!containsChar(lines[i],':') ||  lines[i][0] == ';') {
+            continue;
+        }
+        left = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
+        right = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
+        /* The string contains the char */
+
+        //splitByFirstOccurence(lines[i],left,right,':');
+        splitContentLine(lines[i],left,right);
+
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0 && !beginFound) {
+            deallocator(left);
+            deallocator(right);
+            return INV_EVENT;
+        }
+
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
+            beginFound = 1;
+            int endFound = 0;
+            j = i+1;
+            while(j < arraySize) {
+                char *checkLeft;
+                char *checkRight;
+                
+                if(!containsChar(lines[i], ':') || lines[i][0] == ';') {
+                    j++;
+                    continue;
+                } 
+                checkLeft = calloc(1, sizeof(char) * strlen(lines[j]) + 500);
+                checkRight = calloc(1, sizeof(char) * strlen(lines[j]) + 500);
+
+                splitContentLine(lines[j],checkLeft,checkRight);
+
+                if(strcasecmp(checkLeft,"BEGIN") == 0 && strcasecmp(checkRight,"VEVENT") == 0) {
+                    deallocator(checkLeft);
+                    deallocator(checkRight);
+                    deallocator(left);
+                    deallocator(right);
+                    return INV_EVENT;
+                }
+
+                if(strcasecmp(checkLeft,"END") == 0 && strcasecmp(checkRight,"VEVENT") == 0) {
+                    i = j;
+                    endFound = 1;
+                    deallocator(checkLeft);
+                    deallocator(checkRight);
+                    break;
+                }
+                j++;
+                deallocator(checkLeft);
+                deallocator(checkRight);
+            }
+
+            if(endFound == 1) {
+                deallocator(left);
+                deallocator(right);
+                continue;
+            } else {
+                deallocator(left);
+                deallocator(right);
+                return INV_EVENT; 
+            }
+        }
+    beginFound = 0;
+    }
+    return OK;
+}
+
+
+
+ICalErrorCode checkEventRequirements(char **lines, int arraySize) {
+    int i;
+    int openEvent = 0;
+    int openOther = 0;
+    int uidCount = 0;
+    int dtStartCount = 0;
+    int dtStampCount = 0;
+
+    char *left;
+    char *right;
+    if(lines == NULL || arraySize == 0) {
+        return OTHER_ERROR;
+    }
+
+    for(i = 0;i<arraySize;i++) {
+        if(!containsChar(lines[i],':') || lines[i][0] == ';') {
+            continue;
+        }
+
+        left = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
+        right = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
+
+        splitContentLine(lines[i],left,right);
+
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
+            openEvent++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"BEGIN") == 0 && openEvent == 1) {
+            openOther++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "END") == 0 && openEvent == 1 && openOther >= 1) {
+            openOther--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0) {
+            openEvent--;
+
+            if(uidCount != 1 || dtStartCount != 1 || dtStampCount != 1) {
+                deallocator(left);
+                deallocator(right);
+                return INV_EVENT;
+            }
+            uidCount = 0;
+            dtStampCount = 0;
+            dtStartCount = 0;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        } 
+
+        if(strcasecmp(left,"UID") == 0 && openEvent == 1 && !openOther) {
+            uidCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if (strcasecmp(left, "DTSTART") == 0 && openEvent == 1 && !openOther) {
+            dtStartCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "DTSTAMP") == 0 && openEvent == 1 && !openOther) {
+            dtStampCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        deallocator(left);
+        deallocator(right);
+    }
+
+    return OK;
+
+}
+
+ICalErrorCode checkAlarmBeginEnd(char **lines, int arraySize) {
+    int i;
+    int j;
+    int eventOpen = 0;
+    int isFound = 0;
+    char *right;
+    char *left;
+    if(lines == NULL || arraySize == 0) {
+        return OTHER_ERROR;
+    }
+
+    for(i = 0;i<arraySize;i++) {
+        if(!containsChar(lines[i], ':') || lines[i][0] == ';') {
+            continue;
+        }
+
+        left = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
+        right = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
+
+        splitContentLine(lines[i], left,right);
+
+
+
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
+            eventOpen++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "END") == 0 && strcasecmp(right, "VEVENT") == 0) {
+            eventOpen--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0 && !isFound) {
+            deallocator(left);
+            deallocator(right);
+            return INV_ALARM;
+        }
+
+
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right, "VALARM") == 0) {
+            if(eventOpen != 1) {
+                deallocator(left);
+                deallocator(right);
+                return INV_ALARM;
+            }
+
+            j = i+1;
+
+            while(j < arraySize) {
+                char *tempLeft;
+                char *tempRight;
+
+                if(!containsChar(lines[j],':') || lines[j][0] == ';') {
+                    j++;
+                    continue;
+                }
+
+                tempLeft = calloc(1, sizeof(char) * (strlen(lines[j])) + 100);
+                tempRight = calloc(1, sizeof(char) * (strlen(lines[j])) + 100);
+
+                splitContentLine(lines[j], tempLeft,tempRight);
+
+                if((strcasecmp(tempLeft,"BEGIN") == 0) && (strcasecmp(tempRight,"VALARM") == 0 || strcasecmp(tempRight,"VEVENT") == 0)) {
+                    deallocator(tempLeft);
+                    deallocator(tempRight);
+                    deallocator(left);
+                    deallocator(right);
+                    return INV_ALARM;
+                }
+
+                if(strcasecmp(tempLeft, "END") == 0 && (strcasecmp(tempRight, "VEVENT") == 0)) {
+                    deallocator(tempLeft);
+                    deallocator(tempRight);
+                    deallocator(left);
+                    deallocator(right);
+                    return INV_ALARM;
+                }
+
+                if(strcasecmp(tempLeft,"END") == 0 && strcasecmp(tempRight,"VALARM") == 0) {
+                    i = j;
+                    isFound = 1;
+                    deallocator(tempLeft);
+                    deallocator(tempRight);
+                    deallocator(left);
+                    deallocator(right);
+                    break;
+                }
+                j++;
+                deallocator(tempLeft);
+                deallocator(tempRight);
+            }
+
+            if(isFound == 1) {
+                isFound = 0;
+                continue;
+            }
+
+            deallocator(left);
+            deallocator(right);
+        }
+
+
+
+        deallocator(left);
+        deallocator(right);
+
+    }
+
+    return OK;
+
+}
+
+
+ICalErrorCode checkAlarmRequirements(char ** lines, int arraySize) {
+    int i;
+    int openEvent = 0;
+    int openAlarm = 0;
+    int triggerCount = 0;
+    int actionCount = 0;
+    char *right;
+    char *left;
+    if(lines == NULL || arraySize == 0) {
+        return OTHER_ERROR;
+    }
+
+    for(i = 0;i<arraySize;i++) {
+        if(!containsChar(lines[i], ':') || lines[i][0] == ';') {
+            continue;
+        }
+
+        left = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
+        right = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
+
+        splitContentLine(lines[i], left,right);
+
+
+        if(strcasecmp(left, "BEGIN") == 0 && strcasecmp(right, "VEVENT") == 0) {
+            openEvent++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "END") == 0 && strcasecmp(right, "VEVENT") == 0) {
+            openEvent--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "BEGIN") == 0 && strcasecmp(right, "VALARM") == 0 && openEvent == 1) {
+            openAlarm++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "END") == 0 && strcasecmp(right, "VALARM") == 0 && openEvent == 1) {
+            openAlarm--;
+            if(triggerCount != 1 || actionCount != 1) {
+                return INV_ALARM;
+            }
+            triggerCount = 0;
+            actionCount = 0;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left , "TRIGGER") == 0 && openAlarm == 1 && openEvent == 1) {
+            triggerCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "ACTION") == 0 && openAlarm == 1 && openEvent == 1) {
+            actionCount++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+        deallocator(left);
+        deallocator(right);
+    }
 
     return OK;
 }
@@ -635,6 +1053,7 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
     char *right;
     char *left;
     int openEvent = 0;
+    int openAlarm = 0;
     int uidCount = 0;
     int dtStart = 0;
     int dtStamp = 0;
@@ -648,7 +1067,7 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
         /* Do the regular split of the left and right, once you are in an event you can check for the required
         fields, such as UID, DTSTART and the DTSTAMP */
 
-        if(!containsChar(lines[i],':')) {
+        if(!containsChar(lines[i],':') || lines[i][0] == ';') {
             continue;
         }
         left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
@@ -665,43 +1084,59 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
             splitByFirstOccurence(lines[i], left,right,':');
         }
 
-        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0 && openAlarm == 0) {
             openEvent++;
             deallocator(left);
             deallocator(right);
             continue;
         }
 
-        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VALARM") == 0) {
+            openAlarm++;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0 && openAlarm == 0) {
             if(uidCount != 1 || dtStart != 1 || dtStamp != 1 || openEvent != 1) {
                 deallocator(left);
                 deallocator(right);
+                printf("This was called\n");
                 return INV_EVENT;
             }
             uidCount = 0;
             dtStart = 0;
             dtStamp = 0;
+            openAlarm = 0;
             openEvent--;
             deallocator(left);
             deallocator(right);
             continue;
         }
 
-        if(strcasecmp(left,"UID") == 0 && openEvent == 1) {
+        if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0 && openAlarm == 1) {
+            openAlarm--;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left,"UID") == 0 && openEvent == 1 && openAlarm == 0) {
             uidCount++;
             deallocator(left);
             deallocator(right);
             continue;
         }
 
-        if(strcasecmp(left,"DTSTART") == 0 && openEvent == 1) {
+        if(strcasecmp(left,"DTSTART") == 0 && openEvent == 1 && openAlarm == 0) {
             dtStart++;
             deallocator(left);
             deallocator(right);
             continue;
         }
 
-        if(strcasecmp(left,"DTSTAMP") == 0 && openEvent == 1) {
+        if(strcasecmp(left,"DTSTAMP") == 0 && openEvent == 1 && openAlarm == 0) {
             dtStamp++;
             deallocator(left);
             deallocator(right);
@@ -720,6 +1155,7 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
 }
 
 ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
+    int eventCount = 0;
     int openAlarm = 0;
     int actionCount = 0;
     int triggerCount = 0;
@@ -733,7 +1169,7 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
     }
 
     for(i = 0;i<arraySize;i++) {
-        if(!containsChar(lines[i],':')) {
+        if(!containsChar(lines[i],':') || lines[i][0]) {
             continue;
         }
         left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
@@ -750,8 +1186,8 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
             splitByFirstOccurence(lines[i], left,right,':');
         }
 
-
         /* Here just check for the alarms required props */
+
 
         if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VALARM") == 0) {
             openAlarm++;
@@ -785,15 +1221,18 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
         }
 
         if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0) {
-            if(triggerCount != 1 || actionCount != 1 || openAlarm != 1) {
-                return INV_ALARM;
+            if(triggerCount == 1 || actionCount == 1 || openAlarm == 1) {
+                triggerCount = 0;
+                actionCount = 0;
+                openAlarm--;
+                deallocator(left);
+                deallocator(right);
+                continue;
             }
-            triggerCount = 0;
-            actionCount = 0;
-            openAlarm--;
-            deallocator(left);
-            deallocator(right);
-            continue;
+                deallocator(left);
+                deallocator(right);
+                return INV_ALARM;
+
         } 
         deallocator(left);
         deallocator(right);
@@ -817,11 +1256,9 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     char *right;
 
     Property *new_prop = NULL;
-    List *props = NULL;
 
-    props = initializeList(&printProperty,&deleteProperty,&compareProperties);
     for(i = 0;i<arraySize;i++) {
-        if(!containsChar(lines[i],':')) {
+        if(!containsChar(lines[i],':') || lines[i][0] == ';') {
             continue;
         }
         left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
@@ -879,14 +1316,13 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             } else {
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
-                insertBack(props, new_prop);
+                insertBack(obj->properties, new_prop);
             }
         }
 
         deallocator(left);
         deallocator(right);
     }
-    obj->properties = props;
     return OK;
 }
 
@@ -907,14 +1343,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     Alarm *new_alarm = NULL;
     Property *new_alarm_prop = NULL;
     Property *newEventProp = NULL;
-    List *eventList = NULL;
     List *eventPropList = NULL;
     List *alarmList = NULL;
     List *alarmProps = NULL;
 
-    eventList = initializeList(&printEvent,&deleteEvent,&compareEvents);
     for(i = 0;i<arraySize;i++) {
-        if(!containsChar(lines[i],':')) {
+        if(!containsChar(lines[i],':') ||  lines[i][0] == ';') {
             continue;
         }
         left = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
@@ -966,7 +1400,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             deallocator(right);
             new_event->alarms = alarmList;
             new_event->properties = eventPropList;
-            insertBack(eventList,new_event);
+            insertBack(obj->events,new_event);
             alarmList = NULL;
             eventPropList = NULL;
             continue;
@@ -1108,7 +1542,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
     }
 
-    obj->events = eventList;
     return OK;
 }
 
@@ -1121,7 +1554,7 @@ ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
     char *left;
     char *right;
     for(i = 0;i<arraySize;i++) {
-        if(!containsChar(lines[i],':')) {
+        if(!containsChar(lines[i],':') || lines[i][0] == ';') {
             continue;
         }
         left = calloc(1,sizeof(char) * strlen(lines[i]) +50);
@@ -1201,59 +1634,6 @@ void lineUnfold(char **lines, int arraySize) {
 }
 
 
-ICalErrorCode lineMisMatch(char **lines, int arraySize) {
-    
-    return OK;
-}
-
-
-ICalErrorCode checkIfCalendarEvent(char **lines, int arraySize) {
-    int i;
-    char *left;
-    char *right;
-    int eventCount = 0;
-    if(lines == NULL || arraySize == 0) {
-        return INV_CAL;
-    }
-
-    /* This function will check to see if the calendar has an event component */
-    for(i = 0;i<arraySize;i++) {
-        if(!containsChar(lines[i],':')) {
-            continue;
-        }
-        left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
-        right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
-        /* The string contains the char */
-
-        //splitByFirstOccurence(lines[i],left,right,':');
-
-        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
-            /* We are going to split by first occurence of the ; */
-            splitByFirstOccurence(lines[i], left,right,';');
-        } else {
-            /* we are going to split by first occurence of the : */
-            splitByFirstOccurence(lines[i], left,right,':');
-        }
-
-        if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
-            eventCount++;
-            deallocator(left);
-            deallocator(right);
-            continue;
-        }
-        deallocator(left);
-        deallocator(right);
-        
-    }
-
-    if(eventCount == 0) {
-        return INV_CAL;
-    }
-
-    return OK;
-}
-
-
 
 
 /* Ending the functions that help with parsing the linked list*/
@@ -1270,16 +1650,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
    // obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
     /* These cannot be NULL but can be empty */
-    (*obj)->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
-    (*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
 
     /* START OF FILE FUNCTIONS */
     error = validateFile(fileName);
 
     if(error != 0) {
-        // free(*obj);
-        // *obj = NULL;
-        //deleteCalendar(*obj);
         deleteCalendar(*obj);
         return INV_FILE;
     }
@@ -1306,20 +1681,15 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         test[i] = trimSpecialChars(test[i]);
     }
 
-    /* Test the line unfolding function */
-
-    //lineUnfold(test,arraySize);
-
-
-    /* Check for line mismatches here */
-
-    // error = lineMisMatch(test,arraySize);
-    // if(error != 0) {
-    //     printf("There was a line mismatch\n");
-    //     return INV_CAL;
-    // }
-
     /* Test valid prop names */
+
+    error = checkBeginsAndEnds(test, arraySize);
+
+    if(error != 0) {
+        free_fields(test, arraySize);
+        deleteCalendar(*obj);
+        return error;
+    }
     
 
     error = checkCalendarHead(test,arraySize);
@@ -1332,7 +1702,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return error;
     }
 
-    error = checkIfCalendarEvent(test, arraySize);
+
+    error = checkEventBeginEnd(test,arraySize);
 
     if(error != 0) {
         free_fields(test,arraySize);
@@ -1340,27 +1711,38 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return error;
     }
 
-    /*Start to validate the events and the alarms */
-    error = checkEventHead(test,arraySize);
+    error = checkEventRequirements(test, arraySize);
 
     if(error != 0) {
-        free_fields(test,arraySize);
-        deleteCalendar(*obj);
-        return error;
-    }
-
-    error = checkAlarmHead(test, arraySize);
-
-    if(error != 0) {
+        D;
         free_fields(test, arraySize);
         deleteCalendar(*obj);
         return error;
     }
 
 
-    /* Make functions to return the version and proID into the calendar object */
+    error = checkAlarmBeginEnd(test, arraySize);
 
-    //(*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
+    if(error != 0) {
+        free_fields(test,arraySize);
+        deleteCalendar(*obj);
+        return error;
+    }
+
+    error = checkAlarmRequirements(test, arraySize);
+
+    if(error != 0) {
+        free_fields(test,arraySize);
+        deleteCalendar(*obj); 
+        return error;
+    }
+
+    (*obj)->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
+    (*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
+
+    // /* Make functions to return the version and proID into the calendar object */
+
+    // //(*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
     error = fetchCalendarProps(*obj,test,arraySize);
     if(error != 0) {
         printf("Found an error while parsing the version and proID\n");
@@ -1371,14 +1753,14 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         return error;
     }
 
-    // Look for the events
-    /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
-    /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
+    // // Look for the events
+    // /* Basically look for the BEGIN:VEVENT then loop until you find the END:VEVENT. The parse all of the contents out of the VEVENT */
+    // /* Just assume a simple CALENDAR file, and then from there just continue. I will check for the validations later*/
 
 
-    /* Check events */
+    // /* Check events */
 
-
+    D;
     error = fetchCalEvents(*obj, test,arraySize);
     if(error != 0) {
         printf("Found an error while looking for the events\n");
@@ -1390,82 +1772,14 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     }
 
     free_fields(test,arraySize);
-    //D;
+
     return OK;
 }
 
 
-char *printCalendar(const Calendar *obj) {
-    char *outString;
-
-    if(obj == NULL) {
-        return NULL;
-    }
-    outString = calloc(1,sizeof(outString) * (strlen(obj-> prodID)) + 70);
-    /* First put the required componenets from the calendar into the out string */
-    sprintf(outString, "Calendar Version:%.2f\nCalendar Prodid:%s\n",obj->version,obj->prodID);
-    printf("%s\n", outString);
-    // printf("Non required components of the calendar!\n");
-
-    /* Testing printing out the non required props for the calendar */
-    if(obj->properties != NULL) {
-        void *prop;
-        ListIterator iter = createIterator(obj->properties);        
-        while((prop = nextElement(&iter)) != NULL) {
-            Property *tmpProp = (Property*)prop;
-            char *str = obj->properties->printData(tmpProp);
-            printf("%s\n", str);
-            deallocator(str);
-        }
-    }
+char *printCalendar(const Calendar *obj) {    
     /* END TEST */
-
-
-    /* Testing printing out the events for the calendar */
-    void *event;
-    if(obj->events != NULL) {
-
-    ListIterator eIter = createIterator(obj->events);
-
-        while((event = nextElement(&eIter)) != NULL) {
-            Event *tmpEvent = (Event*)event;
-            char *str = obj->events->printData(tmpEvent);
-            printf("%s\n", str);
-            deallocator(str);
-            /* The events properties */
-
-            void *eventProp;
-            ListIterator eventPropIter = createIterator(tmpEvent->properties);
-            while((eventProp = nextElement(&eventPropIter)) != NULL) {
-                Property *tmpProp = (Property*)eventProp;
-                printf("%s, %s\n", tmpProp->propName,tmpProp->propDescr);
-            }
-            
-            /* Each of these events can possibly have an alarm */
-            void *alarm;
-            ListIterator aIter = createIterator(tmpEvent->alarms); 
-            while((alarm = nextElement(&aIter)) != NULL) {
-                Alarm *tmpAlarm = (Alarm*)alarm;
-                printf("The event with alarm action: %s\n", tmpAlarm->action);
-                printf("The event with trigger: %s\n", tmpAlarm->trigger);
-
-                void *alarmProp;
-
-                ListIterator alarmPropIter = createIterator(tmpAlarm->properties);
-                while((alarmProp = nextElement(&alarmPropIter)) != NULL) {
-                    Property *tmpProp = (Property*)alarmProp;
-                    printf("Alarm Prop\n");
-                    printf("PropName: %s\n", tmpProp->propName);
-                    printf("PropDesc: %s\n", tmpProp->propDescr);
-
-                }
-            }
-        }
-    }
-
-    /* END TEST */
-
-    return outString;
+    return NULL;
 }
 
 /* Freeing all of the contents of the Calendar */

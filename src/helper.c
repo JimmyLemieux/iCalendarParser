@@ -212,3 +212,18 @@ void removeFirstChar(char *temp) {
     temp += 1;
     printf("%s",temp); 
 }
+
+void splitContentLine(char *line, char *left, char *right) {
+    if(left == NULL || right == NULL || line == NULL) {
+        return;
+    }
+    if(containsChar(line, ';') && checkBefore(line,';',':')) {
+    /* We are going to split by first occurence of the ; */
+    splitByFirstOccurence(line, left,right,';');
+
+    } else {
+        /* we are going to split by first occurence of the : */
+        splitByFirstOccurence(line, left,right,':');
+    }
+
+}
