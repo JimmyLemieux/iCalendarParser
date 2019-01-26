@@ -1525,8 +1525,14 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             /* The properties that are in the alarm comp */
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
             if(strcasecmp(left,"ACTION") == 0) {
+                if(isEmpty(right)) {
+                    return INV_ALARM;
+                }
                 strcpy(new_alarm->action,right);
             }else if(strcasecmp(left,"TRIGGER") == 0) {
+                if(isEmpty(right)) {
+                    return INV_ALARM;
+                }
                 /* The trigger was initialized in the top to restrict it from being null */
                 //new_alarm->trigger = calloc(1, sizeof(char) * 500);
                 strcpy(new_alarm->trigger, right);
@@ -1770,15 +1776,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     // /* Check events */
 
-    D;
     error = fetchCalEvents(*obj, test,arraySize);
     if(error != 0) {
-        printf("Found an error while looking for the events\n");
         free_fields(test,arraySize);
-        // deallocator(obj);
-        //FREE
         deleteCalendar(*obj);
-        return OTHER_ERROR;
+        return error;
     }
 
     free_fields(test,arraySize);
@@ -1793,14 +1795,23 @@ char *printCalendar(const Calendar *obj) {
     printf("BEGIN CALENDAR\n");
     printf("\tVERSION:%.2f\n", obj->version);
     printf("\tPRODID:%s\n", obj->prodID);
-    printf("END CALENDAR\n");
 
+
+    void *calProps;
+
+    ListIterator calPropIter = createIterator(obj->properties);
+
+    while((calProps = nextElement(&calPropIter)) != NULL) {
+        Property *calProp = (Property*)calProps;
+        char *strCalProp = obj->properties->printData(calProp);
+        printf("%s", strCalProp);
+        deallocator(strCalProp);
+    }
 
 
 
     /* FIND EVENTS AND PRINT THEM */
     void *event;
-
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
 
     ListIterator eventIter = createIterator(obj->events);
@@ -1848,6 +1859,7 @@ char *printCalendar(const Calendar *obj) {
         }
         printf("END EVENT:\n");
     }   
+    printf("END CALENDAR\n");
     
     return strEvent;
 }
