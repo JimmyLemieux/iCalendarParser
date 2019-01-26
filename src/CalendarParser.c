@@ -1433,6 +1433,11 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(calOpen == 1 && eventOpen == 1 && !alarmOpen) {
             //printf("An Event property\n");
             if(strcasecmp(left,"UID") == 0 && new_event != NULL) {
+                if(isEmpty(right)) {
+                    deallocator(left);
+                    deallocator(right);
+                    return INV_EVENT;
+                }
                 strcpy(new_event->UID,right);
             } else if(strcasecmp(left,"DTSTART") == 0 && new_event != NULL) {
                 if(containsChar(right,':')) {

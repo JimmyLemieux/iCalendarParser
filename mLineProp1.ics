@@ -11,7 +11,7 @@ CLASS:PUBLIC
 SUMMARY:Lorem ipsum dolor sit amet,consectetur adipiscing elit.
 END:VEVENT
 BEGIN:VEVENT
-UID:uid1@example.com
+UID:
 DTSTAMP;TZID=America/New_York:19970714T170000Z
 DTEND:19970715T035959Z
 BEGIN:VALARM
