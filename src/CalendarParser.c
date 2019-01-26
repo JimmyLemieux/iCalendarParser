@@ -1795,6 +1795,9 @@ char *printCalendar(const Calendar *obj) {
     printf("\tPRODID:%s\n", obj->prodID);
     printf("END CALENDAR\n");
 
+
+
+
     /* FIND EVENTS AND PRINT THEM */
     void *event;
 
@@ -1843,9 +1846,6 @@ char *printCalendar(const Calendar *obj) {
             printf("%s", strProp);
             deallocator(strProp);
         }
-
-
-
         printf("END EVENT:\n");
     }   
     
