@@ -217,7 +217,7 @@ char *printProperty(void *toBePrinted) {
 
     str = calloc(1, len * sizeof(char));
 
-    sprintf(str, "\tPROPNAME:%s\n\tPROPDESC:%s\n", tempProp->propName,tempProp->propDescr);
+    sprintf(str, "\t%s:%s\n", tempProp->propName,tempProp->propDescr);
 
     return str;
 }
@@ -1804,6 +1804,23 @@ char *printCalendar(const Calendar *obj) {
         char *strEvent = obj->events->printData(listEvent);
         printf("%s", strEvent);
         deallocator(strEvent);
+
+
+
+        
+
+
+        void *eventProps;
+        ListIterator eventPropIter = createIterator(listEvent->properties);
+        while((eventProps = nextElement(&eventPropIter)) != NULL) {
+            Property *eventProperty = (Property*)eventProps;
+            char *strProp = listEvent->properties->printData(eventProperty);
+            printf("%s", strProp);
+            deallocator(strProp);
+        }
+
+
+
         printf("END EVENT:\n");
     }   
     
