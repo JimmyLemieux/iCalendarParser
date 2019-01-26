@@ -729,8 +729,6 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
                     endFound = 1;
                     deallocator(checkLeft);
                     deallocator(checkRight);
-                    deallocator(left);
-                    deallocator(right);
                     break;
                 }
                 j++;
