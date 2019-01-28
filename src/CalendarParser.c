@@ -376,6 +376,12 @@ ICalErrorCode validateFile(char *fileName) {
         return INV_FILE;
     }
 
+    fseek(file, 0, SEEK_END);
+    if(ftell(file) == 0) {
+        D;
+        return INV_FILE;
+    }
+
     //End of pen test for file
     fclose(file);
     deallocator(tempFile);
@@ -405,6 +411,10 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
 
 
     /* This reads in the file line by line */
+
+
+    /* Check to see if there is anything to read in the file */
+
     while((c = fgetc(file)) != EOF) {
         stringBuffer[stringSize] = (char)c;
         if((char) c == '\n') fileLineCount++; 
@@ -412,6 +422,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
         stringBuffer = realloc(stringBuffer,sizeof(stringBuffer) * (stringSize) + 1);
         stringBuffer[stringSize] = '\0';
     } //End of reading from the array
+
 
     while(index < strlen(stringBuffer) - 1) {
         if(stringBuffer[index] == '\r') {
@@ -665,6 +676,7 @@ ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
             } else {
                 deallocator(left);
                 deallocator(right);
+                D;
                 return INV_CAL; 
             }
 
@@ -1161,7 +1173,6 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
 }
 
 ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
-    int eventCount = 0;
     int openAlarm = 0;
     int actionCount = 0;
     int triggerCount = 0;
@@ -1302,8 +1313,8 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
         /* These are the properties that belong to the calendar! */
         if(open == 1) {
-            new_prop = malloc(sizeof(Property));
             //printf("left:%s\tright:%s\n",left,right);
+            new_prop = malloc(sizeof(Property));
             if(strcasecmp(left, "VERSION") == 0) {
                 if(sscanf(right,"%f", &(obj->version)) != 0 && strlen(right) != 0) {
                     deallocator(new_prop);
@@ -1698,11 +1709,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     char **test = readFileChar(fileName, &arraySize,&fileLines);
 
 
+
     /* This function has been fixed */
     error = validateFileLines(test,arraySize,fileLines); 
 
     if(error != 0) { //Error With the file
-        printf("Invalid file\n");
         free_fields(test,arraySize);
         // deallocator(obj);
         free(*obj);
@@ -1730,7 +1741,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     error = checkCalendarHead(test,arraySize);
 
     if(error != 0) {
-        printf("This is an invalid calendar\n");
         free_fields(test,arraySize);
         //FREE
         free(*obj);
@@ -1751,7 +1761,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     error = checkEventRequirements(test, arraySize);
 
     if(error != 0) {
-        D;
         free_fields(test, arraySize);
         free(*obj);
         *obj = NULL;
@@ -1785,7 +1794,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     // //(*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
     error = fetchCalendarProps(*obj,test,arraySize);
     if(error != 0) {
-        printf("Found an error while parsing the version and proID\n");
         free_fields(test,arraySize);
         // deallocator(obj);
         //FREE
@@ -1944,6 +1952,14 @@ char *printError(ICalErrorCode err) {
             strcpy(temp,"OTHER_ERROR");
     }
     return temp;
+}
+
+ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
+    return OK;
+}
+
+ICalErrorCode validateCalendar(const Calendar* obj) {
+    return OK;
 }
 
 

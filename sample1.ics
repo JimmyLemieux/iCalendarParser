@@ -33,9 +33,7 @@ TRIGGER;RELATED=END:-P2D
 ACTION:EMAIL
 ATTENDEE:mailto:john_doe@example.com
 SUMMARY:*** REMINDER: SEND AGENDA FOR WEEKLY STAFF MEETING ***
-DESCRIPTION:A draft agenda needs to be sent out to the attendees
- to the weekly managers meeting (MGR-LIST). Attached is a
- pointer the document template for the agenda file.
+DESCRIPTION:A draft agenda needs to be sent out to the attendeesto the weekly managers meeting (MGR-LIST). Attached is apointer the document template for the agenda file.
 ATTACH;FMTTYPE=application/msword:http://example.com/
  templates/agenda.doc
 END:VALARM
