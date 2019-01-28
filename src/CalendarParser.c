@@ -1613,6 +1613,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(right);
                     free(new_alarm);
                     free(new_alarm_prop);
+                    freeList(alarmProps);
+                    freeList(eventPropList);
+                    return INV_ALARM;
                 }
                 strcpy(new_alarm_prop->propName,left);
                 strcpy(new_alarm_prop->propDescr,right);
