@@ -16,11 +16,11 @@ int main() {
 
     printf("ERROR -> %s\n",errorStr);
     free(errorStr);
-
-
+    
     if(error == 0) {
         printf("deleting the calendar\n");
         outString = printCalendar(obj);
+        outString = NULL;
         deleteCalendar(obj);
     }
 
