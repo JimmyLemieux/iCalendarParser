@@ -1695,8 +1695,6 @@ void lineUnfold(char **lines, int arraySize) {
 }
 
 
-
-
 /* Ending the functions that help with parsing the linked list*/
 /* Starting the mandatory functions for the assignment */
 
