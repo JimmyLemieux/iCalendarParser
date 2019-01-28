@@ -380,6 +380,7 @@ ICalErrorCode validateFile(char *fileName) {
     if(ftell(file) == 0) {
         deallocator(tempFile);
         deallocator(fileExtension);
+        fclose(file);
         return INV_FILE;
     }
 
