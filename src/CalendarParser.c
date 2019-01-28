@@ -455,6 +455,12 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
         index++;
     }
 
+    if(lineSize == 0) {
+        fclose(file);
+        D;
+        return NULL;
+    }
+
 
     *fileLines = fileLineCount;
     *arraySize = lineSize;
@@ -1717,6 +1723,10 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* This method has been fixed */
     char **test = readFileChar(fileName, &arraySize,&fileLines);
+
+    if(test == NULL) {
+        return INV_FILE;
+    }
 
 
 
