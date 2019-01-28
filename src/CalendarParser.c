@@ -1552,6 +1552,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(right);
                     free(newEventProp); 
                     free(new_event);
+                    freeList(eventPropList);
+                    freeList(alarmList);
                     return INV_EVENT;
                 }
                 insertBack(eventPropList,newEventProp);
