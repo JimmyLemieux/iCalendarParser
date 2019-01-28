@@ -1731,7 +1731,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     }
 
 
-
     /* This function has been fixed */
     error = validateFileLines(test,arraySize,fileLines); 
 

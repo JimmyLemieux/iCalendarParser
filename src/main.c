@@ -23,8 +23,5 @@ int main() {
         outString = NULL;
         deleteCalendar(obj);
     }
-
-
-
     return 0;
 }
