@@ -1547,6 +1547,13 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 newEventProp = malloc(sizeof(Property));
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
+                if(isEmpty(right)) {
+                    deallocator(left);
+                    deallocator(right);
+                    free(newEventProp); 
+                    free(new_event);
+                    return INV_EVENT;
+                }
                 insertBack(eventPropList,newEventProp);
 
             }
@@ -1593,6 +1600,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             } else {
                 new_alarm_prop = malloc(sizeof(Property));
                 //printf("right:%s\n", right);
+                if(isEmpty(right)) {
+                    deallocator(left);
+                    deallocator(right);
+                    free(new_alarm);
+                    free(new_alarm_prop);
+                }
                 strcpy(new_alarm_prop->propName,left);
                 strcpy(new_alarm_prop->propDescr,right);
                 insertBack(alarmProps,new_alarm_prop);
