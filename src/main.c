@@ -10,7 +10,7 @@ int main() {
     ICalErrorCode error;
     char * errorStr = NULL;
     char *outString;
-    error = createCalendar("mLineProp1.ics", &obj);
+    error = createCalendar("qqq.ics", &obj);
 
     errorStr = printError(error);
 
