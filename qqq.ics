@@ -5,7 +5,6 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
 SUMMARY:Abraham Lincoln
-UID:c7614cff-3549-4a00-9152-d25cc1fe077d
 SEQUENCE:0
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
@@ -22,6 +21,7 @@ URL:http://americanhistorycalendar.com/peoplecalendar/1,328-abraham-lincol
  n
 BEGIN:VALARM
 TRIGGER;VALUE=DATE-TIME:19970317T133000Z
+UID:c7614cff-3549-4a00-9152-d25cc1fe077d
 REPEAT:4
 DURATION:PT15M
 ACTION:AUDIO
@@ -38,8 +38,8 @@ DESCRIPTION:A draft agenda needs to be sent out to the attendees
  pointer the document template for the agenda file.
 ATTACH;FMTTYPE=application/msword:http://example.com/
  templates/agenda.doc
+END:VALARM
 END:VEVENT
-BEGIN:VEVENT
 UID:19970610T172345Z-AF23B2@example.com
 DTSTAMP:19970610T172345Z
 DTSTART:19970714T170000Z
