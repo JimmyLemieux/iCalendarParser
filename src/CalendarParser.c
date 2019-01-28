@@ -1026,6 +1026,8 @@ ICalErrorCode checkAlarmRequirements(char ** lines, int arraySize) {
         if(strcasecmp(left, "END") == 0 && strcasecmp(right, "VALARM") == 0 && openEvent == 1) {
             openAlarm--;
             if(triggerCount != 1 || actionCount != 1) {
+                deallocator(left);
+                deallocator(right);
                 return INV_ALARM;
             }
             triggerCount = 0;
