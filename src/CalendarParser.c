@@ -1351,6 +1351,12 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             } else {
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
+                if(isEmpty(right)) {
+                    deallocator(left);
+                    deallocator(right);
+                    free(new_prop);
+                    return INV_CAL;
+                }
                 insertBack(obj->properties, new_prop);
             }
         }
