@@ -378,7 +378,8 @@ ICalErrorCode validateFile(char *fileName) {
 
     fseek(file, 0, SEEK_END);
     if(ftell(file) == 0) {
-        D;
+        deallocator(tempFile);
+        deallocator(fileExtension);
         return INV_FILE;
     }
 
