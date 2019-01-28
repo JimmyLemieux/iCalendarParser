@@ -1323,6 +1323,8 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                 if(sscanf(right,"%f", &(obj->version)) != 0 && strlen(right) != 0) {
                     deallocator(new_prop);
                 } else {
+                    deallocator(left);
+                    deallocator(right);
                     return INV_VER;
                 }
                 //obj->version = atof(right);
@@ -1331,6 +1333,8 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                     strcpy(obj->prodID,right);
                     deallocator(new_prop); 
                 } else {
+                    deallocator(left);
+                    deallocator(right);
                     return INV_PRODID;
                 }
 
