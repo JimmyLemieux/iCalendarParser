@@ -1325,6 +1325,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                 } else {
                     deallocator(left);
                     deallocator(right);
+                    free(new_prop);
                     return INV_VER;
                 }
                 //obj->version = atof(right);
@@ -1335,6 +1336,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                 } else {
                     deallocator(left);
                     deallocator(right);
+                    free(new_prop);
                     return INV_PRODID;
                 }
 
