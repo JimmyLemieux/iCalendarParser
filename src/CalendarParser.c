@@ -1986,5 +1986,4 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
     return OK;
 }
 
-
 /* Ending the mandatory functions for the assignment */
