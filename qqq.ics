@@ -4,10 +4,9 @@ METHOD:PUBLISH
 VERSION:2.0
 PRODID:-//PUC Calendar// v2.0//EN
 BEGIN:VEVENT
-BEGIN:VEVENT
 UID:31754826317
 TZID:America/Los_Angeles
-DTSTART:20091001T100000
+DTSTART;TZID=America/New_York:19980119T020000
 URL;VALUE=URI:http://www.puc.edu/news/calendar/events/dates/colloquy-dr-knight
 BEGIN:VALARM
 TRIGGER:Something

@@ -227,3 +227,27 @@ void splitContentLine(char *line, char *left, char *right) {
     }
 
 }
+
+
+int containsSubstring(char *line, char *sub) {
+    if(line == NULL || sub == NULL) {
+        return 0;
+    }
+
+    if(strlen(sub) > strlen(line)) {
+        return 0;
+    }
+
+    char *temp = calloc(1, sizeof(char) * strlen(sub));
+
+    for(int i = 0;i<=strlen(line) - strlen(sub);i++) {
+        for(int j = i,k=0;j < i + strlen(sub);j++,k++) {
+            temp[k] = line[j];
+        }
+
+        if(strcasecmp(temp,sub) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}

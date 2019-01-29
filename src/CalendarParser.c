@@ -1325,8 +1325,10 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         if(open == 1) {
             //printf("left:%s\tright:%s\n",left,right);
             new_prop = malloc(sizeof(Property));
-            if(strcasecmp(left, "VERSION") == 0) {
-                if(sscanf(right,"%f", &(obj->version)) != 0 && strlen(right) != 0) {
+            if(strcasecmp(left, "VERSION") == 0) { /* This needs to be fixed */
+                float v = atof(right);
+                if(v != 0.0) {
+                    obj->version = v;
                     deallocator(new_prop);
                 } else {
                     deallocator(left);
@@ -1375,6 +1377,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     int calOpen = 0;
     int eventOpen = 0;
     int alarmOpen = 0;
+    int tzid = 0;
     char *left;
     char *right;
 
@@ -1486,13 +1489,34 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempRight);
                 }
        
+                /* Make a comntains substring here that will look for the TZID */
+
+                if(containsSubstring(left,"TZID")) {
+                    tzid = 1;
+                }
+                
+
 
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
+
+
                     char *date = calloc(1,sizeof(char) * 500);
                     char *time = calloc(1, sizeof(char) * 500);
 
                     splitByFirstOccurence(right,date,time,'T');
+
+                    if(isEmpty(time) || tzid) {
+                        deallocator(date);
+                        deallocator(time);
+                        freeList(eventPropList);
+                        freeList(alarmList);
+                        free(new_event);
+                        return INV_DT;
+                    }
+
+
+
                     if(containsChar(time,'Z')) {
                         time[strlen(time) - 1] = '\0';
                         new_event->startDateTime.UTC = true;
