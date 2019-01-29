@@ -1492,6 +1492,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 /* Make a comntains substring here that will look for the TZID */
 
                 if(containsSubstring(left,"TZID")) {
+                    printf("DTSTART contains TZID\n");
                     tzid = 1;
                 }
                 
@@ -1558,6 +1559,18 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     char *date = calloc(1,sizeof(char) * 500);
                     char *time = calloc(1, sizeof(char)* 500);
                     splitByFirstOccurence(right,date,time,'T');
+
+                    if(isEmpty(time) || tzid) {
+                        deallocator(date);
+                        deallocator(time);
+                        deallocator(left);
+                        deallocator(right);
+                        freeList(eventPropList);
+                        freeList(alarmList);
+                        free(new_event);
+                        return INV_DT;
+                    }
+
                     if(containsChar(time,'Z')) {
                         new_event->creationDateTime.UTC = true;
                         time[strlen(time) - 1] = '\0';
