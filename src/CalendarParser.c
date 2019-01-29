@@ -1646,7 +1646,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 /* The trigger was initialized in the top to restrict it from being null */
                 //new_alarm->trigger = calloc(1, sizeof(char) * 500);
                 strcpy(new_alarm->trigger, right);
-
             } else {
                 new_alarm_prop = malloc(sizeof(Property));
                 //printf("right:%s\n", right);
