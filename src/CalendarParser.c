@@ -2036,8 +2036,16 @@ void deleteCalendar(Calendar *obj) {
         obj = NULL;
         return;
     }
-    freeList(obj->events); /* This calls the free Alarms as well */
-    freeList(obj->properties);
+    if(obj->events != NULL) {
+        D;
+        freeList(obj->events); /* This calls the free Alarms as well */
+    }
+    
+    if(obj->properties != NULL){
+        D;
+        freeList(obj->properties);
+    }
+
     free(obj);
     obj = NULL;
 }
