@@ -551,7 +551,6 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         // stringToLower(right);
 
         if((strcasecmp(left,"begin") == 0 || strcasecmp(left,"end") == 0) && (strcasecmp(right,"vcalendar") == 0)) {
-            printf("There is a duplicate property in the file\n");
             deallocator(left);
             deallocator(right);
             return INV_CAL;
@@ -589,7 +588,6 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         // stringToLower(right);
 
         if(open < 0) {
-            printf("THERE WAS A BEGIN END MISMATCH");
             deallocator((char *)left);
             deallocator((char *)right);
             return INV_CAL;
@@ -722,7 +720,7 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
         if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0 && !beginFound) {
             deallocator(left);
             deallocator(right);
-            return INV_EVENT;
+            return INV_CAL;
         }
 
         if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VEVENT") == 0) {
@@ -911,7 +909,7 @@ ICalErrorCode checkAlarmBeginEnd(char **lines, int arraySize) {
         if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0 && !isFound) {
             deallocator(left);
             deallocator(right);
-            return INV_ALARM;
+            return INV_CAL;
         }
 
 
