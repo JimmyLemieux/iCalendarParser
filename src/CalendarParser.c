@@ -587,11 +587,11 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
         // stringToLower(left);
         // stringToLower(right);
 
-        if(open < 0) {
-            deallocator((char *)left);
-            deallocator((char *)right);
-            return INV_CAL;
-        }
+        // if(open < 0) {
+        //     deallocator((char *)left);
+        //     deallocator((char *)right);
+        //     return INV_CAL;
+        // }
 
         if(strcasecmp(left,"begin") == 0) {
             if(strcasecmp(right,"VEVENT") == 0) {
@@ -909,7 +909,7 @@ ICalErrorCode checkAlarmBeginEnd(char **lines, int arraySize) {
         if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VALARM") == 0 && !isFound) {
             deallocator(left);
             deallocator(right);
-            return INV_CAL;
+            return INV_EVENT;
         }
 
 
