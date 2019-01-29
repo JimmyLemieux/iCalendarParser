@@ -1,20 +1,19 @@
-BEGI
+BEGIN:VCALENDAR
  N:VCALENDAR
 METHOD:PUBLISH
 ;X-WR-TIMEZONE:America/Los_Angeles
 VERSION:2.0
 PRODID:-//PUC Calendar// v2.0//EN
+:dsds
 BEGIN:VEVENT
 UID:31754826317
 TZID:America/Los_Angeles
 DTSTART:19980119T020000
-URL;VALUE=URI:http://www.puc.edu/news/calendar/events/dates
- /colloquy-dr-kn
- ight
+URL;VALUE=URI:http://www.puc.edu/news/calendar/events/dates/colloquy-dr-knight
+DTSTAMP:20091001T100000
 BEGIN:VALARM
 TRIGGER:Something
 ACTION:SOMETHING
 END:VALARM
-DTSTAMP;TZID=NEWYORK:20091001T100000
 END:VEVENT
 END:VCALENDAR

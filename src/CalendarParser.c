@@ -1351,7 +1351,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             } else {
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
-                if(isEmpty(right)) {
+                if(isEmpty(right) || isEmpty(left)) {
                     deallocator(left);
                     deallocator(right);
                     free(new_prop);
@@ -1775,7 +1775,6 @@ void lineUnfold(char **lines, int arraySize) {
                 strcat(lines[i], lines[j]);
                 strcat(lines[i], "\0");
 
-                strcpy(lines[j],"\0");
 
                 // printf("The new Line is %s\n", lines[i]);
 
@@ -1843,15 +1842,15 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Have line folding done right here */
 
-    lineUnfold(test,arraySize);
+    // lineUnfold(test,arraySize);
 
 
-    for(int i = 0;i<arraySize;i++) {
-        printf("%s\n", test[i]);
-    }
+    // for(int i = 0;i<arraySize;i++) {
+    //     printf("%s\n", test[i]);
+    // }
 
 
-    return OTHER_ERROR;
+    // return OTHER_ERROR;
 
     /* Test valid prop names */
 
