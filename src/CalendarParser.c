@@ -1651,8 +1651,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 new_alarm_prop = malloc(sizeof(Property));
                 //printf("right:%s\n", right);
                 if(isEmpty(right) || isEmpty(left)) {
+                    D;
                     deallocator(left);
                     deallocator(right);
+                    free(new_alarm->trigger);
                     free(new_alarm);
                     free(new_alarm_prop);
                     freeList(alarmProps);
