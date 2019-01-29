@@ -1598,10 +1598,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 if(isEmpty(right) || isEmpty(left)) {
                     deallocator(left);
                     deallocator(right);
+                    freeList(alarmList);
+                    freeList(eventPropList);
                     free(newEventProp); 
                     free(new_event);
-                    freeList(eventPropList);
-                    freeList(alarmList);
                     return INV_EVENT;
                 }
                 insertBack(eventPropList,newEventProp);
