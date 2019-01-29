@@ -1653,12 +1653,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     D;
                     deallocator(left);
                     deallocator(right);
+                    freeList(alarmProps);
+                    freeList(eventPropList);
                     free(new_alarm->trigger);
                     free(new_alarm);
                     free(new_event);
                     free(new_alarm_prop);
-                    freeList(alarmProps);
-                    freeList(eventPropList);
                     return INV_ALARM;
                 }
                 strcpy(new_alarm_prop->propName,left);
