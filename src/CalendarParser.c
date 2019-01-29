@@ -83,6 +83,11 @@ char* printEvent(void *toBePrinted) {
         deallocator(temp);
     }
 
+    temp = calloc(1, sizeof(char) * (500));
+    sprintf(temp,"\tDTSTARTUTC:%d\n",tempEvent->startDateTime.UTC);
+    strcat(tempStr, temp);
+    deallocator(temp);
+
 	return tempStr;
 }
 /* You will have to traverse all of the properties and alarms of this event as well */ 
