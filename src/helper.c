@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <strings.h>
 #include <ctype.h>
 #include <math.h>
 #define SEG printf("This line is giving a Segfault")
