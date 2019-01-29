@@ -5,22 +5,13 @@
 
 /* I am going to implement the dateTime helper functions */
 
-int main() {
+int main(int argc, char **argv) {
+
     Calendar *obj;
-    ICalErrorCode error;
-    char * errorStr = NULL;
-    char *outString;
-    error = createCalendar("sample1.ics", &obj);
+    argc != 2 ? printError(createCalendar("sample1.ics",&obj)) : printError(createCalendar(argv[1],&obj));
 
-    errorStr = printError(error);
-
-    printf("ERROR -> %s\n",errorStr);
-    free(errorStr);
+    printCalendar(obj);
     
-    if(error == 0) {
-        outString = printCalendar(obj);
-        outString = NULL;
-        deleteCalendar(obj);
-    }
+    deleteCalendar(obj);
     return 0;
 }
