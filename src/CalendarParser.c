@@ -1758,6 +1758,25 @@ ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
 
 /* I still have to implement this function here as well */
 void lineUnfold(char **lines, int arraySize) { 
+
+    if(lines == NULL || arraySize == 0) {
+        return;
+    }
+
+    for(int i = 0;i < arraySize - 1;i++) {
+        if(lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
+
+            int j = i + 1;
+            while(j<arraySize && isspace(lines[j][0])) {
+                
+
+            }
+        }
+
+    }
+
+
+
 }
 
 
@@ -1812,6 +1831,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     for(i = 0;i<arraySize;i++) {
         test[i] = trimSpecialChars(test[i]);
     }
+
+
+    /* Have line folding done right here */
+
+
 
     /* Test valid prop names */
 
