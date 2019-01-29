@@ -1509,6 +1509,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     if(isEmpty(time) || tzid) {
                         deallocator(date);
                         deallocator(time);
+                        deallocator(left);
+                        deallocator(right);
                         freeList(eventPropList);
                         freeList(alarmList);
                         free(new_event);
