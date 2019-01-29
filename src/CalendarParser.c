@@ -1545,6 +1545,11 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempLeft);
                 }
 
+                
+                if(containsSubstring(left,"TZID")) {
+                    tzid = 1;
+                    printf("DTSTAMP contains TZID\n");
+                }
 
 
 
