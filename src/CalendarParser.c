@@ -1595,7 +1595,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 newEventProp = malloc(sizeof(Property));
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
-                if(isEmpty(right)) {
+                if(isEmpty(right) || isEmpty(left)) {
                     deallocator(left);
                     deallocator(right);
                     free(newEventProp); 
