@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
     }
     
     if(error == 0) {
+        printCalendar(obj);
         deleteCalendar(obj);
     }
     return 0;
