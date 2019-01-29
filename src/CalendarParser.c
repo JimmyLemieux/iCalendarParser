@@ -1765,18 +1765,26 @@ void lineUnfold(char **lines, int arraySize) {
 
     for(int i = 0;i < arraySize - 1;i++) {
         if(lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
-
             int j = i + 1;
             while(j<arraySize && isspace(lines[j][0])) {
-                
+                // printf("You want to fold to the line %s\n", lines[i]);
+                // strcat(lines[i], lines[j]);
 
+                lines[i] = realloc(lines[i], strlen(lines[j]));
+                lines[j] += 1;
+                strcat(lines[i], lines[j]);
+                strcat(lines[i], "\0");
+
+                strcpy(lines[j],"\0");
+
+                // printf("The new Line is %s\n", lines[i]);
+
+                //strcpy(lines[i],"\0");  /* This will be ignored */
+                j++;
             }
+            i = j;
         }
-
     }
-
-
-
 }
 
 
@@ -1835,7 +1843,15 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Have line folding done right here */
 
+    lineUnfold(test,arraySize);
 
+
+    for(int i = 0;i<arraySize;i++) {
+        printf("%s\n", test[i]);
+    }
+
+
+    return OTHER_ERROR;
 
     /* Test valid prop names */
 

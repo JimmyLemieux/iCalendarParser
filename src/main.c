@@ -18,7 +18,6 @@ int main() {
     free(errorStr);
     
     if(error == 0) {
-        printf("deleting the calendar\n");
         outString = printCalendar(obj);
         outString = NULL;
         deleteCalendar(obj);
