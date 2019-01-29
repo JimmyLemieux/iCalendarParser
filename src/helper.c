@@ -246,8 +246,10 @@ int containsSubstring(char *line, char *sub) {
         }
 
         if(strcasecmp(temp,sub) == 0) {
+            deallocator(temp);
             return 1;
         }
     }
+    deallocator(temp);
     return 0;
 }
