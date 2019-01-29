@@ -8,7 +8,9 @@
 int main(int argc, char **argv) {
     Calendar *obj;
     argc != 2 ? printError(createCalendar("sample1.ics",&obj)) : printError(createCalendar(argv[1],&obj));
-    if(obj != NULL)printCalendar(obj);
+    // if(obj != NULL) {   
+    //     printCalendar(obj);
+    // }
     deleteCalendar(obj);
     return 0;
 }
