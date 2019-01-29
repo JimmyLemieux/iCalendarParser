@@ -1324,7 +1324,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         /* These are the properties that belong to the calendar! */
         if(open == 1) {
             //printf("left:%s\tright:%s\n",left,right);
-            new_prop = malloc(sizeof(Property));
+            new_prop = malloc(sizeof(Property) * strlen(left) + 300);
             if(strcasecmp(left, "VERSION") == 0) { /* This needs to be fixed */
                 float v = atof(right);
                 if(v != 0.0) {
@@ -1349,14 +1349,14 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                 }
 
             } else {
-                strcpy(new_prop->propName,left);
-                strcpy(new_prop->propDescr,right);
                 if(isEmpty(right) || isEmpty(left)) {
                     deallocator(left);
                     deallocator(right);
                     free(new_prop);
                     return INV_CAL;
                 }
+                strcpy(new_prop->propName,left);
+                strcpy(new_prop->propDescr,right);
                 insertBack(obj->properties, new_prop);
             }
         }
@@ -1383,7 +1383,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
     Event *new_event = NULL;
     Alarm *new_alarm = NULL;
-    Property *new_alarm_prop = NULL;
+    Property *newAlarmProp = NULL;
     Property *newEventProp = NULL;
     List *eventPropList = NULL;
     List *alarmList = NULL;
@@ -1592,7 +1592,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(right);
                 }
             } else {
-                newEventProp = malloc(sizeof(Property));
+                newEventProp = malloc(sizeof(Property) * strlen(left) + 200);
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
                 if(isEmpty(right) || isEmpty(left)) {
@@ -1647,7 +1647,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 //new_alarm->trigger = calloc(1, sizeof(char) * 500);
                 strcpy(new_alarm->trigger, right);
             } else {
-                new_alarm_prop = malloc(sizeof(Property));
+                newAlarmProp = malloc(sizeof(Property) * strlen(left) + 300);
                 //printf("right:%s\n", right);
                 if(isEmpty(right) || isEmpty(left)) {   
                     deallocator(left);
@@ -1658,12 +1658,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     free(new_alarm->trigger);
                     free(new_alarm);
                     free(new_event);
-                    free(new_alarm_prop);
+                    free(newAlarmProp);
                     return INV_ALARM;
                 }
-                strcpy(new_alarm_prop->propName,left);
-                strcpy(new_alarm_prop->propDescr,right);
-                insertBack(alarmProps,new_alarm_prop);
+                strcpy(newAlarmProp->propName,left);
+                strcpy(newAlarmProp->propDescr,right);
+                insertBack(alarmProps,newAlarmProp);
             }
         }
         deallocator(left);
