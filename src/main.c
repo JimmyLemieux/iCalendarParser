@@ -7,10 +7,20 @@
 
 int main(int argc, char **argv) {
     Calendar *obj;
-    argc != 2 ? printError(createCalendar("sample1.ics",&obj)) : printError(createCalendar(argv[1],&obj));
-    // if(obj != NULL) {   
-    //     printCalendar(obj);
-    // }
-    deleteCalendar(obj);
+    ICalErrorCode error;
+    char *errorOut;
+    
+
+    if(argc != 2) {
+        error = createCalendar("sample1.ics", &obj);
+        errorOut = printError(error);
+    } else {
+        error = createCalendar(argv[1], &obj);
+        errorOut = printError(error);
+    }
+    
+    if(error == 0) {
+        deleteCalendar(obj);
+    }
     return 0;
 }
