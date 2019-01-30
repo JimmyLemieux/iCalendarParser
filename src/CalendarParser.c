@@ -790,7 +790,7 @@ ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
 }
 
 
-ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
+ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) { 
     int i;
     int j;
     char *right;
