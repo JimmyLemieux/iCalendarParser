@@ -432,11 +432,10 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
                 strcpy(folded,lines[j]);
 
 
-                origLine = realloc(origLine,strlen(folded) + 50);
 
                 tempFold = removeFirstChar(folded);
 
-                strcat(tempFold,"\0");
+                origLine = realloc(origLine,strlen(tempFold) + 50);
                 
                 strcat(origLine, tempFold);
                 
