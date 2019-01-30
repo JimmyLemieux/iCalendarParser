@@ -1,31 +1,14 @@
-BEGI
- N:VCALENDAR
-VER
- SION:2.32123
-PRODID:-//hacksw/handcal//NONSGML v1.0//EN
-;Hi!
-;I am a comment
-BEGIN:VEVENT
-UID:an
- ot
- he
- r
- o
- e
-  folding
-TEST: abcdef
-TEST: helloworld
-REALLY: long
-motherfncli: fwefew
-wefewf:wefewfewfwef
-ONETEST;let's
-  test the li
- ne folding.hello
-DATER;param=x:19970714T1700
- 0
- 0ZJames
-DTSTART:20190108T120000
-DTSTAMP:19970714T170000Z
+BEGIN:VCALENDAR
+beGIn:VEVENT
+UID:uid1@example.com
+DTSTAMP:19970705T170000Z
+ORGANIZER;CN=Joh
+ n Doe:MAILTO:john.doe@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+SUMMARY:Bastille Day Party
+GEO:48.85299;2.36885
 END:VEVENT
-END:VCA
- LENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+END:VCALENDAR

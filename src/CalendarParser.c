@@ -469,6 +469,14 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
         origLine = NULL;
     }
 
+
+    if(strcasecmp(lines[arraySize - 1], "END:VCALENDAR") == 0 && strcasecmp(newLines[lineCount-1], "END:VCALENDAR") != 0) {
+        newLines = realloc(newLines, sizeof(char *) * (lineCount+1));
+        newLines[lineCount] = calloc(1,sizeof(char) * (strlen(lines[arraySize-1]))+ 10);
+        strcpy(newLines[lineCount],lines[arraySize-1]);
+        lineCount++;
+    }
+
     *contentSize = lineCount;
 
     free_fields(lines,arraySize);
@@ -605,6 +613,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     // stringToLower(lines[arraySize - 1]);
 
     if(strcasecmp(lines[0],"begin:vcalendar") != 0 || strcasecmp(lines[arraySize - 1], "end:vcalendar") != 0) {
+        printf("%s\n", lines[0]);
+        printf("%s\n", lines[arraySize - 1]);
         printf("The calendar does not start and end properly\n");
         return INV_CAL;
     }
@@ -751,10 +761,6 @@ ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
 
         left = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
         right = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
-
-        // free(testFold);
-
-        // return OTHER_ERROR;
 
 
         splitContentLine(lines[i], left,right);
@@ -1917,28 +1923,22 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Check if a line is completely empty, then do invalid calendar */
 
-
-
-
-
-
-
     /* What we should do is return a new char ** that includes the unfolded lines */
 
     char **contentLines = lineUnfold(test,arraySize,&contentSize);
 
-    for(int i = 0;i<contentSize;i++) {
-        printf("%s\n", contentLines[i]);
+    if(contentLines == NULL) {
+        printf("LINE FOLD ERROR!\n");
+        free(*obj);
+        *obj = NULL;
     }
 
-    free_fields(contentLines,contentSize);
-    free(*obj);
-    *obj = NULL;
+    // for(int i = 0;i<contentSize;i++) {
+    //     printf("%s\n", contentLines[i]);
+    // }
 
 
     /* Check if each line has a colon and/or semi colon */
-
-    return OTHER_ERROR;
 
 
 
@@ -1946,22 +1946,21 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* Test valid prop names */
 
-    error = checkBeginsAndEnds(test, arraySize);
+    error = checkBeginsAndEnds(contentLines, contentSize);
 
-    return OTHER_ERROR;
 
     if(error != 0) {
-        free_fields(test, arraySize);
+        free_fields(contentLines, contentSize);
         free(*obj);
         *obj = NULL;
         return error;
     }
     
 
-    error = checkCalendarHead(test,arraySize);
+    error = checkCalendarHead(contentLines, contentSize);
 
     if(error != 0) {
-        free_fields(test,arraySize);
+        free_fields(contentLines, contentSize);
         //FREE
         free(*obj);
         *obj = NULL;
@@ -1969,38 +1968,38 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     }
 
 
-    error = checkEventBeginEnd(test,arraySize);
+    error = checkEventBeginEnd(contentLines, contentSize);
 
     if(error != 0) {
-        free_fields(test,arraySize);
+        free_fields(contentLines, contentSize);
         free(*obj);
         *obj = NULL;
         return error;
     }
 
-    error = checkEventRequirements(test, arraySize);
+    error = checkEventRequirements(contentLines, contentSize);
 
     if(error != 0) {
-        free_fields(test, arraySize);
+        free_fields(contentLines, contentSize);
         free(*obj);
         *obj = NULL;
         return error;
     }
 
 
-    error = checkAlarmBeginEnd(test, arraySize);
+    error = checkAlarmBeginEnd(contentLines, contentSize);
 
     if(error != 0) {
-        free_fields(test,arraySize);
+        free_fields(contentLines, contentSize);
         free(*obj);
         *obj = NULL;
         return error;
     }
 
-    error = checkAlarmRequirements(test, arraySize);
+    error = checkAlarmRequirements(contentLines, contentSize);
 
     if(error != 0) {
-        free_fields(test,arraySize);
+        free_fields(contentLines, contentSize);
         free(*obj);
         *obj = NULL;
         return error;
@@ -2012,9 +2011,9 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     // /* Make functions to return the version and proID into the calendar object */
 
     // //(*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
-    error = fetchCalendarProps(*obj,test,arraySize);
+    error = fetchCalendarProps(*obj,contentLines, contentSize);
     if(error != 0) {
-        free_fields(test,arraySize);
+        free_fields(contentLines, contentSize);
         // deallocator(obj);
         //FREE
         deleteCalendar(*obj);
@@ -2028,14 +2027,14 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     // /* Check events */
 
-    error = fetchCalEvents(*obj, test,arraySize);
+    error = fetchCalEvents(*obj, contentLines, contentSize);
     if(error != 0) {
-        free_fields(test,arraySize);
+        free_fields(contentLines, contentSize);
         deleteCalendar(*obj);
         return error;
     }
 
-    free_fields(test,arraySize);
+    free_fields(contentLines, contentSize);
 
     return OK;
 }
