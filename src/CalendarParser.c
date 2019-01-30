@@ -1931,17 +1931,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("LINE FOLD ERROR!\n");
         free(*obj);
         *obj = NULL;
+        return OTHER_ERROR;
     }
-
-    // for(int i = 0;i<contentSize;i++) {
-    //     printf("%s\n", contentLines[i]);
-    // }
 
 
     /* Check if each line has a colon and/or semi colon */
-
-
-
 
 
     /* Test valid prop names */
