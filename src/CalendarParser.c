@@ -397,6 +397,82 @@ ICalErrorCode validateFile(char *fileName) {
 }
 
 
+char ** lineUnfold(char **lines, int arraySize,int *contentSize){
+    char **newLines;
+    char *origLine;
+    char *folded;
+    char *tempFold;
+    int lineCount = 0;
+
+    if(lines == NULL || arraySize == 0) {
+        return NULL;
+    }
+
+
+    newLines = malloc(sizeof(char *));
+    for(int i = 0;i < arraySize - 1;) {
+        if(isEmpty(lines[i+1])) {
+            i++;
+            continue;
+        }
+
+        origLine = calloc(1, sizeof(char) * (strlen(lines[i])) + 30);
+
+        strcpy(origLine, lines[i]);
+        
+        if(lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
+            int j = i + 1;
+            while((j<arraySize && isspace(lines[j][0]))) {
+                if(isEmpty(lines[j])) {
+                    j++;
+                    continue;
+                }
+
+                folded = calloc(1, sizeof(char) * (strlen(lines[j])) + 50);
+                strcpy(folded,lines[j]);
+
+
+                origLine = realloc(origLine,strlen(folded) + 50);
+
+                tempFold = removeFirstChar(folded);
+
+
+                strcat(origLine, tempFold);
+                
+                free(folded);
+                folded = NULL;
+                free(tempFold);
+                tempFold = NULL;
+
+                // free(folded);
+                // folded = NULL;
+
+                j++;
+            }
+            i = j;
+            newLines = realloc(newLines,sizeof(char *) * (lineCount+1));
+            newLines[lineCount] = calloc(1, sizeof (char) * strlen(origLine) + 10);
+            strcpy(newLines[lineCount], origLine);
+            lineCount++;
+            continue;
+        }
+
+
+        newLines = realloc(newLines, sizeof(char *) * (lineCount+1));
+        newLines[lineCount] = calloc(1,sizeof(char) * (strlen(origLine))+ 10);
+        strcpy(newLines[lineCount],origLine);
+        lineCount++;
+        i++;
+        free(origLine);
+        origLine = NULL;
+    }
+
+    *contentSize = lineCount;
+    return newLines;
+
+}
+
+
 /* Starting the helper functions for parsing the calendar  */
 
 
@@ -672,6 +748,11 @@ ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
         left = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
         right = calloc(1, sizeof(char) * (strlen(lines[i])) + 100);
 
+        // free(testFold);
+
+        // return OTHER_ERROR;
+
+
         splitContentLine(lines[i], left,right);
 
         if(strcasecmp(left, "BEGIN") == 0 || strcasecmp(left,"END") == 0) {
@@ -696,6 +777,7 @@ ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
         }
         deallocator(left);
         deallocator(right);
+
     } 
     return OK;
 }
@@ -706,6 +788,7 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
     int j;
     char *right;
     char *left;
+    char *fold; 
     int beginFound = 0;
     if(lines == NULL || arraySize == 0) {
         return OTHER_ERROR;
@@ -720,6 +803,8 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
         /* The string contains the char */
 
         //splitByFirstOccurence(lines[i],left,right,':');
+
+
         splitContentLine(lines[i],left,right);
 
         if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0 && !beginFound) {
@@ -1278,72 +1363,6 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
 }
 
 
-
-void lineUnfold(char **lines, int arraySize, int *newSize) {
-    char **newLines;
-    char *temp;
-    int newCount = 0;
-
-    if(lines == NULL || arraySize == 0) {
-        return;
-    }
-
-    for(int i = 0;i < arraySize - 1;) {
-        if(isEmpty(lines[i+1])) {
-            i++;
-            continue;
-        }
-        temp = calloc(1, sizeof(char) * (strlen(lines[i])) + 10); 
-        if(lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
-            int j = i + 1;
-            while((j<arraySize && isspace(lines[j][0])) || isEmpty(lines[j])) {
-                if(isEmpty(lines[j])) {
-                    j++;
-                    continue;
-                }
-                lines[i] = realloc(lines[i], strlen(lines[j]) + 100);
-                lines[j] += 1;
-                strcat(lines[j], "\0");
-                strcat(temp, lines[j]);
-                strcpy(lines[j], "");
-                //deallocator(lines[j]);
-                j++;
-            }
-            strcat(lines[i], "\0");
-            i = j;
-            continue;
-        }
-        i++;
-    }
-
-    for(int i = 0;i<arraySize;i++) {
-        if(!isEmpty(lines[i])) {
-            newCount++;
-        }
-    }
-
-    newLines = malloc(sizeof(char *) *  newCount);
-
-    int oldIndex = 0;
-    for(int i = 0;i<newCount;) {
-        if(!isEmpty(lines[oldIndex])) {
-            newLines[i] = calloc(1, strlen(lines[oldIndex]) + 10);
-            strcpy(newLines[i], lines[oldIndex]);
-            i++;
-        }
-        oldIndex++;
-    }
-
-    //free(lines);
-
-    *newSize = newCount;
-
-    for(int i=0;i<newCount;i++) {
-        printf("%s\n",newLines[i]);
-    }
-}
-
-
 /*This function will go through the properties that will be used with the calendar*/
 /*This includes the required PRODID and VERSION, as well as any other property on the top level of the iCal */
 /* Now adding the required functionality for parsing the "other props" */
@@ -1891,30 +1910,40 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         test[i] = trimSpecialChars(test[i]);
     }
 
-//    free_fields(test,arraySize);
 
-    lineUnfold(test, arraySize,&contentSize);
+    /* Check if a line is completely empty, then do invalid calendar */
 
+
+
+
+
+
+
+    /* What we should do is return a new char ** that includes the unfolded lines */
+
+    char **contentLines = lineUnfold(test,arraySize,&contentSize);
+
+    for(int i = 0;i<contentSize;i++) {
+        printf("%s\n", contentLines[i]);
+    }
 
     free_fields(test,arraySize);
 
+
+
+    /* Check if each line has a colon and/or semi colon */
+
     return OTHER_ERROR;
 
-    /* Have line folding done right here */
-
-    // lineUnfold(test,arraySize);
 
 
-    // for(int i = 0;i<arraySize;i++) {
-    //     printf("%s\n", test[i]);
-    // }
 
-
-    // return OTHER_ERROR;
 
     /* Test valid prop names */
 
     error = checkBeginsAndEnds(test, arraySize);
+
+    return OTHER_ERROR;
 
     if(error != 0) {
         free_fields(test, arraySize);

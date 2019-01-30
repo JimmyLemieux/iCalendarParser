@@ -206,12 +206,19 @@ int checkBefore(char *line , char del1, char del2) {
 }
 
 
-void removeFirstChar(char *temp) {
-    if(temp == NULL) {
-        return;
+char * removeFirstChar(char *str) {
+    char *temp;
+    if(str == NULL) {
+        return NULL;
     }
-    temp += 1;
-    printf("%s",temp); 
+    temp = calloc(1,sizeof(char) * strlen(str) + 10);
+    int j = 0;
+    for(int i = 1;i<strlen(str);i++) {
+        temp[j] = str[i];
+        j++;
+    }
+
+    return temp;
 }
 
 void splitContentLine(char *line, char *left, char *right) {
