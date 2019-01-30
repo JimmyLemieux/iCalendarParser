@@ -468,6 +468,8 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
     }
 
     *contentSize = lineCount;
+
+    free_fields(lines,arraySize);
     return newLines;
 
 }
@@ -1927,8 +1929,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         printf("%s\n", contentLines[i]);
     }
 
-    free_fields(test,arraySize);
-
+    free_fields(contentLines,contentSize);
     free(*obj);
     *obj = NULL;
 
