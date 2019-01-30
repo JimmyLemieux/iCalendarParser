@@ -453,6 +453,8 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
             newLines = realloc(newLines,sizeof(char *) * (lineCount+1));
             newLines[lineCount] = calloc(1, sizeof (char) * strlen(origLine) + 10);
             strcpy(newLines[lineCount], origLine);
+            free(origLine);
+            origLine = NULL;
             lineCount++;
             continue;
         }
