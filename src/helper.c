@@ -178,8 +178,7 @@ int isEmpty(char * string) {
 void free_fields(char **ptr, int size) {
     int i;
     for(i = 0;i<size;i++) {
-        if(!isEmpty(ptr[i]))
-            deallocator(ptr[i]);
+        deallocator(ptr[i]);
     }
     deallocator(ptr);
 }

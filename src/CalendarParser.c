@@ -1279,27 +1279,37 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
 
 
 
-char ** lineUnfold(char **lines, int arraySize, int *newSize) {
+void lineUnfold(char **lines, int arraySize, int *newSize) {
     char **newLines;
+    char *temp;
     int newCount = 0;
 
     if(lines == NULL || arraySize == 0) {
-        return NULL;
+        return;
     }
 
     for(int i = 0;i < arraySize - 1;) {
+        if(isEmpty(lines[i+1])) {
+            i++;
+            continue;
+        }
+        temp = calloc(1, sizeof(char) * (strlen(lines[i])) + 10); 
         if(lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
             int j = i + 1;
-            while(j<arraySize && isspace(lines[j][0])) {
+            while((j<arraySize && isspace(lines[j][0])) || isEmpty(lines[j])) {
+                if(isEmpty(lines[j])) {
+                    j++;
+                    continue;
+                }
                 lines[i] = realloc(lines[i], strlen(lines[j]) + 100);
                 lines[j] += 1;
                 strcat(lines[j], "\0");
-                strcat(lines[i], lines[j]);
-                strcpy(lines[j], "\0");
+                strcat(temp, lines[j]);
+                strcpy(lines[j], "");
+                //deallocator(lines[j]);
                 j++;
             }
             strcat(lines[i], "\0");
-            // printf("The New Line is %s\n", lines[i]); 
             i = j;
             continue;
         }
@@ -1324,9 +1334,15 @@ char ** lineUnfold(char **lines, int arraySize, int *newSize) {
         oldIndex++;
     }
 
+    //free(lines);
+
     *newSize = newCount;
-    return newLines;
+
+    for(int i=0;i<newCount;i++) {
+        printf("%s\n",newLines[i]);
+    }
 }
+
 
 /*This function will go through the properties that will be used with the calendar*/
 /*This includes the required PRODID and VERSION, as well as any other property on the top level of the iCal */
@@ -1831,8 +1847,9 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     ICalErrorCode error;
     int i;
     int arraySize;
-    int fileLines;
     int contentSize;
+    int fileLines;
+    char **test = NULL;
    // obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
     /* These cannot be NULL but can be empty */
@@ -1849,7 +1866,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     /* End OF FILE FUNCTIONS */
 
     /* This method has been fixed */
-    char **test = readFileChar(fileName, &arraySize,&fileLines);
+    test = readFileChar(fileName, &arraySize,&fileLines);
 
     if(test == NULL) {
         free(*obj);
@@ -1874,23 +1891,12 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         test[i] = trimSpecialChars(test[i]);
     }
 
+//    free_fields(test,arraySize);
 
-    char ** contentLines = lineUnfold(test, arraySize, &contentSize);
-
-
-    for(int i = 0;i<contentSize;i++) {
-        printf("%s\n", contentLines[i]);
-    }
+    lineUnfold(test, arraySize,&contentSize);
 
 
-    free_fields(test, arraySize);
-    free_fields(contentLines, contentSize);
-
-
-    // for(int i = 0;i<arraySize;i++) {
-    //     if(!isEmpty(test[i]))
-    //         printf("%s\n", test[i]);
-    // }
+    free_fields(test,arraySize);
 
     return OTHER_ERROR;
 
