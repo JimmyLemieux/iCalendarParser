@@ -1929,6 +1929,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     free_fields(test,arraySize);
 
+    free(*obj);
+    *obj = NULL;
 
 
     /* Check if each line has a colon and/or semi colon */
