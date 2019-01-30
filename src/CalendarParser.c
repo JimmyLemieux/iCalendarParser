@@ -444,9 +444,6 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
                 free(tempFold);
                 tempFold = NULL;
 
-                // free(folded);
-                // folded = NULL;
-
                 j++;
             }
             i = j;
