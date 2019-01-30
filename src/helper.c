@@ -169,20 +169,21 @@ void deallocator(void *thingToFree) {
     }
 }
 
-void free_fields(char **ptr, int size) {
-    int i;
-    for(i = 0;i<size;i++) {
-        free(ptr[i]);
-    }
-    free(ptr);
-}
-
 int isEmpty(char * string) {
     if(string == NULL || strlen(string) == 0) {
         return 1;
     }
     return 0;
 }
+void free_fields(char **ptr, int size) {
+    int i;
+    for(i = 0;i<size;i++) {
+        if(!isEmpty(ptr[i]))
+            deallocator(ptr[i]);
+    }
+    deallocator(ptr);
+}
+
 
 
 int containsChar(char *line,char c) {

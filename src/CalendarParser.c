@@ -1277,6 +1277,57 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
     return OK;
 }
 
+
+
+char ** lineUnfold(char **lines, int arraySize, int *newSize) {
+    char **newLines;
+    int newCount = 0;
+
+    if(lines == NULL || arraySize == 0) {
+        return NULL;
+    }
+
+    for(int i = 0;i < arraySize - 1;) {
+        if(lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
+            int j = i + 1;
+            while(j<arraySize && isspace(lines[j][0])) {
+                lines[i] = realloc(lines[i], strlen(lines[j]) + 100);
+                lines[j] += 1;
+                strcat(lines[j], "\0");
+                strcat(lines[i], lines[j]);
+                strcpy(lines[j], "\0");
+                j++;
+            }
+            strcat(lines[i], "\0");
+            // printf("The New Line is %s\n", lines[i]); 
+            i = j;
+            continue;
+        }
+        i++;
+    }
+
+    for(int i = 0;i<arraySize;i++) {
+        if(!isEmpty(lines[i])) {
+            newCount++;
+        }
+    }
+
+    newLines = malloc(sizeof(char *) *  newCount);
+
+    int oldIndex = 0;
+    for(int i = 0;i<newCount;) {
+        if(!isEmpty(lines[oldIndex])) {
+            newLines[i] = calloc(1, strlen(lines[oldIndex]) + 10);
+            strcpy(newLines[i], lines[oldIndex]);
+            i++;
+        }
+        oldIndex++;
+    }
+
+    *newSize = newCount;
+    return newLines;
+}
+
 /*This function will go through the properties that will be used with the calendar*/
 /*This includes the required PRODID and VERSION, as well as any other property on the top level of the iCal */
 /* Now adding the required functionality for parsing the "other props" */
@@ -1293,6 +1344,10 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         if(!containsChar(lines[i],':') || lines[i][0] == ';') {
             continue;
         }
+    
+        //lineUnfold(lines,arraySize,i);
+
+
         left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
         right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
         /* The string contains the char */
@@ -1764,34 +1819,6 @@ ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
 
 
 /* I still have to implement this function here as well */
-void lineUnfold(char **lines, int arraySize) { 
-
-    if(lines == NULL || arraySize == 0) {
-        return;
-    }
-
-    for(int i = 0;i < arraySize - 1;i++) {
-        if(lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
-            int j = i + 1;
-            while(j<arraySize && isspace(lines[j][0])) {
-                // printf("You want to fold to the line %s\n", lines[i]);
-                // strcat(lines[i], lines[j]);
-
-                lines[i] = realloc(lines[i], strlen(lines[j]));
-                lines[j] += 1;
-                strcat(lines[i], lines[j]);
-                strcat(lines[i], "\0");
-
-
-                // printf("The new Line is %s\n", lines[i]);
-
-                //strcpy(lines[i],"\0");  /* This will be ignored */
-                j++;
-            }
-            i = j;
-        }
-    }
-}
 
 
 /* Ending the functions that help with parsing the linked list*/
@@ -1805,6 +1832,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     int i;
     int arraySize;
     int fileLines;
+    int contentSize;
    // obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
     /* These cannot be NULL but can be empty */
@@ -1846,6 +1874,25 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         test[i] = trimSpecialChars(test[i]);
     }
 
+
+    char ** contentLines = lineUnfold(test, arraySize, &contentSize);
+
+
+    for(int i = 0;i<contentSize;i++) {
+        printf("%s\n", contentLines[i]);
+    }
+
+
+    free_fields(test, arraySize);
+    free_fields(contentLines, contentSize);
+
+
+    // for(int i = 0;i<arraySize;i++) {
+    //     if(!isEmpty(test[i]))
+    //         printf("%s\n", test[i]);
+    // }
+
+    return OTHER_ERROR;
 
     /* Have line folding done right here */
 
