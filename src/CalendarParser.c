@@ -436,7 +436,8 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
 
                 tempFold = removeFirstChar(folded);
 
-
+                strcat(tempFold,"\0");
+                
                 strcat(origLine, tempFold);
                 
                 free(folded);
