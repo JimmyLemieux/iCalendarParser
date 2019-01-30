@@ -795,7 +795,6 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
     int j;
     char *right;
     char *left;
-    char *fold; 
     int beginFound = 0;
     if(lines == NULL || arraySize == 0) {
         return OTHER_ERROR;
