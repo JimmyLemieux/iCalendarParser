@@ -1,21 +1,79 @@
-BEGIN:VCALENDAR
-beGIn:VEVeNT
-UID:uid1@example.com
-DTSTAMP:19970705T170000Z
+BEG
+ I
+ N:VCALENDAR
+be
+ G
+ I
+ n
+ :
+ V
+ E
+ V
+ e
+ N
+ T
+U
+ I
+ D
+ :
+ u
+ i
+ d
+ 1
+ @
+ e
+ x
+ a
+ m
+ p
+ l
+ e
+ .
+ c
+ o
+ m
+D
+ T
+ S
+ T
+ A
+ M
+ P:
+ 
+ 
+ 1
+ 9
+ 9
+ 7
+ 0
+ 7
+ 0
+ 5
+ T
+ 1
+ 7
+ 0
+ 0
+ 0
+ 0
+ Z
 ORGANIZER;CN=Joh
  n Doe:MAILTO:john.doe@example.com
-DTSTART:19970
- 714T
- 1700
- 00
+DTSTART:19970714T500000
 DTEND:19970715T
  035
  959
  Z
 rerwrew;
-SUMMARY:Bastille Day Party
-GEO:48.85299;2.36885
+SUMMARY:Bast
+ ille Day 
+ Party
+GEO:48.85
+ 299
+ ;
+ 2.36885
 END:VEVENT
 VERSION:2.0
-PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+PRODID:
+       HELLLO`````````1`1```````
 END:VCALENDAR

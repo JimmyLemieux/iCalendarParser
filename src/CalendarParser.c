@@ -748,7 +748,7 @@ ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
 
 
     if(lines == NULL || arraySize == 0) {
-        return OTHER_ERROR;
+        return INV_CAL;
     }
 
     for(i = 0;i<arraySize;i++) {
