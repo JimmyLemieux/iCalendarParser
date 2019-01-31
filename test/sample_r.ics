@@ -1,8 +1,122 @@
-BEGIN:VCALENDAR
-BEGIN:VEVENT
-UID:uid1@example.com
-DTSTAMP:19970705T170000Z
-ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+B
+ E
+ G
+ I
+ N
+ :
+ V
+ C
+ A
+ LE
+ N
+ D
+ A
+ R
+B
+ E
+ g
+ I
+ N
+ :
+ V
+ E
+ v
+ E
+ N
+ T
+U
+ I
+ D
+ :
+ u
+ i
+ d
+ 1
+ @
+ e
+ x
+ a
+ m
+ p
+ l
+ e
+ .
+ c
+ o
+ m
+D
+ T
+ S
+ T
+ A
+ M
+ P
+ :
+ 1
+ 9
+ 9
+ 7
+ 0
+ 7
+ 0
+ 5
+ T
+ 1
+ 7
+ 0
+ 0
+ 0
+ 0
+ Z
+O
+ R
+ G
+ A
+ N
+ I
+ Z
+ E
+ R
+ ;
+ C
+ N
+ =
+ J
+ o
+ h
+ n
+  
+  D
+  o
+  e
+  :
+  M
+  A
+  I
+  L
+  T
+  O
+  :
+  j
+  o
+  h
+  n
+  .
+  d
+  o
+  e
+  @
+  e
+  x
+  a
+  m
+  p
+  l
+  e
+  .
+  c
+  o
+  m
 DTSTART:19970714T500000
 DTEND:19970715T035959Z
 SUMMARY:Bastille Day Party
