@@ -377,7 +377,7 @@ ICalErrorCode validateFile(char *fileName) {
     file = fopen(fileName,"r");
     if(file == NULL) {  //The file did not open properly
         deallocator(tempFile);
-        deallocator(fileExtension);
+        deallocator(fileExtension); 
         return INV_FILE;
     }
 
@@ -1395,17 +1395,26 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
         //splitByFirstOccurence(lines[i],left,right,':');
 
-        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
-            /* We are going to split by first occurence of the ; */
-            splitByFirstOccurence(lines[i], left,right,';');
+        // if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
+        //     /* We are going to split by first occurence of the ; */
+        //     splitByFirstOccurence(lines[i], left,right,';');
 
-        } else {
-            /* we are going to split by first occurence of the : */
-            splitByFirstOccurence(lines[i], left,right,':');
-        }
+        // } else {
+        //     /* we are going to split by first occurence of the : */
+        //     splitByFirstOccurence(lines[i], left,right,':');
+        // }
+
+        splitContentLine(lines[i], left,right);
 
         // stringToUpper(left);
         // stringToUpper(right);
+
+        if((isEmpty(left) || isEmpty(right)) && open == 1) {
+            D;
+                deallocator(left);
+                deallocator(right);
+                return INV_CAL;
+            }
 
         if(strcasecmp(left,"BEGIN") == 0) {
             open++;
@@ -1569,6 +1578,17 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         /* Getting the event */
         if(calOpen == 1 && eventOpen == 1 && !alarmOpen) {
             //printf("An Event property\n");
+            
+            if(isEmpty(left) || isEmpty(right)) {
+                    deallocator(left);
+                    deallocator(right);
+                    freeList(eventPropList);
+                    freeList(alarmList);
+                    free(new_event);
+                    return INV_EVENT;
+            }
+
+
             if(strcasecmp(left,"UID") == 0 && new_event != NULL) {
                 if(isEmpty(right)) {
                     deallocator(left);
@@ -1719,6 +1739,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
             /* The properties that are in the alarm comp */
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
+
+            if(isEmpty(left) || isEmpty(right)) {
+                deallocator(left);
+                deallocator(right);
+                freeList(eventPropList);
+                freeList(alarmList);
+                free(new_event);
+                return INV_ALARM;
+            }
             if(strcasecmp(left,"ACTION") == 0) {
                 if(isEmpty(right)) {
                     deallocator(left);
