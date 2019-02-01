@@ -467,12 +467,19 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
     }
 
 
+
+    printf("End of the line is %s\n", lines[arraySize -1]);
+
     if(strcasecmp(lines[arraySize - 1], "END:VCALENDAR") == 0 && strcasecmp(newLines[lineCount-1], "END:VCALENDAR") != 0) {
         newLines = realloc(newLines, sizeof(char *) * (lineCount+1));
         newLines[lineCount] = calloc(1,sizeof(char) * (strlen(lines[arraySize-1]))+ 10);
         strcpy(newLines[lineCount],lines[arraySize-1]);
         lineCount++;
+    } else {
+        printf("End of the new array is %s\n", newLines[lineCount-1]);
     }
+
+    // printf("real end of line is %s\n", newLines[lineCount - 1]);
 
     *contentSize = lineCount;
 
@@ -1382,8 +1389,14 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     Property *new_prop = NULL;
 
     for(i = 0;i<arraySize;i++) {
-        if(!containsChar(lines[i],':') || lines[i][0] == ';') {
+        if(lines[i][0] == ';') {
             continue;
+        }
+
+        if(!containsChar(lines[i],':') && lines[i][0] != ';') {
+            if(open == 1) {
+                return INV_CAL;
+            }
         }
     
         //lineUnfold(lines,arraySize,i);
@@ -1410,7 +1423,6 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         // stringToUpper(right);
 
         if((isEmpty(left) || isEmpty(right)) && open == 1) {
-            D;
                 deallocator(left);
                 deallocator(right);
                 return INV_CAL;
@@ -1500,8 +1512,17 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     List *alarmProps = NULL;
 
     for(i = 0;i<arraySize;i++) {
-        if(!containsChar(lines[i],':') ||  lines[i][0] == ';') {
+        //Ignoring the comments
+        if(lines[i][0] == ';') {
             continue;
+        }
+        if(!containsChar(lines[i],':')) {
+            if(calOpen == 1 && eventOpen == 1 && !alarmOpen && lines[i][0] != ';') {
+                return INV_EVENT;
+            }
+            if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1 && lines[i][0] != ';') {
+                return INV_ALARM;
+            }
         }
         left = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
         right = calloc(1,sizeof(char) * strlen(lines[i]) + 500);

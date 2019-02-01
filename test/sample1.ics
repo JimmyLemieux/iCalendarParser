@@ -22,6 +22,7 @@ URL:http://americanhistorycalendar.com/peoplecalendar/1,328-abraham-lincol
 BEGIN:VALARM
 TRIGGER;VALUE=DATE-TIME:19970317T133000Z
 REPEAT:4
+;euriruei
 DURATION:PT15M
 ACTION:AUDIO
 ATTACH;FMTTYPE=audio/basic:ftp://example.com/pub/
