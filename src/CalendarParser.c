@@ -468,7 +468,6 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
 
 
 
-    printf("End of the line is %s\n", lines[arraySize -1]);
 
     if(strcasecmp(lines[arraySize - 1], "END:VCALENDAR") == 0 && strcasecmp(newLines[lineCount-1], "END:VCALENDAR") != 0) {
         newLines = realloc(newLines, sizeof(char *) * (lineCount+1));
@@ -476,7 +475,7 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
         strcpy(newLines[lineCount],lines[arraySize-1]);
         lineCount++;
     } else {
-        printf("End of the new array is %s\n", newLines[lineCount-1]);
+       //printf("End of the new array is %s\n", newLines[lineCount-1]);
     }
 
     // printf("real end of line is %s\n", newLines[lineCount - 1]);
@@ -516,11 +515,20 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
 
     while((c = fgetc(file)) != EOF) {
         stringBuffer[stringSize] = (char)c;
-        if((char) c == '\n') fileLineCount++; 
         stringSize++;
         stringBuffer = realloc(stringBuffer,sizeof(stringBuffer) * (stringSize) + 1);
         stringBuffer[stringSize] = '\0';
     } //End of reading from the array
+
+
+    //Find the number of lines in the file
+    int i = 0;
+    for(i = 0;i<strlen(stringBuffer);i++) {
+        if(stringBuffer[i] == '\n') {
+            fileLineCount++;
+        }
+    }
+
 
 
     while(index < strlen(stringBuffer) - 1) {
@@ -528,7 +536,6 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
             if(stringBuffer[index+1] == '\n') {
                 int startIndex = tempStart;
                 int endIndex = index+2;
-
                 temp = calloc(1, sizeof(char*)*(endIndex - startIndex) + 1);                
                 
                 //strcpy(temp,"Hello");
@@ -552,9 +559,9 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
         index++;
     }
 
+
     if(lineSize == 0) {
         fclose(file);
-        D;
         free(stringBuffer);
         free_fields(lines,lineSize);
         return NULL;
@@ -587,6 +594,136 @@ ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
 }
 
 
+ICalErrorCode checkCalendarBeginEnd(char **lines, int arraySize) {
+    int i = 0;
+    int j = arraySize - 1;
+    int beginFound = 0;
+    int endFound = 0;
+
+    while(i < arraySize && !beginFound) {
+        if(lines[i][0] != ';' && strcasecmp(lines[i], "begin:vcalendar") != 0) {
+            return INV_CAL;
+        }
+        if(strcasecmp(lines[i],"begin:vcalendar") == 0) {
+            beginFound = 1;
+            break;
+        }
+        i++;
+    }
+
+    if(i == arraySize - 1) {
+        return INV_CAL;
+    }
+
+    while(j >= 0 && !endFound) {
+        if(lines[j][0] != ';' && strcasecmp(lines[j], "end:vcalendar") != 0) {
+            return INV_CAL;
+        }
+        if(strcasecmp(lines[j],"end:vcalendar") == 0) {
+            endFound = 1;
+            break;
+        }
+        j--;
+    }
+
+    if(!beginFound || !endFound) {
+        return INV_CAL;
+    }
+    return OK;
+}
+
+
+ICalErrorCode checkCalendarLayer(char **lines, int arraySize) {
+    int foundVersion = 0;
+    int foundPRODID = 0;
+    int calComp = 0;
+    int openClose = 0;
+    // int beginCalCount = 0;
+    // int endCalCount = 0;
+    int open = 0;
+    char *left;
+    char *right;
+
+
+    if(lines == NULL || arraySize == 0) {
+        return INV_FILE;
+    }
+
+    for(int i = 0;i<arraySize;i++) {
+
+
+        if(!containsChar(lines[i],':') && open <= 1 && lines[i][0] != ';') {
+            return INV_CAL;
+        }
+        if(lines[i][0] == ';' && open <= 1) { // This is a comment line that is on cal scope or out of the calendar
+            continue;
+        }
+
+        left = calloc(1, sizeof(char) * (strlen(lines[i])) + 10);
+        right = calloc(1, sizeof(char) * (strlen(lines[i])) + 10);
+
+        splitContentLine(lines[i], left, right);
+
+
+        if(strcasecmp(left,"begin") == 0) {
+            if(strcasecmp(right,"VEVENT") == 0) {
+                calComp++;
+            }
+            if(strcasecmp(right,"VEVENT") == 0 || strcasecmp(right,"VALARM") == 0 || strcasecmp(right,"VCALENDAR") == 0){
+                open++;
+            }
+            deallocator((char *)left);
+            deallocator((char *)right);
+            continue; // to the next line
+        }
+
+        if(strcasecmp(left,"end") == 0 && (strcasecmp(right,"VALARM") == 0 || strcasecmp(right,"VEVENT") == 0 || strcasecmp(right,"VCALENDAR") == 0)) {
+            open--;
+            deallocator((char *)left);
+            deallocator((char *)right);
+            continue;
+        }
+
+
+
+
+
+        //You have to see if the PRODID and the Version tags are in the calendar
+        if(strcasecmp(left,"PRODID") == 0 && open == 1) {
+            if(foundPRODID == 1) {
+                deallocator(left);
+                deallocator(right);
+                return DUP_PRODID;
+            }
+            foundPRODID = 1;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        if(strcasecmp(left, "VERSION") == 0 && open == 1) {
+            if(foundVersion == 1) {
+                deallocator(left);
+                deallocator(right);
+                return DUP_VER;
+            }
+            foundVersion = 1;
+            deallocator(left);
+            deallocator(right);
+            continue;
+        }
+
+        deallocator(left);
+        deallocator(right);
+    } 
+
+    if(!foundVersion || !foundPRODID || !calComp) { 
+        return INV_CAL;
+    }
+    return OK;
+}
+
+
 //This function will be for checking if the first line is BEGIN:VCALENDAR and the last line is END:VCALENDAR
 //Also that the CALENDAR has all of its required properties in the top level directory
 //This will require keeping track of BEGIN and END TAGS
@@ -605,16 +742,8 @@ ICalErrorCode checkCalendarHead(char **lines, int arraySize) {
     char *right = NULL;
 
     if(lines == NULL || arraySize == 0) {
-        printf("Something is still wrong with the file\n");
         return INV_FILE;
     }
-    //Check to see if the CALENDAR has a BEGIN and then END, IF THERE is at least ONE COMPONENT
-    //CHECK IF THE CALENDAR has a version and a PROID
-
-    /* Checking if the first and last lines are valid */
-
-    // stringToLower(lines[0]);
-    // stringToLower(lines[arraySize - 1]);
 
     if(strcasecmp(lines[0],"begin:vcalendar") != 0 || strcasecmp(lines[arraySize - 1], "end:vcalendar") != 0) {
         printf("%s\n", lines[0]);
@@ -784,7 +913,6 @@ ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
             } else {
                 deallocator(left);
                 deallocator(right);
-                D;
                 return INV_CAL; 
             }
 
@@ -913,14 +1041,14 @@ ICalErrorCode checkEventRequirements(char **lines, int arraySize) {
             continue;
         }
 
-        if(strcasecmp(left,"BEGIN") == 0 && openEvent == 1) {
+        if(strcasecmp(left,"BEGIN") == 0 && openEvent == 1 && strcasecmp(right,"VALARM") == 0) {
             openOther++;
             deallocator(left);
             deallocator(right);
             continue;
         }
 
-        if(strcasecmp(left, "END") == 0 && openEvent == 1 && openOther >= 1) {
+        if(strcasecmp(left, "END") == 0 && openEvent == 1 && openOther >= 1 && strcasecmp(right,"VALARM") == 0) {
             openOther--;
             deallocator(left);
             deallocator(right);
@@ -930,6 +1058,11 @@ ICalErrorCode checkEventRequirements(char **lines, int arraySize) {
         if(strcasecmp(left,"END") == 0 && strcasecmp(right,"VEVENT") == 0) {
             openEvent--;
 
+            if(openOther >= 1) {
+                deallocator(left);
+                deallocator(right);
+                return INV_ALARM;
+            }
             if(uidCount != 1 || dtStartCount != 1 || dtStampCount != 1) {
                 deallocator(left);
                 deallocator(right);
@@ -1528,16 +1661,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         right = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
         /* The string contains the char */
 
-        //splitByFirstOccurence(lines[i],left,right,':');
-
-        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
-            /* We are going to split by first occurence of the ; */
-            splitByFirstOccurence(lines[i], left,right,';');
-
-        } else {
-            /* we are going to split by first occurence of the : */
-            splitByFirstOccurence(lines[i], left,right,':');
-        }
+        splitContentLine(lines[i],left,right);
 
         if(strcasecmp(left,"BEGIN") == 0 && strcasecmp(right,"VCALENDAR") == 0) {
             calOpen++;
@@ -1971,75 +2095,73 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     /* What we should do is return a new char ** that includes the unfolded lines */
 
-    char **contentLines = lineUnfold(test,arraySize,&contentSize);
+    // char **contentLines = lineUnfold(test,arraySize,&contentSize);
 
-    if(contentLines == NULL) {
-        printf("LINE FOLD ERROR!\n");
-        free(*obj);
-        *obj = NULL;
-        return OTHER_ERROR;
-    }
+    // if(contentLines == NULL) {
+    //     printf("LINE FOLD ERROR!\n");
+    //     free(*obj);
+    //     *obj = NULL;
+    //     return OTHER_ERROR;
+    // }
 
 
     /* Check if each line has a colon and/or semi colon */
 
 
-    /* Test valid prop names */
-
-    error = checkBeginsAndEnds(contentLines, contentSize);
-
-
+    error = checkCalendarBeginEnd(test,arraySize);
     if(error != 0) {
-        free_fields(contentLines, contentSize);
+        free_fields(test, arraySize);
         free(*obj);
         *obj = NULL;
         return error;
     }
+
     
-
-    error = checkCalendarHead(contentLines, contentSize);
+    error = checkCalendarLayer(test, arraySize);
 
     if(error != 0) {
-        free_fields(contentLines, contentSize);
-        //FREE
+        free_fields(test, arraySize);
         free(*obj);
         *obj = NULL;
         return error;
     }
 
 
-    error = checkEventBeginEnd(contentLines, contentSize);
+    //END OF TESTING
+
+    error = checkEventBeginEnd(test, arraySize);
 
     if(error != 0) {
-        free_fields(contentLines, contentSize);
-        free(*obj);
-        *obj = NULL;
-        return error;
-    }
-
-    error = checkEventRequirements(contentLines, contentSize);
-
-    if(error != 0) {
-        free_fields(contentLines, contentSize);
+        free_fields(test, arraySize);
         free(*obj);
         *obj = NULL;
         return error;
     }
 
 
-    error = checkAlarmBeginEnd(contentLines, contentSize);
-
+    error = checkEventRequirements(test, arraySize);
     if(error != 0) {
-        free_fields(contentLines, contentSize);
+        free_fields(test, arraySize);
         free(*obj);
         *obj = NULL;
         return error;
     }
 
-    error = checkAlarmRequirements(contentLines, contentSize);
+
+    error = checkAlarmBeginEnd(test, arraySize);
 
     if(error != 0) {
-        free_fields(contentLines, contentSize);
+        free_fields(test, arraySize);
+        free(*obj);
+        *obj = NULL;
+        return error;
+    }
+
+
+    error = checkAlarmRequirements(test, arraySize);
+
+    if(error != 0) {
+        free_fields(test, arraySize);
         free(*obj);
         *obj = NULL;
         return error;
@@ -2051,9 +2173,9 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     // /* Make functions to return the version and proID into the calendar object */
 
     // //(*obj)->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
-    error = fetchCalendarProps(*obj,contentLines, contentSize);
+    error = fetchCalendarProps(*obj,test, arraySize);
     if(error != 0) {
-        free_fields(contentLines, contentSize);
+        free_fields(test, arraySize);
         // deallocator(obj);
         //FREE
         deleteCalendar(*obj);
@@ -2067,14 +2189,14 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
     // /* Check events */
 
-    error = fetchCalEvents(*obj, contentLines, contentSize);
+    error = fetchCalEvents(*obj, test, arraySize);
     if(error != 0) {
-        free_fields(contentLines, contentSize);
+        free_fields(test, arraySize);
         deleteCalendar(*obj);
         return error;
     }
 
-    free_fields(contentLines, contentSize);
+    free_fields(test, arraySize);
 
     return OK;
 }
