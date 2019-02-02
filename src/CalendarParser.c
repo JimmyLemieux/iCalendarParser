@@ -728,6 +728,8 @@ ICalErrorCode checkCalendarLayer(char **lines, int arraySize) {
     } 
 
     if(!foundVersion || !foundPRODID || !calComp) { 
+        D;
+        printf("version:%d prodid:%d calComp:%d\n", foundVersion, foundPRODID, calComp);
         return INV_CAL;
     }
     return OK;
@@ -1959,11 +1961,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     }
 
 
-    printf("Lines after the fold\n");
-    for(int i = 0;i<contentSize;i++) {
-        printf("%s\n", contentLines[i]);
-    }
-    printf("\n\n");
+    // printf("Lines after the fold\n");
+    // for(int i = 0;i<contentSize;i++) {
+    //     printf("%s\n", contentLines[i]);
+    // }
+    // printf("\n\n");
 
 
 
@@ -1977,11 +1979,11 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     }
 
 
-    printf("Lines after the fold\n");
-    for(int i = 0;i<contentSize;i++) {
-        printf("%s\n", contentLines[i]);
-    }
-    printf("\n\n");
+    // printf("Lines after the fold\n");
+    // for(int i = 0;i<contentSize;i++) {
+    //     printf("%s\n", contentLines[i]);
+    // }
+    // printf("\n\n");
 
 
 

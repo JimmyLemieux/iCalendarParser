@@ -1,22 +1,5 @@
-B
- E
- G
- I
- N
- :
- V
- C
- A
- LE
- N
- D
- A
- R
-B
- E
- g
- I
- N
+BEGIN:VCALENDAR
+BEgIN
  :
  V
  E
@@ -31,6 +14,7 @@ U
  u
  i
  d
+;Should Ignoe Bitch
  1
  @
  e
@@ -123,5 +107,5 @@ SUMMARY:Bastille Day Party
 GEO:48.85299;2.36885
 END:VEVENT
 VERSION:2.0
-PRODID:HELLLO`````````1`1```````
+PRODID:e-ew
 END:VCALENDAR
