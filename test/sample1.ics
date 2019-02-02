@@ -18,28 +18,23 @@ DTSTAMP:20150421T141403
 CATEGORIES:U.S. Presidents,Civil War People
 LOCATION:Hodgenville\, Kentucky
 GEO:37.5739497;-85.7399606
-DESCRIPTION:Born February 12\, 1809\nSixteenth President (1861-1865)\n\n\n
- \nhttp://AmericanHistoryCalendar.com
-URL:http://americanhistorycalendar.com/peoplecalendar/1,328-abraham-lincol
- n
+DESCRIPTION:Born February 12\, 1809\nSixteenth President (1861-1865)\n\n\n\nhttp://AmericanHistoryCalendar.com
+URL:http://americanhistorycalendar.com/peoplecalendar/1,328-abraham-lincoln
 BEGIN:VALARM
 TRIGGER;VALUE=DATE-TIME:19970317T133000Z
 REPEAT:4
 ;eurirueireiwreowireopwirpeoireopwriopeireopwieopwirepwoireopwireopwiroewpriewpriewporiew
 DURATION:PT15M
 ACTION:AUDIO
-ATTACH;FMTTYPE=audio/basic:ftp://example.com/pub/
- sounds/bell-01.aud
+ATTACH;FMTTYPE=audio/basic:ftp://example.com/pub/sounds/bell-01.aud
 END:VALARM
 BEGIN:VALARM
 TRIGGER;RELATED=END:-P2D
 ACTION:EMAIL
 ATTENDEE:mailto:john_doe@example.com
 SUMMARY:*** REMINDER: SEND AGENDA FOR WEEKLY STAFF MEETING ***
-DESCRIPTION:A draft agenda needs to be sent out to the attendees to the weekly managers meeting (MGR-LIST). 
- Attached is a pointer the document template for the agenda file.
-ATTACH;FMTTYPE=application/msword:http://example.com/
- templates/agenda.doc
+DESCRIPTION:A draft agenda needs to be sent out to the attendees to the weekly managers meeting (MGR-LIST). Attached is a pointer the document template for the agenda file.
+ATTACH;FMTTYPE=application/msword:http://example.com/templates/agenda.doc
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
