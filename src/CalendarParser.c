@@ -1959,6 +1959,34 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     }
 
 
+    printf("Lines after the fold\n");
+    for(int i = 0;i<contentSize;i++) {
+        printf("%s\n", contentLines[i]);
+    }
+    printf("\n\n");
+
+
+
+    contentLines = lineUnfold(contentLines,contentSize,&contentSize);
+
+    if(contentLines == NULL) {
+        printf("LINE FOLD ERROR!\n");
+        free(*obj);
+        *obj = NULL;
+        return OTHER_ERROR;
+    }
+
+
+    printf("Lines after the fold\n");
+    for(int i = 0;i<contentSize;i++) {
+        printf("%s\n", contentLines[i]);
+    }
+    printf("\n\n");
+
+
+    return OTHER_ERROR;
+
+
     /* Check if each line has a colon and/or semi colon */
 
 
