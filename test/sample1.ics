@@ -1,4 +1,3 @@
-;comment
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//ZContent.net//Zap Calendar 1.0//EN
@@ -45,3 +44,4 @@ DTEND:19970715T040000Z
 SUMMARY:Bastille Day Party
 END:VEVENT
 END:VCALENDAR
+;ewko
