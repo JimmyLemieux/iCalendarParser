@@ -1,21 +1,21 @@
-BEGIN:VCALENDAR
-BEgIN
- :
- V
+B
  E
- v
+ G
+ I
+ N:
+ V
+ C
+ A
+ L
  E
  N
- T
-U
- I
  D
- :
- u
- i
- d
+ A
+ R
+BEgIN:VEvENT
+UID:uid
 ;Should Ignoe Bitch
- 1
+  1
  @
  e
  x
@@ -33,6 +33,7 @@ D
  S
  T
  A
+;this shou
  M
  P
  :
@@ -109,3 +110,4 @@ END:VEVENT
 VERSION:2.0
 PRODID:e-ew
 END:VCALENDAR
+;iewoewo

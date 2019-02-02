@@ -411,38 +411,40 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
 
     newLines = malloc(sizeof(char *));
     for(int i = 0;i < arraySize - 1;) {
-        if(isEmpty(lines[i]) || lines[i][0] == ';') {
+        if(isEmpty(lines[i])) {
             i++;
             continue;
         }
-        // if(isEmpty(lines[i+1])) {
-        //     i++;
-        //     continue;
-        // }
+
 
         origLine = calloc(1, sizeof(char) * (strlen(lines[i])) + 30);
 
         strcpy(origLine, lines[i]);
-        
-        if(lines[i+1][0] == ' ' || lines[i+1][0] == '\t') {
-            int j = i + 1;
-            while((j<arraySize && isspace(lines[j][0]))) {
-                if(isEmpty(lines[j])) {
+
+        //This will basically not remove the comments
+        if(lines[i][0] == ';') {
+            newLines = realloc(newLines, sizeof(char *) * (lineCount + 1));
+            newLines[lineCount] = calloc(1, sizeof(char) * (strlen(origLine)) + 10);
+            strcpy(newLines[lineCount], origLine);
+            lineCount++;
+            free(origLine);
+            i++;
+            continue;
+        }
+        int j = i + 1;
+
+        if(lines[j][0] == ' ' || lines[j][0] == '\t' || lines[j][0] == ';') {
+            while((j<arraySize && (isspace(lines[j][0]) || lines[j][0] == ';'))) {
+                if(isEmpty(lines[j]) || lines[j][0] == ';') {
                     j++;
                     continue;
                 }
 
                 folded = calloc(1, sizeof(char) * (strlen(lines[j])) + 50);
                 strcpy(folded,lines[j]);
-
-
-
                 tempFold = removeFirstChar(folded);
-
                 origLine = realloc(origLine,sizeof(char) * ((strlen(tempFold)) + strlen(origLine)) + 10);
-
                 strcat(origLine, tempFold);
-                
                 free(folded);
                 folded = NULL;
                 free(tempFold);
@@ -470,21 +472,23 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
         origLine = NULL;
     }
 
-
-
-
-    if(strcasecmp(lines[arraySize - 1], "END:VCALENDAR") == 0 && strcasecmp(newLines[lineCount-1], "END:VCALENDAR") != 0) {
-        newLines = realloc(newLines, sizeof(char *) * (lineCount+1));
-        newLines[lineCount] = calloc(1,sizeof(char) * (strlen(lines[arraySize-1]))+ 10);
-        strcpy(newLines[lineCount],lines[arraySize-1]);
+    if(strcasecmp(lines[arraySize - 1], newLines[lineCount - 1]) != 0) {
+        newLines = realloc(newLines, sizeof(char *) * (lineCount + 1));
+        newLines[lineCount] = calloc(1, sizeof(char) * (strlen(lines[arraySize - 1])) + 10);
+        strcpy(newLines[lineCount],lines[arraySize - 1]);
         lineCount++;
-    } else {
-       //printf("End of the new array is %s\n", newLines[lineCount-1]);
     }
 
-    // printf("real end of line is %s\n", newLines[lineCount - 1]);
+
+    // printf("first line of old lines - > %s\n", lines[0]);
+    // printf("first line of new lines - > %s\n", newLines[0]);
+
+    // printf("last line of old lines - > %s\n", lines[arraySize - 1]);
+    // printf("last line of new lines - > %s\n", newLines[lineCount - 1]);
 
     *contentSize = lineCount;
+
+   
 
     free_fields(lines,arraySize);
     return newLines;
@@ -599,45 +603,23 @@ ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
 
 
 ICalErrorCode checkCalendarBeginEnd(char **lines, int arraySize) {
-    // int i = 0;
-    // int j = arraySize - 1;
-    // int beginFound = 0;
-    // int endFound = 0;
+    int goodBeginEnd = 0;
+    int count = 0;
 
-    // while(i < arraySize && !beginFound) {
-    //     if(lines[i][0] != ';' && strcasecmp(lines[i], "begin:vcalendar") != 0) {
-    //         return INV_CAL;
-    //     }
-    //     if(strcasecmp(lines[i],"begin:vcalendar") == 0) {
-    //         beginFound = 1;
-    //         break;
-    //     }
-    //     i++;
-    // }
+    if(strcasecmp(lines[0],"BEGIN:VCALENDAR") == 0 && strcasecmp(lines[arraySize - 1],"END:VCALENDAR") == 0) {
+        goodBeginEnd = 1;
+    }
 
-    // if(i == arraySize - 1) {
-    //     return INV_CAL;
-    // }
+    for(int i = 0;i<arraySize;i++) {
+        if(strcasecmp(lines[i],"BEGIN:VCALENDAR") == 0 || strcasecmp(lines[i], "END:VCALENDAR") == 0) {
+            count++;
+        }
+    }
 
-    // while(j >= 0 && !endFound) {
-    //     if(lines[j][0] != ';' && strcasecmp(lines[j], "end:vcalendar") != 0) {
-    //         return INV_CAL;
-    //     }
-    //     if(strcasecmp(lines[j],"end:vcalendar") == 0) {
-    //         endFound = 1;
-    //         break;
-    //     }
-    //     j--;
-    // }
-
-    // if(!beginFound || !endFound) {
-    //     return INV_CAL;
-    // }
-
-
-    if(strcasecmp(lines[0],"BEGIN:VCALENDAR") != 0 || strcasecmp(lines[arraySize - 1],"END:VCALENDAR") != 0) {
+    if(count != 2 || !goodBeginEnd) {
         return INV_CAL;
     }
+
     return OK;
 }
 
@@ -1959,32 +1941,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         *obj = NULL;
         return OTHER_ERROR;
     }
-
-
-    // printf("Lines after the fold\n");
-    // for(int i = 0;i<contentSize;i++) {
-    //     printf("%s\n", contentLines[i]);
-    // }
-    // printf("\n\n");
-
-
-
-    contentLines = lineUnfold(contentLines,contentSize,&contentSize);
-
-    if(contentLines == NULL) {
-        printf("LINE FOLD ERROR!\n");
-        free(*obj);
-        *obj = NULL;
-        return OTHER_ERROR;
-    }
-
-
-    // printf("Lines after the fold\n");
-    // for(int i = 0;i<contentSize;i++) {
-    //     printf("%s\n", contentLines[i]);
-    // }
-    // printf("\n\n");
-
 
 
     /* Check if each line has a colon and/or semi colon */
