@@ -682,6 +682,11 @@ ICalErrorCode checkCalendarLayer(char **lines, int arraySize) {
 
         //You have to see if the PRODID and the Version tags are in the calendar
         if(strcasecmp(left,"PRODID") == 0 && open == 1) {
+            if(isEmpty(right)) {
+                deallocator(left);
+                deallocator(right);
+                return INV_PRODID;
+            }
             if(foundPRODID == 1) {
                 deallocator(left);
                 deallocator(right);
@@ -694,6 +699,11 @@ ICalErrorCode checkCalendarLayer(char **lines, int arraySize) {
         }
 
         if(strcasecmp(left, "VERSION") == 0 && open == 1) {
+            if(isEmpty(right)) {
+                deallocator(left);
+                deallocator(right);
+                return INV_VER;
+            }
             if(foundVersion == 1) {
                 deallocator(left);
                 deallocator(right);
@@ -1394,6 +1404,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         // stringToUpper(right);
 
         if((isEmpty(left) || isEmpty(right)) && open == 1) {
+                D;
                 deallocator(left);
                 deallocator(right);
                 return INV_CAL;
@@ -1440,7 +1451,6 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                     free(new_prop);
                     return INV_PRODID;
                 }
-
             } else {
                 if(isEmpty(right) || isEmpty(left)) {
                     deallocator(left);
@@ -1595,10 +1605,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
        
                 /* Make a comntains substring here that will look for the TZID */
 
-                if(containsSubstring(left,"TZID")) {
-                    printf("DTSTART contains TZID\n");
-                    tzid = 1;
-                }
+                // if(containsSubstring(left,"TZID")) {
+                //     printf("DTSTART contains TZID\n");
+                //     tzid = 1;
+                // }
                 
 
 
@@ -1651,10 +1661,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 }
 
                 
-                if(containsSubstring(left,"TZID")) {
-                    tzid = 1;
-                    printf("DTSTAMP contains TZID\n");
-                }
+                // if(containsSubstring(left,"TZID")) {
+                //     tzid = 1;
+                //     printf("DTSTAMP contains TZID\n");
+                // }
 
 
 
