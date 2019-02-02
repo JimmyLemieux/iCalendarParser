@@ -30,8 +30,7 @@ END:VALARM
 BEGIN:VALARM
 TRIGGER;RELATED=END:-P2D
 ACTION:EMAIL
-ATTENDEE:mailto:john_do
-;Comment is a bitch
+ATTENDEE:mailto:john_do ;Comment is a bitch
  e@example.com
 SUMMARY:*** REMINDER: SEND AGENDA FOR WEEKLY STAFF MEETING ***
 DESCRIPTION:A draft agenda needs to be sent out to the attendees to the weekly managers meeting (MGR-LIST). Attached is a pointer the document template for the agenda file.
