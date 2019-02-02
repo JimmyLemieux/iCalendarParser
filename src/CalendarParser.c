@@ -1984,8 +1984,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     printf("\n\n");
 
 
-    return OTHER_ERROR;
-
 
     /* Check if each line has a colon and/or semi colon */
 
