@@ -1598,10 +1598,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
        
                 /* Make a comntains substring here that will look for the TZID */
 
-                // if(containsSubstring(left,"TZID")) {
-                //     printf("DTSTART contains TZID\n");
-                //     tzid = 1;
-                // }
+                if(containsSubstring(left,"TZID")) {
+                    tzid = 1;
+                }
                 
 
 
@@ -1624,18 +1623,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         free(new_event);
                         return INV_DT;
                     }
-
-                    if(strlen(date) != 8 || strlen(time) != 6) {
-                        deallocator(date);
-                        deallocator(time);
-                        deallocator(left);
-                        deallocator(right);
-                        freeList(eventPropList);
-                        freeList(alarmList);
-                        free(new_event);
-                        return INV_DT;
-                    }
-
 
 
                     if(containsChar(time,'Z')) {
@@ -1665,10 +1652,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 }
 
                 
-                // if(containsSubstring(left,"TZID")) {
-                //     tzid = 1;
-                //     printf("DTSTAMP contains TZID\n");
-                // }
+                if(containsSubstring(left,"TZID")) {
+                    tzid = 1;
+                }
 
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
@@ -1687,17 +1673,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         return INV_DT;
                     }
 
-
-                    if(strlen(date) != 8 || strlen(time) != 6) {
-                        deallocator(date);
-                        deallocator(time);
-                        deallocator(left);
-                        deallocator(right);
-                        freeList(eventPropList);
-                        freeList(alarmList);
-                        free(new_event);
-                        return INV_DT;
-                    }
 
                     if(containsChar(time,'Z')) {
                         new_event->creationDateTime.UTC = true;

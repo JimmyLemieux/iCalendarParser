@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     
 
     if(argc != 2) {
-        error = createCalendar("sample1.ics", &obj);
+        error = createCalendar("test/sample1.ics", &obj);
         errorOut = printError(error);
     } else {
         error = createCalendar(argv[1], &obj);
