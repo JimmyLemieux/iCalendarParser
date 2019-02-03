@@ -515,6 +515,10 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     
     FILE *file = fopen(fileName,"r");
 
+    if(file == NULL) {
+        return NULL;
+    }
+
 
     /* This reads in the file line by line */
 
@@ -605,6 +609,10 @@ ICalErrorCode validateFileLines(char **lines, int arraySize, int fileLines) {
 ICalErrorCode checkCalendarBeginEnd(char **lines, int arraySize) {
     int goodBeginEnd = 0;
     int count = 0;
+
+    if(lines == NULL) {
+        return OTHER_ERROR;
+    }
 
     if(strcasecmp(lines[0],"BEGIN:VCALENDAR") == 0 && strcasecmp(lines[arraySize - 1],"END:VCALENDAR") == 0) {
         goodBeginEnd = 1;
@@ -1367,6 +1375,10 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
     Property *new_prop = NULL;
 
+    if(lines == NULL || obj == NULL || arraySize == 0) {
+        return OTHER_ERROR;
+    }
+
     for(i = 0;i<arraySize;i++) {
         if(lines[i][0] == ';') {
             continue;
@@ -1471,6 +1483,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     List *eventPropList = NULL;
     List *alarmList = NULL;
     List *alarmProps = NULL;
+    
+    if(lines == NULL || obj == NULL || arraySize == 0) {
+        return OTHER_ERROR;
+    }
 
     for(i = 0;i<arraySize;i++) {
         //Ignoring the comments
@@ -1966,7 +1982,14 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
 char *printCalendar(const Calendar *obj) {    
     /* END TEST */
+
+
     char *strEvent = NULL;
+    if(obj == NULL) {
+        return NULL;
+    }
+
+    
     printf("BEGIN CALENDAR\n");
     printf("\tVERSION:%.2f\n", obj->version);
     printf("\tPRODID:%s\n", obj->prodID);
