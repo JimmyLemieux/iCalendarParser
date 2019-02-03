@@ -1163,16 +1163,6 @@ ICalErrorCode checkAlarmRequirements(char ** lines, int arraySize) {
 }
 
 
-//This function is responsible for checking if there is at least one component in the CALENDAR
-//If you can find a BEGIN:EVENT in the top level of the CALENDAR component this will return OK
-//AN EVENT MUST have a BEGIN:VENEVT and then a END:VEVENT tag
-//INSIDE an event it MUST have a DTSTAMP property and UID property and DTSTART property
-
-//Will finish this function later, need to first check for mismatches of BEGIN and END
-//This function will check if all of the events in the file are good
-
-
-/* Check if the event contains the basic properties UID,DTSTART,DTSTAMP */
 ICalErrorCode checkEventHead(char **lines, int arraySize) {
     int i;
     char *right;
@@ -1369,11 +1359,6 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
     return OK;
 }
 
-
-/*This function will go through the properties that will be used with the calendar*/
-/*This includes the required PRODID and VERSION, as well as any other property on the top level of the iCal */
-/* Now adding the required functionality for parsing the "other props" */
-
 ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     int i;
     int open = 0;
@@ -1470,11 +1455,6 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
     return OK;
 }
 
-
-/* There will need to be checking for alarms in the events as well */
-/* It should be noted that events are not required to have alarms */
-/* This function could make a sub call to another function that will parse the alarms out of the function*/
-/* This function will also look for alarms */
 ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     int i;
     int calOpen = 0;
@@ -1693,7 +1673,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         free(new_event);
                         return INV_DT;
                     }
-
 
 
                     if(strlen(date) != 8 || strlen(time) != 6) {
