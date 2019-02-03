@@ -1424,9 +1424,11 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             //printf("left:%s\tright:%s\n",left,right);
             new_prop = malloc(sizeof(Property) * strlen(left) + 300);
             if(strcasecmp(left, "VERSION") == 0) { /* This needs to be fixed */
-                float v = atof(right);
-                if(v != 0.0) {
-                    obj->version = v;
+                int len;
+                float ignore;
+                int ret = sscanf(right,"%f %n", &ignore,&len);
+                if(ret==1 && !right[len]) {
+                    obj->version = ignore;
                     deallocator(new_prop);
                 } else {
                     deallocator(left);
