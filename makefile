@@ -1,34 +1,30 @@
 CC = gcc
-CFLAGS = -pedantic -ansi -std=c11 -Wall -Iinclude/
+CFLAGS =  -Wall -g -std=c11 -Iinclude/
 COMMITM = new Commit
+SRC = src/
+BIN = bin/
 
-all: LL helper parser main
+all: list helper parser main
 
 git: gitAdd gitCommit gitPush
 
 pull: gitStash gitPull
 
-LL:
-	$(CC) $(CFLAGS) -c ./src/LinkedListAPI.c -g -o ./bin/LL.o
+list:
+	$(CC) $(CFLAGS) -c ./src/LinkedListAPI.c -o ./bin/LL.o
 
 helper:
-	$(CC) $(CFLAGS) -c ./src/helper.c -g -o ./bin/helper.o
+	$(CC) $(CFLAGS) -c ./src/helper.c -o ./bin/helper.o
 
 parser:
-	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -g -o ./bin/parser.o
+	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -o ./bin/parser.o
 
 main:
-	$(CC) $(CFLAGS) ./bin/parser.o ./bin/LL.o -g -o ./bin/main.o ./src/main.c
+	$(CC) $(CFLAGS) ./bin/parser.o ./bin/LL.o -o ./bin/main.o ./src/main.c
 
 
 clean:
 	rm -rf ./bin/*.o
-
-runM:
-	./bin/main.o
-
-runMVal:
-	valgrind ./bin/main.o
 
 gitAdd:
 	git add .

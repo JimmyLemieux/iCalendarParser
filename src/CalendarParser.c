@@ -636,9 +636,6 @@ ICalErrorCode checkCalendarLayer(char **lines, int arraySize) {
     int foundVersion = 0;
     int foundPRODID = 0;
     int calComp = 0;
-    int openClose = 0;
-    // int beginCalCount = 0;
-    // int endCalCount = 0;
     int open = 0;
     char *left;
     char *right;
@@ -1989,7 +1986,7 @@ char *printCalendar(const Calendar *obj) {
         return NULL;
     }
 
-    
+
     printf("BEGIN CALENDAR\n");
     printf("\tVERSION:%.2f\n", obj->version);
     printf("\tPRODID:%s\n", obj->prodID);
