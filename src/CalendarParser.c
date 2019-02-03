@@ -1632,6 +1632,17 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         return INV_DT;
                     }
 
+                    if(strlen(date) != 8 || strlen(time) != 6) {
+                        deallocator(date);
+                        deallocator(time);
+                        deallocator(left);
+                        deallocator(right);
+                        freeList(eventPropList);
+                        freeList(alarmList);
+                        free(new_event);
+                        return INV_DT;
+                    }
+
 
 
                     if(containsChar(time,'Z')) {
@@ -1666,8 +1677,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 //     printf("DTSTAMP contains TZID\n");
                 // }
 
-
-
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
                     char *date = calloc(1,sizeof(char) * 500);
@@ -1675,6 +1684,19 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     splitByFirstOccurence(right,date,time,'T');
 
                     if(isEmpty(time) || tzid) {
+                        deallocator(date);
+                        deallocator(time);
+                        deallocator(left);
+                        deallocator(right);
+                        freeList(eventPropList);
+                        freeList(alarmList);
+                        free(new_event);
+                        return INV_DT;
+                    }
+
+
+
+                    if(strlen(date) != 8 || strlen(time) != 6) {
                         deallocator(date);
                         deallocator(time);
                         deallocator(left);
@@ -1706,7 +1728,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(right);
                 }
             } else {
-                newEventProp = malloc(sizeof(Property) * strlen(left) + 200);
+                newEventProp = malloc(sizeof(Property) * strlen(right) + 200);
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
                 if(isEmpty(right) || isEmpty(left)) {
@@ -1723,9 +1745,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             }
 
             /* I still have to get all of the properties of the event */ 
-
-
-
         }
 
         /* Getting the Alarm */
@@ -1739,6 +1758,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 freeList(eventPropList);
                 freeList(alarmList);
                 free(new_event);
+                D; 
                 return INV_ALARM;
             }
             if(strcasecmp(left,"ACTION") == 0) {
@@ -1793,98 +1813,14 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         deallocator(right);
 
     }
-
     return OK;
 }
-
-/* As of right now, this function is kind of useless */
-ICalErrorCode fetchCalAlarms(Calendar *obj, char **lines, int arraySize) {
-    int i;
-    int calOpen = 0;
-    int eventOpen = 0;
-    int alarmOpen = 0;
-    char *left;
-    char *right;
-    for(i = 0;i<arraySize;i++) {
-        if(!containsChar(lines[i],':') || lines[i][0] == ';') {
-            continue;
-        }
-        left = calloc(1,sizeof(char) * strlen(lines[i]) +50);
-        right = calloc(1,sizeof(char) * strlen(lines[i]) + 50);
-        /* The string contains the char */
-
-        //splitByFirstOccurence(lines[i],left,right,':');
-
-        if(containsChar(lines[i], ';') && checkBefore(lines[i],';',':')) {
-            /* We are going to split by first occurence of the ; */
-            splitByFirstOccurence(lines[i], left,right,';');
-
-        } else {
-            /* we are going to split by first occurence of the : */
-            splitByFirstOccurence(lines[i], left,right,':');
-        }
-
-        stringToUpper(left);
-        stringToUpper(right);
-
-        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VCALENDAR") == 0) {
-            calOpen++;
-            deallocator(left);
-            deallocator(right);
-            continue;
-        }
-
-        if(strcmp(left,"END") == 0 && strcmp(right,"VCALENDAR") == 0) {
-            calOpen--;
-            deallocator(left);
-            deallocator(right);
-            continue;
-        }
-
-        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VEVENT") == 0) {
-            eventOpen++;
-            deallocator(left);
-            deallocator(right);
-            continue;
-        }
-
-        if(strcmp(left,"END") == 0 && strcmp(right,"VEVENT") == 0) {
-            eventOpen--;
-            deallocator(left);
-            deallocator(right);
-            continue;
-        }
-
-        if(strcmp(left,"BEGIN") == 0 && strcmp(right,"VALARM") == 0) {
-            alarmOpen++;
-            deallocator(left);
-            deallocator(right);
-            continue;
-        }
-
-        if(strcmp(left,"END") == 0 && strcmp(right,"VALARM") == 0) {
-            alarmOpen--;
-            deallocator(left);
-            deallocator(right);
-            continue;
-        }
-
-        if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
-        }
-        deallocator(left);
-        deallocator(right);
-    }
-    return OK;
-
-}
-
-
-
-
-/* I still have to implement this function here as well */
 
 
 /* Ending the functions that help with parsing the linked list*/
+
+
+
 /* Starting the mandatory functions for the assignment */
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
