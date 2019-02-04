@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <strings.h>
-#include <ctype.h>
-#include <math.h>
-#define SEG printf("This line is giving a Segfault")
-#define FREE free(x)
-#define MAL malloc(size_t s)
-#define PRINT printf(x)
-#define CAL calloc(n,size_t s)
+#include "helper.h"
 /* Making helper functions that will make my life easier */
 
 // Make copy, strcat, copyTO, returns index of char and substring

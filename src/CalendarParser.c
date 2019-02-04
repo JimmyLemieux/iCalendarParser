@@ -1682,8 +1682,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
 /* Ending the functions that help with parsing the linked list*/
 
-
-
 /* Starting the mandatory functions for the assignment */
 
 ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fix on the tokenizer
