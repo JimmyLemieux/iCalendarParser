@@ -1394,8 +1394,6 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
         splitContentLine(lines[i], left,right);
 
-        // stringToUpper(left);
-        // stringToUpper(right);
 
         if((isEmpty(left) || isEmpty(right)) && open == 1) {
                 D;
@@ -1421,7 +1419,6 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
 
         /* These are the properties that belong to the calendar! */
         if(open == 1) {
-            //printf("left:%s\tright:%s\n",left,right);
             new_prop = malloc(sizeof(Property) * strlen(left) + 300);
             if(strcasecmp(left, "VERSION") == 0) { /* This needs to be fixed */
                 int len;
