@@ -93,50 +93,7 @@ char* printEvent(void *toBePrinted) {
 /* You will have to traverse all of the properties and alarms of this event as well */ 
 /* You will need to free the two list * inside the event object */ 
 int compareEvents(const void *first, const void *second) {
-	Event *event1;
-	Event *event2;
-
-	if(first == NULL || second == NULL) {
-		return 0;
-	}
-
-	event1 = (Event *)first;
-	event2 = (Event *)second;
-	/* Check all of the components of the property are the same
-	Which includes, UID, DTSTART, DTSTAMP, and alarms if there is one */
-
-	if(strcmp(event1->UID,event2->UID) != 0) {
-		return 0;
-	}
-
-	if(strcmp(event1->startDateTime.date, event2->startDateTime.date) != 0) {
-		return 0;
-	}
-
-	if(strcmp(event1->startDateTime.time,event2->startDateTime.time) != 0) {
-		return 0;
-	}
-
-    if(strcmp(event1->creationDateTime.date,event2->creationDateTime.date) != 0) {
-        return 0;
-    }
-
-    if(strcmp(event1->creationDateTime.time,event2->creationDateTime.time) != 0) {
-        return 0;
-    }
-
-	if(event1->startDateTime.UTC != event2->startDateTime.UTC) {
-		return 0;
-	}
-
-    if(event1->creationDateTime.UTC != event2->creationDateTime.UTC) {
-        return 0;
-    }
-
-    /* You will have to call the compare alarms function here in order to compare the alarms and its properties */
-
-
-	return 1;
+	return 0;
 }
 
 void deleteEvent(void *toBeDeleted) {
@@ -173,24 +130,7 @@ char *printAlarm(void *toBePrinted) {
 }
 
 int compareAlarms(const void *first, const void *second) {
-    Alarm *alarm1;
-    Alarm *alarm2;
-    if(first == NULL || second == NULL) {
-        return 0;
-    }
-    alarm1 = (Alarm*)first;
-    alarm2 = (Alarm*)second;
-    if(strcmp(alarm1->trigger,alarm2->trigger) != 0) {
-        return 0;
-    }
-    if(strcmp(alarm1->action,alarm2->action) != 0) {
-        return 0;
-    }
-    /* You are going to have to comapre all of the properties inside of the alarm as well */
-
-    /* You can just call compare properties here for each of the alarms */
-
-    return 1;
+    return 0;
 }
 
 void deleteAlarm(void *toBeDeleted) {
@@ -228,23 +168,7 @@ char *printProperty(void *toBePrinted) {
 }
 
 int compareProperties(const void *first, const void *second) {
-    Property *prop1;
-    Property *prop2;
-    if(first == NULL || second == NULL) {
-        return 0;
-    }
-
-    prop1 = (Property *)first;
-    prop2 = (Property *)second;
-
-    if(strcmp(prop1->propDescr,prop2->propDescr) != 0) {
-        return 0;
-    }
-
-    if(strcmp(prop1->propName,prop2->propName) != 0) {
-        return 0;
-    }
-    return 1;
+    return 0;
 }
 
 void deleteProperty(void *toBeDeleted) {
@@ -283,33 +207,6 @@ char *printDate(void *toBePrinted) {
 
 
 int compareDates(const void *first, const void *second) {
-    DateTime *date1;
-    DateTime *date2;
-    int isGood = 0;
-    if(first == NULL || second == NULL) {
-        return 0;
-    }
-
-    date1 = (DateTime*)first;
-    date2 = (DateTime*)second;
-
-    /* Need to compare the values of the date, time, and the UTC */
-
-    if(strcmp(date1->date,date2->date) == 0) {
-        isGood++;
-    }
-
-    if(strcmp(date1->time,date2->time) == 0) {
-        isGood++;
-    }
-
-    if(date1->UTC == date2->UTC) {
-        isGood++;
-    }
-
-    if(isGood == 3) {
-        return 1;
-    }
     return 0;
 }
 
