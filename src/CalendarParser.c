@@ -1535,6 +1535,16 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         time[strlen(time) - 1] = '\0';
                         new_event->startDateTime.UTC = true;
                     } else {
+                        if(strlen(time) != 6) {
+                            deallocator(date);
+                            deallocator(time);
+                            deallocator(left);
+                            deallocator(right);
+                            freeList(eventPropList);
+                            freeList(alarmList);
+                            free(new_event);
+                            return INV_DT;
+                        }
                         new_event->startDateTime.UTC = false;
                     }
                     strcpy(new_event->startDateTime.date, date);
