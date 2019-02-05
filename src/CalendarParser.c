@@ -1461,14 +1461,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(calOpen == 1 && eventOpen == 1 && !alarmOpen) {
             //printf("An Event property\n");
             
-            if(isEmpty(left) || isEmpty(right)) {
-                    deallocator(left);
-                    deallocator(right);
-                    freeList(eventPropList);
-                    freeList(alarmList);
-                    free(new_event);
-                    return INV_EVENT;
-            }
 
 
             if(strcasecmp(left,"UID") == 0 && new_event != NULL) {
@@ -1491,6 +1483,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempLeft);
                     deallocator(tempRight);
                 }
+
+                if(isEmpty(right)) {
+                    deallocator(left);
+                    deallocator(right);
+                    freeList(eventPropList);
+                    freeList(alarmList);
+                    free(new_event);
+                    return INV_DT;
+                }
        
                 /* Make a comntains substring here that will look for the TZID */
 
@@ -1498,7 +1499,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     tzid = 1;
                 }
                 
-
 
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
@@ -1547,6 +1547,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempLeft);
                 }
 
+                if(isEmpty(right)) {
+                    deallocator(left);
+                    deallocator(right);
+                    freeList(eventPropList);
+                    freeList(alarmList);
+                    free(new_event);
+                    return INV_DT;
+                }
+
                 
                 if(containsSubstring(left,"TZID")) {
                     tzid = 1;
@@ -1575,10 +1584,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         time[strlen(time) - 1] = '\0';
                     } else {
                         new_event->creationDateTime.UTC = false;
-                        //time[strlen(time) - 1] = '\0';
                     }
-                    // printf("The length of the dateS is %lu\n", strlen(date));
-                    // printf("The length of the timeS is %lu\n", strlen(time));
                     strcpy(new_event->creationDateTime.date, date);
                     strcpy(new_event->creationDateTime.time, time);
                     deallocator(date);
@@ -1606,6 +1612,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 insertBack(eventPropList,newEventProp);
 
             }
+            // if(isEmpty(left) || isEmpty(right)) {
+            //         deallocator(left);
+            //         deallocator(right);
+            //         freeList(eventPropList);
+            //         freeList(alarmList);
+            //         free(new_event);
+            //         D;
+            //         return INV_EVENT;
+            // }
 
             /* I still have to get all of the properties of the event */ 
         }
@@ -1694,7 +1709,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     int contentSize;
     int fileLines;
     char **test = NULL;
-   // obj = malloc(sizeof(Calendar*));
     *obj = malloc(sizeof(Calendar));
     /* These cannot be NULL but can be empty */
 
