@@ -20,7 +20,7 @@ parser:
 	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -o ./bin/parser.o
 
 main:
-	$(CC) $(CFLAGS) ./bin/parser.o ./bin/LL.o -o ./bin/main.o ./src/main.c
+	$(CC) $(CFLAGS) ./bin/parser.o ./bin/list.o -o ./bin/main.o ./src/main.c
 
 clean:
 	rm -rf ./bin/*.o
