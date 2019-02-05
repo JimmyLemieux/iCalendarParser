@@ -11,16 +11,13 @@ git: gitAdd gitCommit gitPush
 pull: gitStash gitPull
 
 list:
-	$(CC) $(CFLAGS) -fpic -c ./src/LinkedListAPI.c -o ./bin/list.o
-	$(CC) $(CFLAGS) -shared -o ./bin/list.so ./bin/list.o
+	$(CC) $(CFLAGS) -c ./src/LinkedListAPI.c -o ./bin/list.o
 
 helper:
-	$(CC) $(CFLAGS) -fpic -c ./src/helper.c -o ./bin/helper.o
-	$(CC) $(CFLAGS) -shared -o ./bin/helper.so ./bin/helper.o
+	$(CC) $(CFLAGS) -c ./src/helper.c -o ./bin/helper.o
 
 parser:
-	$(CC) $(CFLAGS) -fpic -c ./src/CalendarParser.c -o ./bin/parser.o
-	$(CC) $(CFLAGS) -shared -o ./bin/parser.so ./bin/helper.o ./bin/list.o
+	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -o ./bin/parser.o
 
 main:
 	$(CC) $(CFLAGS) ./bin/parser.o ./bin/LL.o -o ./bin/main.o ./src/main.c
