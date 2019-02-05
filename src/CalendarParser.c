@@ -1522,6 +1522,16 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
 
                     if(containsChar(time,'Z')) {
+                        if(strlen(time) != 7) {
+                            deallocator(date);
+                            deallocator(time);
+                            deallocator(left);
+                            deallocator(right);
+                            freeList(eventPropList);
+                            freeList(alarmList);
+                            free(new_event);
+                            return INV_DT;
+                        }
                         time[strlen(time) - 1] = '\0';
                         new_event->startDateTime.UTC = true;
                     } else {
@@ -1580,9 +1590,29 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
 
                     if(containsChar(time,'Z')) {
+                        if(strlen(time) != 7) {
+                            deallocator(date);
+                            deallocator(time);
+                            deallocator(left);
+                            deallocator(right);
+                            freeList(eventPropList);
+                            freeList(alarmList);
+                            free(new_event);            
+                            return INV_DT;
+                        }
                         new_event->creationDateTime.UTC = true;
                         time[strlen(time) - 1] = '\0';
                     } else {
+                        if(strlen(time) != 6) {
+                            deallocator(date);
+                            deallocator(time);
+                            deallocator(left);
+                            deallocator(right);
+                            freeList(eventPropList);
+                            freeList(alarmList);
+                            free(new_event);            
+                            return INV_DT; 
+                        }
                         new_event->creationDateTime.UTC = false;
                     }
                     strcpy(new_event->creationDateTime.date, date);
