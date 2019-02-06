@@ -7,7 +7,7 @@
 #include <strings.h>
 #include "LinkedListAPI.h"
 #include "CalendarParser.h"
-#include "helper.c"
+#include "helper.h"
 #define D printf("debug\n")
 #define R printf("Check for Return\n")
 // #include "LinkedListAPI.h"
