@@ -1,26 +1,34 @@
 CC = gcc
-CFLAGS =  -Wall -g -std=c11 -Iinclude
+CFLAGS = -std=c11 -Wall -Iinclude/
 COMMITM = new Commit
-SRC = src/
-BIN = bin/
 
-all: list parser
+all: LL helper parser main
 
 git: gitAdd gitCommit gitPush
 
 pull: gitStash gitPull
 
-list: ./src/LinkedListAPI.c ./include/LinkedListAPI.h
-	$(CC) $(CFLAGS) -fpic -c ./src/LinkedListAPI.c -o ./bin/list.o
-	$(CC) $(CFLAGS) -shared ./bin/list.o -o ./bin/liblist.so
+LL:
+	$(CC) $(CFLAGS) -c ./src/LinkedListAPI.c -g -o ./bin/LL.o
 
-parser: ./src/helper.c ./src/CalendarParser.c ./include/helper.h ./include/CalendarParser.h
-	$(CC) $(CFLAGS) -fpic -c ./src/helper.c -o ./bin/helper.o
-	$(CC) $(CFLAGS) -fpic -c ./src/CalendarParser.c  -o ./bin/parser.o
-	$(CC) $(CFLAGS) -shared ./bin/helper.o ./bin/parser.o -o ./bin/libparser.so
+helper:
+	$(CC) $(CFLAGS) -c ./src/helper.c -g -o ./bin/helper.o
+
+parser:
+	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -g -o ./bin/parser.o
+
+main:
+	$(CC) $(CFLAGS) ./bin/parser.o ./bin/LL.o -g -o ./bin/main.o ./src/main.c
+
 
 clean:
 	rm -rf ./bin/*.o
+
+runM:
+	./bin/main.o
+
+runMVal:
+	valgrind ./bin/main.o
 
 gitAdd:
 	git add .
