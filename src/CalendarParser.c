@@ -1630,10 +1630,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(date);
                     deallocator(time);
                 } else {
-
-                    // strcpy(new_event->creationDateTime.date,right);
-                    // strcpy(new_event->creationDateTime.time,"NONE");
-                    // new_event->creationDateTime.UTC = false;
                     deallocator(left);
                     deallocator(right);
                     free(new_event);
