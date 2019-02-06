@@ -16,8 +16,8 @@ list: ./src/LinkedListAPI.c ./include/LinkedListAPI.h
 
 parser: ./src/helper.c ./src/CalendarParser.c ./include/helper.h ./include/CalendarParser.h
 	$(CC) $(CFLAGS) -fpic -c ./src/helper.c -o ./bin/helper.o
-	$(CC) $(CFLAGS) -fpic -c ./src/CalendarParser.c  ./bin/helper.o -o ./bin/parser.o
-	$(CC) $(CFLAGS) -shared ./bin/parser.o -o ./bin/libparser.so
+	$(CC) $(CFLAGS) -fpic -c ./src/CalendarParser.c  -o ./bin/parser.o
+	$(CC) $(CFLAGS) -shared ./bin/helper.o ./bin/parser.o -o ./bin/libparser.so
 
 clean:
 	rm -rf ./bin/*.o
