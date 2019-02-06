@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS =  -Wall -g -std=c11 -Iinclude/
+CFLAGS =  -Wall -g -std=c11 -Iinclude
 COMMITM = new Commit
 SRC = src/
 BIN = bin/
