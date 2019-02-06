@@ -214,9 +214,6 @@ void deleteDate(void *toBeDeleted) {
     if(toBeDeleted == NULL) {
         return;
     }
-    /* I am not sure what this function does tbh */
-
-
 }
 
 
@@ -1552,9 +1549,12 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(date);
                     deallocator(time);
                 } else {
-                    strcpy(new_event->startDateTime.date,right);
-                    strcpy(new_event->startDateTime.time,"NONE");
-                    new_event->startDateTime.UTC = false;
+                    deallocator(left);
+                    deallocator(right);
+                    return INV_DT;
+                    // strcpy(new_event->startDateTime.date,right);
+                    // strcpy(new_event->startDateTime.time,"NONE");
+                    // new_event->startDateTime.UTC = false;
                 }
             }else if(strcasecmp(left,"DTSTAMP") == 0 && new_event != NULL) {
                 if(containsChar(right,':')) {
@@ -1630,11 +1630,14 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(date);
                     deallocator(time);
                 } else {
-                    strcpy(new_event->creationDateTime.date,right);
-                    strcpy(new_event->creationDateTime.time,"NONE");
-                    new_event->creationDateTime.UTC = false;
+
+                    // strcpy(new_event->creationDateTime.date,right);
+                    // strcpy(new_event->creationDateTime.time,"NONE");
+                    // new_event->creationDateTime.UTC = false;
                     deallocator(left);
                     deallocator(right);
+                    free(new_event);
+                    return INV_DT;
                 }
             } else {
                 newEventProp = malloc(sizeof(Property) * strlen(right) + 200);
