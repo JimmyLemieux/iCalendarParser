@@ -412,7 +412,7 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     
     FILE *file = fopen(fileName,"r");
 
-    if(file == NULL) {
+    if(file == NULL || fileName == NULL) {
         return NULL;
     }
 
@@ -698,8 +698,6 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
         right = calloc(1,sizeof(char) * strlen(lines[i]) + 500);
         /* The string contains the char */
 
-        //splitByFirstOccurence(lines[i],left,right,':');
-
 
         splitContentLine(lines[i],left,right);
 
@@ -724,14 +722,6 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
                 checkLeft = calloc(1, sizeof(char) * strlen(lines[j]) + 500);
                 checkRight = calloc(1, sizeof(char) * strlen(lines[j]) + 500);
 
-                // if(isEmpty(lines[j])) {
-                //     deallocator(checkLeft);
-                //     deallocator(checkRight);
-                //     deallocator(left);
-                //     deallocator(right);
-                //     return INV_EVENT;
-
-                // }
                 splitContentLine(lines[j],checkLeft,checkRight);
 
                 if(strcasecmp(checkLeft,"BEGIN") == 0 && strcasecmp(checkRight,"VEVENT") == 0) {
@@ -1075,7 +1065,6 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
     int dtStart = 0;
     int dtStamp = 0;
     if(lines == NULL || arraySize == 0) {
-        printf("This is an invalid file\n");
         return INV_FILE;
     }
     //Only need to check the lines between the first and last lines
@@ -1180,7 +1169,6 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
     char *right;
 
     if(lines == NULL || arraySize == 0) {
-        printf("This is an invalid file\n");
         return INV_FILE;
     }
 
@@ -1637,9 +1625,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(date);
                     deallocator(time);
                 } else {
-                    // strcpy(new_event->creationDateTime.date,right);
-                    // strcpy(new_event->creationDateTime.time,"NONE");
-                    // new_event->creationDateTime.UTC = false;
                     deallocator(left);
                     deallocator(right);
                     freeList(eventPropList);
@@ -1663,15 +1648,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 insertBack(eventPropList,newEventProp);
 
             }
-            // if(isEmpty(left) || isEmpty(right)) {
-            //         deallocator(left);
-            //         deallocator(right);
-            //         freeList(eventPropList);
-            //         freeList(alarmList);
-            //         free(new_event);
-            //         D;
-            //         return INV_EVENT;
-            // }
 
             /* I still have to get all of the properties of the event */ 
         }
@@ -1808,7 +1784,6 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
     char **contentLines = lineUnfold(test,arraySize,&contentSize);
 
     if(contentLines == NULL) {
-        printf("LINE FOLD ERROR!\n");
         free(*obj);
         *obj = NULL;
         return OTHER_ERROR;
