@@ -1,3 +1,4 @@
+/* Lemieux James 1014181 jlemie03@uoguelph.ca */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5,9 +6,9 @@
 #include <math.h>
 #include <ctype.h>
 #include <strings.h>
-#include "helper.h"
 #include "LinkedListAPI.h"
 #include "CalendarParser.h"
+#include "helper.c"
 #define D printf("debug\n")
 #define R printf("Check for Return\n")
 // #include "LinkedListAPI.h"
@@ -214,9 +215,6 @@ void deleteDate(void *toBeDeleted) {
     if(toBeDeleted == NULL) {
         return;
     }
-    /* I am not sure what this function does tbh */
-
-
 }
 
 
@@ -245,7 +243,7 @@ ICalErrorCode validateFile(char *fileName) {
     }
 
     if(index == strlen(tempFile)) {
-        printf("There is no file extension\n");
+        //printf("There is no file extension\n");
         deallocator(tempFile);
         return INV_FILE;
     }
@@ -262,7 +260,7 @@ ICalErrorCode validateFile(char *fileName) {
         fileExtension[j] = '\0';
 
         if(strcmp(fileExtension,"ics") != 0) {
-            printf("The file is not a ical file\n"); 
+            //printf("The file is not a ical file\n"); 
             deallocator(fileExtension);
             deallocator(tempFile);
             return INV_FILE;
@@ -559,7 +557,7 @@ ICalErrorCode checkCalendarLayer(char **lines, int arraySize) {
         splitContentLine(lines[i], left, right);
 
 
-        if(strcasecmp(left,"begin") == 0) {
+        if(strcasecmp(left,"BEGIN") == 0) {
             if(strcasecmp(right,"VEVENT") == 0) {
                 calComp++;
             }
@@ -571,7 +569,7 @@ ICalErrorCode checkCalendarLayer(char **lines, int arraySize) {
             continue; // to the next line
         }
 
-        if(strcasecmp(left,"end") == 0 && (strcasecmp(right,"VALARM") == 0 || strcasecmp(right,"VEVENT") == 0 || strcasecmp(right,"VCALENDAR") == 0)) {
+        if(strcasecmp(left,"END") == 0 && (strcasecmp(right,"VALARM") == 0 || strcasecmp(right,"VEVENT") == 0 || strcasecmp(right,"VCALENDAR") == 0)) {
             open--;
             deallocator((char *)left);
             deallocator((char *)right);
@@ -1108,7 +1106,7 @@ ICalErrorCode checkEventHead(char **lines, int arraySize) {
             if(uidCount != 1 || dtStart != 1 || dtStamp != 1 || openEvent != 1) {
                 deallocator(left);
                 deallocator(right);
-                printf("This was called\n");
+                //printf("This was called\n");
                 return INV_EVENT;
             }
             uidCount = 0;
@@ -1895,10 +1893,13 @@ char *printCalendar(const Calendar *obj) {
         return NULL;
     }
 
+    strEvent = calloc(1, sizeof(char) * 20);
+    strcpy(strEvent, "Hello, World!\0");
 
-    printf("BEGIN CALENDAR\n");
-    printf("\tVERSION:%.2f\n", obj->version);
-    printf("\tPRODID:%s\n", obj->prodID);
+
+    //printf("BEGIN CALENDAR\n");
+    //printf("\tVERSION:%.2f\n", obj->version);
+    //printf("\tPRODID:%s\n", obj->prodID);
 
 
     void *calProps;
@@ -1908,7 +1909,7 @@ char *printCalendar(const Calendar *obj) {
     while((calProps = nextElement(&calPropIter)) != NULL) {
         Property *calProp = (Property*)calProps;
         char *strCalProp = obj->properties->printData(calProp);
-        printf("%s", strCalProp);
+        //printf("%s", strCalProp);
         deallocator(strCalProp);
     }
 
@@ -1921,10 +1922,10 @@ char *printCalendar(const Calendar *obj) {
     ListIterator eventIter = createIterator(obj->events);
 
     while((event = nextElement(&eventIter)) != NULL) {
-        printf("BEGIN EVENT:\n");
+        //printf("BEGIN EVENT:\n");
         Event *listEvent = (Event*)event;
         char *strEvent = obj->events->printData(listEvent);
-        printf("%s", strEvent);
+        //printf("%s", strEvent);
         deallocator(strEvent);
 
         void *listAlarm;
@@ -1932,10 +1933,10 @@ char *printCalendar(const Calendar *obj) {
         ListIterator alarmIter = createIterator(listEvent->alarms);
 
         while((listAlarm = nextElement(&alarmIter)) != NULL) {
-            printf("BEGIN ALARM:\n");
+           // printf("BEGIN ALARM:\n");
             Alarm *newAlarm = (Alarm*)listAlarm;
             char *strAlarm = listEvent->alarms->printData(newAlarm);
-            printf("%s", strAlarm);
+            //printf("%s", strAlarm);
             deallocator(strAlarm);
 
             void *alarmProps;
@@ -1944,10 +1945,10 @@ char *printCalendar(const Calendar *obj) {
             while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
                 Property *alarmProperty = (Property*)alarmProps;
                 char *strAlarmProps = newAlarm->properties->printData(alarmProperty);
-                printf("%s", strAlarmProps);
+                //printf("%s", strAlarmProps);
                 deallocator(strAlarmProps);
             }
-            printf("END ALARM:\n");
+            //printf("END ALARM:\n");
         }
 
         void *eventProps;
@@ -1955,12 +1956,12 @@ char *printCalendar(const Calendar *obj) {
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
             char *strProp = listEvent->properties->printData(eventProperty);
-            printf("%s", strProp);
+            //printf("%s", strProp);
             deallocator(strProp);
         }
-        printf("END EVENT:\n");
+       // printf("END EVENT:\n");
     }   
-    printf("END CALENDAR\n");
+    //printf("END CALENDAR\n");
     
     return strEvent;
 }

@@ -1,3 +1,4 @@
+/* Lemieux James 1014181 jlemie03@uoguelph.ca */
 #include "helper.h"
 /* Making helper functions that will make my life easier */
 
