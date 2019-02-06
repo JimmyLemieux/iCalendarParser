@@ -2022,8 +2022,6 @@ char *printError(ICalErrorCode err) {
         default:
             strcpy(temp,"OTHER_ERROR");
     }
-    printf("ERROR -> %s\n", temp);
-    deallocator(temp);
     return temp;
 }
 
