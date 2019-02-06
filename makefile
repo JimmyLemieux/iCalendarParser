@@ -4,23 +4,20 @@ COMMITM = new Commit
 SRC = src/
 BIN = bin/
 
-all: list helper parser main
+all: list parser
 
 git: gitAdd gitCommit gitPush
 
 pull: gitStash gitPull
 
-list:
-	$(CC) $(CFLAGS) -c ./src/LinkedListAPI.c -o ./bin/list.o
+list: ./src/LinkedListAPI.c ./include/LinkedListAPI.h
+	$(CC) $(CFLAGS) -fpic -c ./src/LinkedListAPI.c -o ./bin/list.o
+	$(CC) $(CFLAGS) -shared ./bin/list.o -o ./bin/liblist.so
 
-helper:
-	$(CC) $(CFLAGS) -c ./src/helper.c -o ./bin/helper.o
-
-parser:
-	$(CC) $(CFLAGS) -c ./src/CalendarParser.c -o ./bin/parser.o
-
-main:
-	$(CC) $(CFLAGS) ./bin/parser.o ./bin/list.o -o ./bin/main.o ./src/main.c
+parser: ./src/helper.c ./src/CalendarParser.c ./include/helper.h ./include/CalendarParser.h
+	$(CC) $(CFLAGS) -fpic -c ./src/helper.c -o ./bin/helper.o
+	$(CC) $(CFLAGS) -fpic -c ./src/CalendarParser.c  ./bin/helper.o -o ./bin/parser.o
+	$(CC) $(CFLAGS) -shared ./bin/parser.o -o ./bin/libparser.so
 
 clean:
 	rm -rf ./bin/*.o
