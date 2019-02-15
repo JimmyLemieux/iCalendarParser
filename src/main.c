@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
     } else {
         error = createCalendar(argv[1], &obj);
         errorOut = printError(error);
+        free(errorOut);
     }
     
     if(error == 0) {
