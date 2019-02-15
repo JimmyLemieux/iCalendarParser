@@ -14,6 +14,7 @@ int main(int argc, char **argv) {
     if(argc != 2) {
         error = createCalendar("test/sample1.ics", &obj);
         errorOut = printError(error);
+        free(errorOut);
     } else {
         error = createCalendar(argv[1], &obj);
         errorOut = printError(error);

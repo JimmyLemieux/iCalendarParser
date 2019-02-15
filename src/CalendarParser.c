@@ -1927,7 +1927,6 @@ char *printCalendar(const Calendar *obj) {
         char *strEvent = obj->events->printData(listEvent);
         printf("%s", strEvent);
         deallocator(strEvent);
-
         void *listAlarm;
 
         ListIterator alarmIter = createIterator(listEvent->alarms);
