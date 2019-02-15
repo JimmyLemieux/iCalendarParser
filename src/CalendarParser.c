@@ -1893,8 +1893,8 @@ char *printCalendar(const Calendar *obj) {
         return NULL;
     }
 
-    strEvent = calloc(1, sizeof(char) * 20);
-    strcpy(strEvent, "Hello, World!\0");
+    // strEvent = calloc(1, sizeof(char) * 20);
+    // strcpy(strEvent, "Hello, World!\0");
 
 
     printf("BEGIN CALENDAR\n");
