@@ -11,7 +11,7 @@ TRANSP:TRANSPARENT
 RRULE:FREQ=YEARLY;INTERVAL=1;BYMONTH=2;BYMONTHDAY=12
 BEGIN:BAD
 END:BAD
-DTSTART:20080212
+DTSTART:20080212T030000
 DTEND:19980119T030000
 DTSTAMP:20150421T141403
 CATEGORIES:U.S. Presidents,Civil War People
@@ -22,7 +22,6 @@ URL:http://americanhistorycalendar.com/peoplecalendar/1,328-abraham-lincoln
 BEGIN:VALARM
 TRIGGER;VALUE=DATE-TIME:19970317T133000Z
 REPEAT:4
-;eurirueireiwreowireopwirpeoireopwriopeireopwieopwirepwoireopwireopwiroewpriewpriewporiew
 DURATION:PT15M
 ACTION:AUDIO
 ATTACH;FMTTYPE=audio/basic:ftp://example.com/pub/sounds/bell-01.aud

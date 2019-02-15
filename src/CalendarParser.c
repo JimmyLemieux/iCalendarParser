@@ -1897,9 +1897,9 @@ char *printCalendar(const Calendar *obj) {
     strcpy(strEvent, "Hello, World!\0");
 
 
-    //printf("BEGIN CALENDAR\n");
-    //printf("\tVERSION:%.2f\n", obj->version);
-    //printf("\tPRODID:%s\n", obj->prodID);
+    printf("BEGIN CALENDAR\n");
+    printf("\tVERSION:%.2f\n", obj->version);
+    printf("\tPRODID:%s\n", obj->prodID);
 
 
     void *calProps;
@@ -1909,7 +1909,7 @@ char *printCalendar(const Calendar *obj) {
     while((calProps = nextElement(&calPropIter)) != NULL) {
         Property *calProp = (Property*)calProps;
         char *strCalProp = obj->properties->printData(calProp);
-        //printf("%s", strCalProp);
+        printf("%s", strCalProp);
         deallocator(strCalProp);
     }
 
@@ -1922,10 +1922,10 @@ char *printCalendar(const Calendar *obj) {
     ListIterator eventIter = createIterator(obj->events);
 
     while((event = nextElement(&eventIter)) != NULL) {
-        //printf("BEGIN EVENT:\n");
+        printf("BEGIN EVENT:\n");
         Event *listEvent = (Event*)event;
         char *strEvent = obj->events->printData(listEvent);
-        //printf("%s", strEvent);
+        printf("%s", strEvent);
         deallocator(strEvent);
 
         void *listAlarm;
@@ -1933,10 +1933,10 @@ char *printCalendar(const Calendar *obj) {
         ListIterator alarmIter = createIterator(listEvent->alarms);
 
         while((listAlarm = nextElement(&alarmIter)) != NULL) {
-           // printf("BEGIN ALARM:\n");
+            printf("BEGIN ALARM:\n");
             Alarm *newAlarm = (Alarm*)listAlarm;
             char *strAlarm = listEvent->alarms->printData(newAlarm);
-            //printf("%s", strAlarm);
+            printf("%s", strAlarm);
             deallocator(strAlarm);
 
             void *alarmProps;
@@ -1945,10 +1945,10 @@ char *printCalendar(const Calendar *obj) {
             while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
                 Property *alarmProperty = (Property*)alarmProps;
                 char *strAlarmProps = newAlarm->properties->printData(alarmProperty);
-                //printf("%s", strAlarmProps);
+                printf("%s", strAlarmProps);
                 deallocator(strAlarmProps);
             }
-            //printf("END ALARM:\n");
+            printf("END ALARM:\n");
         }
 
         void *eventProps;
@@ -1956,12 +1956,12 @@ char *printCalendar(const Calendar *obj) {
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
             char *strProp = listEvent->properties->printData(eventProperty);
-            //printf("%s", strProp);
+            printf("%s", strProp);
             deallocator(strProp);
         }
-       // printf("END EVENT:\n");
+        printf("END EVENT:\n");
     }   
-    //printf("END CALENDAR\n");
+    printf("END CALENDAR\n");
     
     return strEvent;
 }
@@ -2023,6 +2023,7 @@ char *printError(ICalErrorCode err) {
         default:
             strcpy(temp,"OTHER_ERROR");
     }
+    printf("ERROR -> %s\n", temp);
     return temp;
 }
 
