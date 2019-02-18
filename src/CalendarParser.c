@@ -27,14 +27,14 @@ char* printEvent(void *toBePrinted) {
 	}
 
 	tempEvent = (Event*)toBePrinted;
-    
+
     /* Just print out all of the event things, not any of the alarm things */
 
     // if(tempEvent == NULL) {
     //     return NULL;
     // }
     tempStr = calloc(1, sizeof(char) * 100000);
-    
+
     if(!isEmpty(tempEvent->UID)) {
         temp = calloc(1, sizeof(char) * strlen(tempEvent->UID) + 500);
         sprintf(temp, "\tUID:%s\n",tempEvent->UID);
@@ -49,7 +49,7 @@ char* printEvent(void *toBePrinted) {
         //tempStr = realloc(tempStr,sizeof(char) * strlen(temp));
         strcat(tempStr,temp);
         deallocator(temp);
-    } 
+    }
 
 
     if(!isEmpty(tempEvent->creationDateTime.time)) {
@@ -73,7 +73,7 @@ char* printEvent(void *toBePrinted) {
         //tempStr = realloc(tempStr,sizeof(char) * strlen(temp));
         strcat(tempStr,temp);
         deallocator(temp);
-    } 
+    }
 
 
     if(!isEmpty(tempEvent->startDateTime.time)) {
@@ -91,8 +91,8 @@ char* printEvent(void *toBePrinted) {
 
 	return tempStr;
 }
-/* You will have to traverse all of the properties and alarms of this event as well */ 
-/* You will need to free the two list * inside the event object */ 
+/* You will have to traverse all of the properties and alarms of this event as well */
+/* You will need to free the two list * inside the event object */
 int compareEvents(const void *first, const void *second) {
 	return 0;
 }
@@ -107,12 +107,12 @@ void deleteEvent(void *toBeDeleted) {
 	/* for now just free the main event pointer */
     if(tempEvent->properties != NULL)
         freeList(tempEvent->properties);
-    
+
     if(tempEvent->alarms != NULL)
         freeList(tempEvent->alarms);
-    
 
-    deallocator(tempEvent); 
+
+    deallocator(tempEvent);
 }
 
 char *printAlarm(void *toBePrinted) {
@@ -143,14 +143,14 @@ void deleteAlarm(void *toBeDeleted) {
     tempAlarm = (Alarm*)toBeDeleted;
     /* I will also have to go through the properties for this and free */
     freeList(tempAlarm->properties);
-    free(tempAlarm->trigger); 
+    free(tempAlarm->trigger);
     free(tempAlarm);
 }
 
 /*Ending the functions for the linked list */
 
 char *printProperty(void *toBePrinted) {
-    char * str; 
+    char * str;
     int len;
     Property *tempProp;
     if(toBePrinted == NULL) {
@@ -185,7 +185,7 @@ void deleteProperty(void *toBeDeleted) {
 
 
 char *printDate(void *toBePrinted) {
-    
+
     char *str;
     int len = 0;
 
@@ -260,7 +260,7 @@ ICalErrorCode validateFile(char *fileName) {
         fileExtension[j] = '\0';
 
         if(strcmp(fileExtension,"ics") != 0) {
-            //printf("The file is not a ical file\n"); 
+            //printf("The file is not a ical file\n");
             deallocator(fileExtension);
             deallocator(tempFile);
             return INV_FILE;
@@ -272,7 +272,7 @@ ICalErrorCode validateFile(char *fileName) {
     file = fopen(fileName,"r");
     if(file == NULL) {  //The file did not open properly
         deallocator(tempFile);
-        deallocator(fileExtension); 
+        deallocator(fileExtension);
         return INV_FILE;
     }
 
@@ -383,7 +383,7 @@ char ** lineUnfold(char **lines, int arraySize,int *contentSize){
 
     *contentSize = lineCount;
 
-   
+
 
     free_fields(lines,arraySize);
     return newLines;
@@ -405,9 +405,9 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
     int index = 0;
     int tempStart = 0;
     char *stringBuffer = calloc(1,sizeof(stringBuffer));
-    char *temp; 
+    char *temp;
     char **lines = calloc(1, sizeof(char *));
-    
+
     FILE *file = fopen(fileName,"r");
 
     if(file == NULL || fileName == NULL) {
@@ -443,16 +443,16 @@ char** readFileChar(char *fileName, int *arraySize,int *fileLines) { //Cool toke
             if(stringBuffer[index+1] == '\n') {
                 int startIndex = tempStart;
                 int endIndex = index+2;
-                temp = calloc(1, sizeof(char*)*(endIndex - startIndex) + 1);                
-                
+                temp = calloc(1, sizeof(char*)*(endIndex - startIndex) + 1);
+
                 //strcpy(temp,"Hello");
                 strncpy(temp, stringBuffer + startIndex, endIndex - startIndex);
-                
+
                 lines[lineSize] = calloc(1,strlen(temp) + 1);
                 strcpy(lines[lineSize],temp);
                 lineSize++;
                 lines = realloc(lines, sizeof(lines) * (lineSize+1));
-                
+
                 //For the loop
                 index+=2;
                 tempStart = index;
@@ -617,11 +617,9 @@ ICalErrorCode checkCalendarLayer(char **lines, int arraySize) {
 
         deallocator(left);
         deallocator(right);
-    } 
+    }
 
-    if(!foundVersion || !foundPRODID || !calComp) { 
-        D;
-        printf("version:%d prodid:%d calComp:%d\n", foundVersion, foundPRODID, calComp);
+    if(!foundVersion || !foundPRODID || !calComp) {
         return INV_CAL;
     }
     return OK;
@@ -657,28 +655,28 @@ ICalErrorCode checkBeginsAndEnds(char **lines, int arraySize) {
                 if(strcasecmp(validComponents[j], right) == 0) {
                     found = 1;
                     break;
-                }   
+                }
             }
             if(found == 1) {
                 deallocator(left);
                 deallocator(right);
-                continue; 
+                continue;
             } else {
                 deallocator(left);
                 deallocator(right);
-                return INV_CAL; 
+                return INV_CAL;
             }
 
         }
         deallocator(left);
         deallocator(right);
 
-    } 
+    }
     return OK;
 }
 
 
-ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) { 
+ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
     int i;
     int j;
     char *right;
@@ -712,11 +710,11 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
             while(j < arraySize) {
                 char *checkLeft;
                 char *checkRight;
-                
+
                 if(!containsChar(lines[i], ':') || lines[i][0] == ';') {
                     j++;
                     continue;
-                } 
+                }
                 checkLeft = calloc(1, sizeof(char) * strlen(lines[j]) + 500);
                 checkRight = calloc(1, sizeof(char) * strlen(lines[j]) + 500);
 
@@ -749,7 +747,7 @@ ICalErrorCode checkEventBeginEnd(char **lines, int arraySize) {
             } else {
                 deallocator(left);
                 deallocator(right);
-                return INV_EVENT; 
+                return INV_EVENT;
             }
         }
     beginFound = 0;
@@ -825,7 +823,7 @@ ICalErrorCode checkEventRequirements(char **lines, int arraySize) {
             deallocator(left);
             deallocator(right);
             continue;
-        } 
+        }
 
         if(strcasecmp(left,"UID") == 0 && openEvent == 1 && !openOther) {
             uidCount++;
@@ -1235,7 +1233,7 @@ ICalErrorCode checkAlarmHead(char **lines, int arraySize) {
                 deallocator(right);
                 return INV_ALARM;
 
-        } 
+        }
         deallocator(left);
         deallocator(right);
     }
@@ -1269,7 +1267,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                 return INV_CAL;
             }
         }
-    
+
         left = calloc(1,sizeof(char) * strlen(lines[i]) +100);
         right = calloc(1,sizeof(char) * strlen(lines[i]) + 100);
         /* The string contains the char */
@@ -1320,7 +1318,7 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
             }else if(strcasecmp(left,"PRODID") == 0) {
                 if(strlen(right) != 0) {
                     strcpy(obj->prodID,right);
-                    deallocator(new_prop); 
+                    deallocator(new_prop);
                 } else {
                     deallocator(left);
                     deallocator(right);
@@ -1362,7 +1360,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
     List *eventPropList = NULL;
     List *alarmList = NULL;
     List *alarmProps = NULL;
-    
+
     if(lines == NULL || obj == NULL || arraySize == 0) {
         return OTHER_ERROR;
     }
@@ -1373,12 +1371,10 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             continue;
         }
         if(!containsChar(lines[i],':')) {
-               if(calOpen == 1 && eventOpen == 1 && !alarmOpen && lines[i][0] != ';') {
+            if(calOpen == 1 && eventOpen == 1 && !alarmOpen && lines[i][0] != ';') {
                 return INV_EVENT;
             }
             // if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1 && lines[i][0] != ';') {
-            //     printf("Another\n");
-            //     D;
             //     return INV_ALARM;
             // }
         }
@@ -1448,8 +1444,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         /* Getting the event */
         if(calOpen == 1 && eventOpen == 1 && !alarmOpen) {
             //printf("An Event property\n");
-            
-
 
             if(strcasecmp(left,"UID") == 0 && new_event != NULL) {
                 if(isEmpty(right)) {
@@ -1472,6 +1466,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempRight);
                 }
 
+
+
                 if(isEmpty(right)) {
                     deallocator(left);
                     deallocator(right);
@@ -1480,13 +1476,13 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     free(new_event);
                     return INV_DT;
                 }
-       
+
                 /* Make a comntains substring here that will look for the TZID */
 
                 if(containsSubstring(left,"TZID")) {
                     tzid = 1;
                 }
-                
+
 
                 if(containsChar(right,'T')) {//If there is a local time, or UTC
                     /*Take right and split */
@@ -1520,6 +1516,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                             free(new_event);
                             return INV_DT;
                         }
+
+                        
                         time[strlen(time) - 1] = '\0';
                         new_event->startDateTime.UTC = true;
                     } else {
@@ -1533,6 +1531,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                             free(new_event);
                             return INV_DT;
                         }
+
                         new_event->startDateTime.UTC = false;
                     }
                     strcpy(new_event->startDateTime.date, date);
@@ -1561,7 +1560,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(tempRight);
                     deallocator(tempLeft);
                 }
-
                 if(isEmpty(right)) {
                     deallocator(left);
                     deallocator(right);
@@ -1571,7 +1569,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     return INV_DT;
                 }
 
-                
+
                 if(containsSubstring(left,"TZID")) {
                     tzid = 1;
                 }
@@ -1592,8 +1590,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         free(new_event);
                         return INV_DT;
                     }
-
-
+        
                     if(containsChar(time,'Z')) {
                         if(strlen(time) != 7) {
                             deallocator(date);
@@ -1602,7 +1599,18 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                             deallocator(right);
                             freeList(eventPropList);
                             freeList(alarmList);
-                            free(new_event);            
+                            free(new_event);
+                            return INV_DT;
+                        }
+
+                        if(strlen(date) != 8) {
+                            deallocator(date);
+                            deallocator(time);
+                            deallocator(left);
+                            deallocator(right);
+                            freeList(eventPropList);
+                            freeList(alarmList);
+                            free(new_event);
                             return INV_DT;
                         }
                         new_event->creationDateTime.UTC = true;
@@ -1615,9 +1623,20 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                             deallocator(right);
                             freeList(eventPropList);
                             freeList(alarmList);
-                            free(new_event);            
-                            return INV_DT; 
+                            free(new_event);
+                            return INV_DT;
                         }
+
+                        // if(strlen(date) != 7) {
+                        //     deallocator(date);
+                        //     deallocator(time);
+                        //     deallocator(left);
+                        //     deallocator(right);
+                        //     freeList(eventPropList);
+                        //     freeList(alarmList);
+                        //     free(new_event);
+                        //     return INV_DT;
+                        // }
                         new_event->creationDateTime.UTC = false;
                     }
                     strcpy(new_event->creationDateTime.date, date);
@@ -1629,8 +1648,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(right);
                     freeList(eventPropList);
                     freeList(alarmList);
-                    free(new_event);     
-                    return INV_DT;  
+                    free(new_event);
+                    return INV_DT;
                 }
             } else {
                 newEventProp = malloc(sizeof(Property) * strlen(right) + 200);
@@ -1639,7 +1658,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     deallocator(right);
                     freeList(alarmList);
                     freeList(eventPropList);
-                    free(newEventProp); 
+                    free(newEventProp);
                     free(new_event);
                     return INV_EVENT;
                 }
@@ -1649,23 +1668,20 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
             }
 
-            /* I still have to get all of the properties of the event */ 
+            /* I still have to get all of the properties of the event */
         }
 
         /* Getting the Alarm */
         if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
             /* The properties that are in the alarm comp */
-            printf("LEFT:%s\tRIGHT:%s\n",left,right);
+            //printf("LEFT:%s\tRIGHT:%s\n",left,right);
 
             if(isEmpty(left) || isEmpty(right)) {
-                printf("Left is %s\n", left);
-                printf("Right is %s\n", right);
                 deallocator(left);
                 deallocator(right);
                 freeList(eventPropList);
                 freeList(alarmList);
                 free(new_event);
-                D;
                 return INV_ALARM;
             }
             if(strcasecmp(left,"ACTION") == 0) {
@@ -1699,7 +1715,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             } else {
                 newAlarmProp = malloc(sizeof(Property) * strlen(left) + 300);
                 //printf("right:%s\n", right);
-                if(isEmpty(right) || isEmpty(left)) {   
+                if(isEmpty(right) || isEmpty(left)) {
                     deallocator(left);
                     deallocator(right);
                     freeList(alarmProps);
@@ -1763,7 +1779,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 
 
     /* This function has been fixed */
-    error = validateFileLines(test,arraySize,fileLines); 
+    error = validateFileLines(test,arraySize,fileLines);
 
     if(error != 0) { //Error With the file
         free_fields(test,arraySize);
@@ -1802,7 +1818,7 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
         *obj = NULL;
         return error;
     }
-    
+
 
     error = checkCalendarLayer(contentLines, contentSize);
     if(error != 0) {
@@ -1888,12 +1904,8 @@ ICalErrorCode createCalendar(char* fileName, Calendar** obj) { //Big mem leak fi
 }
 
 
-char *printCalendar(const Calendar *obj) {    
+char *printCalendar(const Calendar *obj) {
     /* END TEST */
-
-    char *wholeCalendar = calloc(1, sizeof(char) * (300));
-
-
 
 
     char *strEvent = NULL;
@@ -1901,48 +1913,62 @@ char *printCalendar(const Calendar *obj) {
         return NULL;
     }
 
-    printf("BEGIN CALENDAR\n");
-    printf("\tVERSION:%.2f\n", obj->version);
-    printf("\tPRODID:%s\n", obj->prodID);
+    strEvent = calloc(1, sizeof(char) * 20);
+    strcpy(strEvent, "Hello, World!\0");
+
+
+    //printf("BEGIN CALENDAR\n");
+    //printf("\tVERSION:%.2f\n", obj->version);
+    //printf("\tPRODID:%s\n", obj->prodID);
+
+
     void *calProps;
+
     ListIterator calPropIter = createIterator(obj->properties);
+
     while((calProps = nextElement(&calPropIter)) != NULL) {
         Property *calProp = (Property*)calProps;
         char *strCalProp = obj->properties->printData(calProp);
-        printf("%s", strCalProp);
+        //printf("%s", strCalProp);
         deallocator(strCalProp);
     }
+
+
 
     /* FIND EVENTS AND PRINT THEM */
     void *event;
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
 
     ListIterator eventIter = createIterator(obj->events);
+
     while((event = nextElement(&eventIter)) != NULL) {
-        printf("BEGIN EVENT:\n");
+        //printf("BEGIN EVENT:\n");
         Event *listEvent = (Event*)event;
         char *strEvent = obj->events->printData(listEvent);
-        printf("%s", strEvent);
+        //printf("%s", strEvent);
         deallocator(strEvent);
+
         void *listAlarm;
+
         ListIterator alarmIter = createIterator(listEvent->alarms);
+
         while((listAlarm = nextElement(&alarmIter)) != NULL) {
-            printf("BEGIN ALARM:\n");
+           // printf("BEGIN ALARM:\n");
             Alarm *newAlarm = (Alarm*)listAlarm;
             char *strAlarm = listEvent->alarms->printData(newAlarm);
-            printf("%s", strAlarm);
+            //printf("%s", strAlarm);
             deallocator(strAlarm);
 
             void *alarmProps;
             ListIterator alarmPropsIter = createIterator(newAlarm->properties);
-            
+
             while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
                 Property *alarmProperty = (Property*)alarmProps;
                 char *strAlarmProps = newAlarm->properties->printData(alarmProperty);
-                printf("%s", strAlarmProps);
+                //printf("%s", strAlarmProps);
                 deallocator(strAlarmProps);
             }
-            printf("END ALARM:\n");
+            //printf("END ALARM:\n");
         }
 
         void *eventProps;
@@ -1950,15 +1976,13 @@ char *printCalendar(const Calendar *obj) {
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
             char *strProp = listEvent->properties->printData(eventProperty);
-            printf("%s", strProp);
+            //printf("%s", strProp);
             deallocator(strProp);
         }
-        printf("END EVENT:\n");
-    }   
-    printf("END CALENDAR\n");
+       // printf("END EVENT:\n");
+    }
+    //printf("END CALENDAR\n");
 
-    free(wholeCalendar);
-    
     return strEvent;
 }
 
@@ -1969,15 +1993,17 @@ void deleteCalendar(Calendar *obj) {
         obj = NULL;
         return;
     }
+
     freeList(obj->events); /* This calls the free Alarms as well */
     freeList(obj->properties);
+
     free(obj);
     obj = NULL;
 }
 
 /* Printing errors */
 
-/* typedef enum ers {OK, INV_FILE, INV_CAL, INV_VER, DUP_VER, INV_PRODID, DUP_PRODID, INV_EVENT, INV_DT, INV_ALARM, WRITE_ERROR, OTHER_ERROR } ICalErrorCode;*/ 
+/* typedef enum ers {OK, INV_FILE, INV_CAL, INV_VER, DUP_VER, INV_PRODID, DUP_PRODID, INV_EVENT, INV_DT, INV_ALARM, WRITE_ERROR, OTHER_ERROR } ICalErrorCode;*/
 char *printError(ICalErrorCode err) {
     char *temp = calloc(1,sizeof(char) * 30);
     switch(err) {
@@ -2017,7 +2043,6 @@ char *printError(ICalErrorCode err) {
         default:
             strcpy(temp,"OTHER_ERROR");
     }
-    printf("ERROR -> %s\n", temp);
     return temp;
 }
 
