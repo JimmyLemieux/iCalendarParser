@@ -220,11 +220,12 @@ void splitContentLine(char *line, char *left, char *right) {
     /* We are going to split by first occurence of the ; */
     splitByFirstOccurence(line, left,right,';');
 
-    } else {
+    } else if(containsChar(line, ';') && !containsChar(line,':')){
         /* we are going to split by first occurence of the : */
+        splitByFirstOccurence(line, left,right,';');
+    } else {
         splitByFirstOccurence(line, left,right,':');
     }
-
 }
 
 
