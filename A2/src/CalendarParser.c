@@ -2166,6 +2166,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
     return OK;
 }
 
+/* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
     return OK;
 }
