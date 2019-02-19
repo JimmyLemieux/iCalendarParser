@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
             error = writeCalendar(argv[2], obj);
             errorOut = printError(error);
         }
+        free(errorOut); 
         deleteCalendar(obj);
     }
     return 0;
