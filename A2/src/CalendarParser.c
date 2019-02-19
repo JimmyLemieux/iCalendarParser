@@ -18,6 +18,8 @@
 /* Starting the functions for the Linked List */
 
 /* make the compare functions for the linked list */
+
+/* The print functions are now compatible for the write calendar function */
 char* printEvent(void *toBePrinted) {
 	char *tempStr;
     char *temp;
