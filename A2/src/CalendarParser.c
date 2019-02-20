@@ -2175,7 +2175,6 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 /* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
 
-    printf("Called\n");
     void *event;
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
 
@@ -2188,8 +2187,8 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
         ListIterator eventPropIter = createIterator(listEvent->properties);
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
-            printf("strlen -> %lu\n", strlen(eventProperty->propName));
-            printf("strlen -> %lu\n", strlen(eventProperty->propDescr)); 
+            // printf("strlen -> %lu\n", strlen(eventProperty->propName));
+            // printf("strlen -> %lu\n", strlen(eventProperty->propDescr)); 
         }
         //fprintf(fp,"END:VEVENT\r\n");
     }
