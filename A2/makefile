@@ -2,9 +2,9 @@ CC = gcc
 CFLAGS = -std=c11 -Wall -Iinclude/
 COMMITM = new Commit
 
-all: LL helper parser main
+all: clean LL helper parser main
 
-git: gitAdd gitCommit gitPush
+git: clean gitAdd gitCommit gitPush
 
 pull: gitStash gitPull
 
