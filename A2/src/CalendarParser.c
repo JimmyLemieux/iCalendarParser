@@ -2187,6 +2187,9 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
         ListIterator eventPropIter = createIterator(listEvent->properties);
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
+            if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
+                return INV_EVENT;
+            }
             // printf("strlen -> %lu\n", strlen(eventProperty->propName));
             // printf("strlen -> %lu\n", strlen(eventProperty->propDescr)); 
         }
