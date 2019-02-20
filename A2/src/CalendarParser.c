@@ -1669,16 +1669,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                             return INV_DT;
                         }
 
-                        // if(strlen(date) != 7) {
-                        //     deallocator(date);
-                        //     deallocator(time);
-                        //     deallocator(left);
-                        //     deallocator(right);
-                        //     freeList(eventPropList);
-                        //     freeList(alarmList);
-                        //     free(new_event);
-                        //     return INV_DT;
-                        // }
                         new_event->creationDateTime.UTC = false;
                     }
                     strcpy(new_event->creationDateTime.date, date);
@@ -1720,14 +1710,14 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             /* The properties that are in the alarm comp */
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
 
-            if(isEmpty(left) || isEmpty(right)) {
-                deallocator(left);
-                deallocator(right);
-                freeList(eventPropList);
-                freeList(alarmList);
-                free(new_event);
-                return INV_ALARM;
-            }
+            // if(isEmpty(left) || isEmpty(right)) {
+            //     deallocator(left);
+            //     deallocator(right);
+            //     freeList(eventPropList);
+            //     freeList(alarmList);
+            //     free(new_event);
+            //     return INV_ALARM;
+            // }
             if(strcasecmp(left,"ACTION") == 0) {
                 if(isEmpty(right)) {
                     deallocator(left);
@@ -1757,20 +1747,20 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 //new_alarm->trigger = calloc(1, sizeof(char) * 500);
                 strcpy(new_alarm->trigger, right);
             } else {
-                newAlarmProp = malloc(sizeof(Property) * strlen(left) + 300);
+                newAlarmProp = malloc(sizeof(Property) * strlen(left) + strlen(right) + 5000);
                 //printf("right:%s\n", right);
-                if(isEmpty(right) || isEmpty(left)) {
-                    deallocator(left);
-                    deallocator(right);
-                    freeList(alarmProps);
-                    freeList(alarmList);
-                    freeList(eventPropList);
-                    free(new_alarm->trigger);
-                    free(new_alarm);
-                    free(new_event);
-                    free(newAlarmProp);
-                    return INV_ALARM;
-                }
+                // if(isEmpty(right) || isEmpty(left)) {
+                //     deallocator(left);
+                //     deallocator(right);
+                //     freeList(alarmProps);
+                //     freeList(alarmList);
+                //     freeList(eventPropList);
+                //     free(new_alarm->trigger);
+                //     free(new_alarm);
+                //     free(new_event);
+                //     free(newAlarmProp);
+                //     return INV_ALARM;
+                // }
                 strcpy(newAlarmProp->propName,left);
                 strcpy(newAlarmProp->propDescr,right);
                 insertBack(alarmProps,newAlarmProp);
@@ -2173,6 +2163,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 }
 
 
+/* Checks if any of the properties in the calendar are empty or malformaed in the obj */
 ICalErrorCode validateCalendarProps(const Calendar* obj) {
     if(obj == NULL) {
         return INV_CAL;
@@ -2200,22 +2191,16 @@ ICalErrorCode validateCalendarProps(const Calendar* obj) {
     return OK;
 }
 
-
-/* More validation of the calendar, including DT and properties */
-ICalErrorCode validateCalendar(const Calendar* obj) {
-    ICalErrorCode error;
-    error = validateCalendarProps((Calendar *)obj);
-
-    if(error != 0) {
-       //deleteCalendar((Calendar *)obj);
-        return error;
+ICalErrorCode validateCalendarEventProps(const Calendar *obj) {
+    if(obj == NULL) {
+        return INV_CAL;
     }
 
-
-
+    if(obj->events == NULL) {
+        return INV_CAL;
+    }
     void *event;
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
-
     ListIterator eventIter = createIterator(obj->events);
 
     while((event = nextElement(&eventIter)) != NULL) {
@@ -2228,11 +2213,27 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
                 return INV_EVENT;
             }
- 
         }
-        //fprintf(fp,"END:VEVENT\r\n");
+    }
+    return OK;
+}
+
+
+/* More validation of the calendar, including DT and properties */
+ICalErrorCode validateCalendar(const Calendar* obj) {
+    ICalErrorCode error;
+    error = validateCalendarProps(obj);
+
+    if(error != 0) {
+       //deleteCalendar((Calendar *)obj);
+        return error;
     }
 
+    error = validateCalendarEventProps(obj);
+
+    if(error != 0) {
+        return error;
+    }
     return OK;
 }
 
