@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
         free(errorOut);
     }
     if(error == 0) {
-        //printCalendar(obj);
+        printCalendar(obj);
         // if(argc != 3) {
         //     error = writeCalendar("outFiles/testOut.ics", obj);
         //     errorOut = printError(error);
