@@ -1697,15 +1697,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
                 newEventProp = malloc(sizeof(Property) * strlen(right) + 200);
                 //printf("strlen -> %lu\n", strlen(right));
-                if(isEmpty(right) || isEmpty(left)) {
-                    deallocator(left);
-                    deallocator(right);
-                    freeList(alarmList);
-                    freeList(eventPropList);
-                    free(newEventProp);
-                    free(new_event);
-                    return INV_EVENT;
-                }
+                // if(isEmpty(right) || isEmpty(left)) {
+                //     deallocator(left);
+                //     deallocator(right);
+                //     freeList(alarmList);
+                //     freeList(eventPropList);
+                //     free(newEventProp);
+                //     free(new_event);
+                //     return INV_EVENT;
+                // }
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
                 insertBack(eventPropList,newEventProp);
@@ -1759,18 +1759,18 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             } else {
                 newAlarmProp = malloc(sizeof(Property) * strlen(left) + 300);
                 //printf("right:%s\n", right);
-                // if(isEmpty(right) || isEmpty(left)) {
-                //     deallocator(left);
-                //     deallocator(right);
-                //     freeList(alarmProps);
-                //     freeList(alarmList);
-                //     freeList(eventPropList);
-                //     free(new_alarm->trigger);
-                //     free(new_alarm);
-                //     free(new_event);
-                //     free(newAlarmProp);
-                //     return INV_ALARM;
-                // }
+                if(isEmpty(right) || isEmpty(left)) {
+                    deallocator(left);
+                    deallocator(right);
+                    freeList(alarmProps);
+                    freeList(alarmList);
+                    freeList(eventPropList);
+                    free(new_alarm->trigger);
+                    free(new_alarm);
+                    free(new_event);
+                    free(newAlarmProp);
+                    return INV_ALARM;
+                }
                 strcpy(newAlarmProp->propName,left);
                 strcpy(newAlarmProp->propDescr,right);
                 insertBack(alarmProps,newAlarmProp);
