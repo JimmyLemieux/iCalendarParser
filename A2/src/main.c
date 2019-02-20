@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     strcpy(newEvent->UID, "SOME EVENT UID");
     newEvent->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
-    Property *newProp = malloc(sizeof(Property));
+    Property *newProp = malloc(sizeof(Property) + 5000);
 
     strcpy(newProp->propName, "\0");
     strcpy(newProp->propDescr, "\0");
