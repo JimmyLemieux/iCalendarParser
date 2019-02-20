@@ -2178,9 +2178,9 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
         return INV_CAL;
     }
    // printf("This is the version%lf\n", obj->version);
-//    if(obj->prodID[0] == 0) {
-//        return INV_CAL;
-//    }
+   if(obj->prodID[0] == '\0') {
+       return INV_CAL;
+   }
    if(isEmpty((char *)obj->prodID)) {
        return INV_CAL;
    }
