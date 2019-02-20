@@ -1705,7 +1705,9 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 //     return INV_EVENT;
                 // }
                 if(!isEmpty(left))strcpy(newEventProp->propName, left);
+                else strcpy(newEventProp->propName, "\0");
                 if(!isEmpty(right))strcpy(newEventProp->propDescr,right);
+                else strcpy(newEventProp->propDescr, "\0");
                 insertBack(eventPropList,newEventProp);
 
             }
@@ -2186,8 +2188,6 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
             //fprintf(fp,"%s", strProp);
-            strcat(eventProperty->propName, "\0");
-            strcat(eventProperty->propDescr, "\0"); 
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
                 return INV_EVENT;
             }
