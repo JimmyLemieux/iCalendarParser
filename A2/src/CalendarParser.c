@@ -1695,7 +1695,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 }
             } else {
 
-                newEventProp = calloc(1, sizeof(Property) * 5000);
+                newEventProp = calloc(1, sizeof(Property) * strlen(left) + strlen(right) + 5000);
                 //printf("strlen -> %lu\n", strlen(right));
                 // if(isEmpty(right) || isEmpty(left)) {
                 //     deallocator(left);
