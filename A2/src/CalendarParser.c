@@ -1691,15 +1691,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 }
             } else {
                 newEventProp = malloc(sizeof(Property) * strlen(right) + 200);
-                if(isEmpty(right) || isEmpty(left)) {
-                    deallocator(left);
-                    deallocator(right);
-                    freeList(alarmList);
-                    freeList(eventPropList);
-                    free(newEventProp);
-                    free(new_event);
-                    return INV_EVENT;
-                }
+                // if(isEmpty(right) || isEmpty(left)) {
+                //     deallocator(left);
+                //     deallocator(right);
+                //     freeList(alarmList);
+                //     freeList(eventPropList);
+                //     free(newEventProp);
+                //     free(new_event);
+                //     return INV_EVENT;
+                // }
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
                 insertBack(eventPropList,newEventProp);
