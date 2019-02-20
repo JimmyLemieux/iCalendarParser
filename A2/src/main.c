@@ -38,6 +38,5 @@ int main(int argc, char **argv) {
         // free(errorOut); 
         deleteCalendar(obj);
     }
-    printf("NIGGA\n");
     return 0;
 }

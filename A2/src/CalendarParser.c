@@ -1318,12 +1318,12 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         splitContentLine(lines[i], left,right);
 
 
-        if((isEmpty(left) || isEmpty(right)) && open == 1) {
-                D;
-                deallocator(left);
-                deallocator(right);
-                return INV_CAL;
-            }
+        // if((isEmpty(left) || isEmpty(right)) && open == 1) {
+        //         printf("HERE\n");
+        //         deallocator(left);
+        //         deallocator(right);
+        //         return INV_CAL;
+        //     }
 
         if(strcasecmp(left,"BEGIN") == 0 && (strcasecmp(right,"VEVENT") == 0 || strcasecmp(right,"VALARM") == 0 || strcasecmp(right,"VCALENDAR") == 0)) {
             open++;
@@ -1368,12 +1368,12 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                     return INV_PRODID;
                 }
             } else {
-                if(isEmpty(right) || isEmpty(left)) {
-                    deallocator(left);
-                    deallocator(right);
-                    free(new_prop);
-                    return INV_CAL;
-                }
+                // if(isEmpty(right) || isEmpty(left)) {
+                //     deallocator(left);
+                //     deallocator(right);
+                //     free(new_prop);
+                //     return INV_CAL;
+                // }
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
                 insertBack(obj->properties, new_prop);
