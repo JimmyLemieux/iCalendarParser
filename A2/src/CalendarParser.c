@@ -1694,7 +1694,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     return INV_DT;
                 }
             } else {
-                newEventProp = malloc(sizeof(Property) * strlen(right) + 200);
+
                 if(isEmpty(right) || isEmpty(left)) {
                     deallocator(left);
                     deallocator(right);
@@ -1704,6 +1704,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                     free(new_event);
                     return INV_EVENT;
                 }
+                newEventProp = malloc(sizeof(Property) * strlen(right) + 200);
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
                 insertBack(eventPropList,newEventProp);
