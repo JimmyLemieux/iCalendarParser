@@ -199,12 +199,12 @@ char *printProperty(void *toBePrinted) {
 
     str = calloc(1, sizeof(char) * 500);
     if(!isEmpty(tempProp->propName)) {
-        str = realloc(str, sizeof(char) * strlen(tempProp->propName) + 10);
+        str = realloc(str, sizeof(char) * strlen(tempProp->propName) + 500);
         sprintf(str, "%s:", tempProp->propName);
     }
 
     if(!isEmpty(tempProp->propDescr)) {
-        str = realloc(str, sizeof(char) * strlen(tempProp->propDescr) + 10);
+        str = realloc(str, sizeof(char) * strlen(tempProp->propDescr) + 500);
         strcat(str,tempProp->propDescr);
     }
     return str;
