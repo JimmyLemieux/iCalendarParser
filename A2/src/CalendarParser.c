@@ -203,7 +203,7 @@ char *printProperty(void *toBePrinted) {
         sprintf(str, "%s:", tempProp->propName);
     }
 
-    if(!isEmpty(tempProp->propDescr)) {
+    if(tempProp->propDescr[0] != 0 ||(!isEmpty(tempProp->propDescr))) {
         str = realloc(str, sizeof(char) * strlen(tempProp->propDescr) + 500);
         strcat(str,tempProp->propDescr);
     }
