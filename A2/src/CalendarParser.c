@@ -2218,6 +2218,37 @@ ICalErrorCode validateCalendarEventProps(const Calendar *obj) {
     return OK;
 }
 
+ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
+    if(obj == NULL) {
+        return INV_CAL;
+    }
+    void *event;
+    /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
+    ListIterator eventIter = createIterator(obj->events);
+
+    while((event = nextElement(&eventIter)) != NULL) {
+        Event *listEvent = (Event*)event;
+        void *listAlarm;
+
+        ListIterator alarmIter = createIterator(listEvent->alarms);
+
+        while((listAlarm = nextElement(&alarmIter)) != NULL) {
+           // printf("BEGIN ALARM:\n");
+            Alarm *newAlarm = (Alarm*)listAlarm;
+            void *alarmProps;
+            ListIterator alarmPropsIter = createIterator(newAlarm->properties);
+            while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
+                Property *alarmProperty = (Property*)alarmProps;
+
+                if(isEmpty(alarmProperty->propName) || isEmpty(alarmProperty->propDescr)) {
+                    return INV_ALARM;
+                }
+            }
+        }
+    }
+    return OK;
+}
+
 
 /* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
@@ -2230,6 +2261,12 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
     }
 
     error = validateCalendarEventProps(obj);
+
+    if(error != 0) {
+        return error;
+    }
+
+    error = validateCalendarAlarmProps(obj);
 
     if(error != 0) {
         return error;
