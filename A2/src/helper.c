@@ -145,9 +145,17 @@ void splitByFirstOccurence(char *line, char *left, char *right, char del) {
     for(i = 0;i<find;i++) {
         left[i] = line[i];
     }
+
+    if(i == 0) {
+        strcpy(left, "\0");
+    }
     
     for(k = find+1,i=0;k<strlen(line);k++,i++) {
         right[i] = line[k];
+    }
+
+    if(k == find + 1) {
+        strcpy(right, "\0");
     }
 
 }
