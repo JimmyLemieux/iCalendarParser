@@ -200,9 +200,14 @@ char *printProperty(void *toBePrinted) {
     len = strlen(tempProp->propDescr) + strlen(tempProp->propName) + 500;
 
     str = calloc(1, len * sizeof(char));
+    if(!isEmpty(tempProp->propName)) {
+        sprintf(str, "%s:", tempProp->propName);
+    }
 
-    sprintf(str, "%s:%s\r\n", tempProp->propName,tempProp->propDescr);
-
+    if(!isEmpty(tempProp->propDescr)) {
+        strcat(str,tempProp->propDescr);
+    }
+    // sprintf(str, "%s:%s\r\n", tempProp->propName,tempProp->propDescr);
     return str;
 }
 
