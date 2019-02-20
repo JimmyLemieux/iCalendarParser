@@ -1705,9 +1705,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 //     return INV_EVENT;
                 // }
                 if(!isEmpty(left))strcpy(newEventProp->propName, left);
-                else strcpy(newEventProp->propName, "");
                 if(!isEmpty(right))strcpy(newEventProp->propDescr,right);
-                else strcpy(newEventProp->propDescr, "");
                 insertBack(eventPropList,newEventProp);
 
             }
