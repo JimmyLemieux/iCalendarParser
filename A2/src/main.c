@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 
     Property *newProp = malloc(sizeof(Property) + 5000);
 
-    strcpy(newProp->propName, "\0");
+    strcpy(newProp->propName, "");
     strcpy(newProp->propDescr, "\0");
     insertBack(newEvent->properties, newProp);
 
