@@ -1318,12 +1318,11 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
         splitContentLine(lines[i], left,right);
 
 
-        // if((isEmpty(left) || isEmpty(right)) && open == 1) {
-        //         printf("HERE\n");
-        //         deallocator(left);
-        //         deallocator(right);
-        //         return INV_CAL;
-        //     }
+        if((isEmpty(left) || isEmpty(right)) && open == 1) {
+                deallocator(left);
+                deallocator(right);
+                return INV_CAL;
+            }
 
         if(strcasecmp(left,"BEGIN") == 0 && (strcasecmp(right,"VEVENT") == 0 || strcasecmp(right,"VALARM") == 0 || strcasecmp(right,"VCALENDAR") == 0)) {
             open++;
@@ -1368,12 +1367,12 @@ ICalErrorCode fetchCalendarProps(Calendar * obj,char **lines,int arraySize) {
                     return INV_PRODID;
                 }
             } else {
-                // if(isEmpty(right) || isEmpty(left)) {
-                //     deallocator(left);
-                //     deallocator(right);
-                //     free(new_prop);
-                //     return INV_CAL;
-                // }
+                if(isEmpty(right) || isEmpty(left)) {
+                    deallocator(left);
+                    deallocator(right);
+                    free(new_prop);
+                    return INV_CAL;
+                }
                 strcpy(new_prop->propName,left);
                 strcpy(new_prop->propDescr,right);
                 insertBack(obj->properties, new_prop);
@@ -1687,15 +1686,15 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
 
                 newEventProp = calloc(1, sizeof(Property) * strlen(left) + strlen(right) + 5000);
                 //printf("strlen -> %lu\n", strlen(right));
-                // if(isEmpty(right) || isEmpty(left)) {
-                //     deallocator(left);
-                //     deallocator(right);
-                //     freeList(alarmList);
-                //     freeList(eventPropList);
-                //     free(newEventProp);
-                //     free(new_event);
-                //     return INV_EVENT;
-                // }
+                if(isEmpty(right) || isEmpty(left)) {
+                    deallocator(left);
+                    deallocator(right);
+                    freeList(alarmList);
+                    freeList(eventPropList);
+                    free(newEventProp);
+                    free(new_event);
+                    return INV_EVENT;
+                }
                 strcpy(newEventProp->propName, left);
                 strcpy(newEventProp->propDescr,right);
                 insertBack(eventPropList,newEventProp);
@@ -1710,14 +1709,14 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             /* The properties that are in the alarm comp */
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
 
-            // if(isEmpty(left) || isEmpty(right)) {
-            //     deallocator(left);
-            //     deallocator(right);
-            //     freeList(eventPropList);
-            //     freeList(alarmList);
-            //     free(new_event);
-            //     return INV_ALARM;
-            // }
+            if(isEmpty(left) || isEmpty(right)) {
+                deallocator(left);
+                deallocator(right);
+                freeList(eventPropList);
+                freeList(alarmList);
+                free(new_event);
+                return INV_ALARM;
+            }
             if(strcasecmp(left,"ACTION") == 0) {
                 if(isEmpty(right)) {
                     deallocator(left);
@@ -1749,18 +1748,18 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             } else {
                 newAlarmProp = malloc(sizeof(Property) * strlen(left) + strlen(right) + 5000);
                 //printf("right:%s\n", right);
-                // if(isEmpty(right) || isEmpty(left)) {
-                //     deallocator(left);
-                //     deallocator(right);
-                //     freeList(alarmProps);
-                //     freeList(alarmList);
-                //     freeList(eventPropList);
-                //     free(new_alarm->trigger);
-                //     free(new_alarm);
-                //     free(new_event);
-                //     free(newAlarmProp);
-                //     return INV_ALARM;
-                // }
+                if(isEmpty(right) || isEmpty(left)) {
+                    deallocator(left);
+                    deallocator(right);
+                    freeList(alarmProps);
+                    freeList(alarmList);
+                    freeList(eventPropList);
+                    free(new_alarm->trigger);
+                    free(new_alarm);
+                    free(new_event);
+                    free(newAlarmProp);
+                    return INV_ALARM;
+                }
                 strcpy(newAlarmProp->propName,left);
                 strcpy(newAlarmProp->propDescr,right);
                 insertBack(alarmProps,newAlarmProp);
@@ -2205,6 +2204,10 @@ ICalErrorCode validateCalendarEventProps(const Calendar *obj) {
 
     while((event = nextElement(&eventIter)) != NULL) {
         Event *listEvent = (Event*)event;
+
+        if(listEvent->properties == NULL) {
+            return INV_EVENT;
+        }
         //char *strEvent = obj->events->printData(listEvent);
         void *eventProps;
         ListIterator eventPropIter = createIterator(listEvent->properties);
@@ -2253,6 +2256,8 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
 /* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
     ICalErrorCode error;
+ 
+
     error = validateCalendarProps(obj);
 
     if(error != 0) {
@@ -2260,11 +2265,14 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
         return error;
     }
 
+
     error = validateCalendarEventProps(obj);
 
     if(error != 0) {
         return error;
     }
+
+    D;
 
     error = validateCalendarAlarmProps(obj);
 
