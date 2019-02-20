@@ -167,9 +167,8 @@ int isEmpty(char * string) {
     if(string == NULL) {
         return 1;
     }
-    if(string != NULL && strlen(string) == 0) {
-        return 1;
-    }
+
+    printf("The strlen is %lu\n", strlen(string)); 
     return 0;
 }
 void free_fields(char **ptr, int size) {
