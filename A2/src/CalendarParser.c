@@ -2169,7 +2169,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 
 
 
-
+/* This function validates the required components of the cal */
 ICalErrorCode validateCalendarRequired(const Calendar *obj) {
     if(obj == NULL) {
         return INV_CAL;

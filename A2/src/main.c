@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     obj = malloc(sizeof(Calendar));
 
     obj->version = 2.0;
-    strcpy(obj->prodID, "");
+    obj->prodID[0] = 0;
     obj->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
 
     obj->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
