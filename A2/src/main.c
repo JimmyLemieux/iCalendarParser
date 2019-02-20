@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     obj = malloc(sizeof(Calendar));
 
     obj->version = 2.0;
-    strcpy(obj->prodID, "TESTING STUFF");
+    //strcpy(obj->prodID, "TESTING STUFF");
     obj->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
 
     obj->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
@@ -47,9 +47,8 @@ int main(int argc, char **argv) {
     newEvent->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
     Property *newProp = malloc(sizeof(Property) + 5000);
-
-    //strcpy(newProp->propName, "");
-    strcpy(newProp->propDescr, "\0");
+    strcpy(newProp->propName, "THIS");
+    strcpy(newProp->propDescr, "ISCOOL");
     insertBack(newEvent->properties, newProp);
 
 

@@ -2162,6 +2162,35 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 }
 
 
+
+/* We are going to have to check the required compomnents for cal, events and alarms */
+
+
+
+
+
+
+ICalErrorCode validateCalendarRequired(const Calendar *obj) {
+    if(obj == NULL) {
+        return INV_CAL;
+    }
+    if(obj->version == 0) {
+        return INV_CAL;
+    }
+   // printf("This is the version%lf\n", obj->version);
+   if(obj->prodID[0] == 0) {
+       return INV_CAL;
+   }
+   if(isEmpty((char *)obj->prodID)) {
+       return INV_CAL;
+   }
+
+    if(obj->events == NULL) {
+        return INV_CAL;
+    }
+    return OK;
+}
+
 /* Checks if any of the properties in the calendar are empty or malformaed in the obj */
 ICalErrorCode validateCalendarProps(const Calendar* obj) {
     if(obj == NULL) {
@@ -2182,9 +2211,6 @@ ICalErrorCode validateCalendarProps(const Calendar* obj) {
         if(isEmpty(calProp->propName) || isEmpty(calProp->propDescr)) {
             return INV_CAL;
         }
-       // char *strCalProp = obj->properties->printData(calProp);
-        //printf("%s", strCalProp);
-        // deallocator(strCalProp);
     }
 
     return OK;
@@ -2240,6 +2266,9 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
            // printf("BEGIN ALARM:\n");
             Alarm *newAlarm = (Alarm*)listAlarm;
             void *alarmProps;
+            if(newAlarm->properties == NULL) {
+                return INV_ALARM;
+            }
             ListIterator alarmPropsIter = createIterator(newAlarm->properties);
             while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
                 Property *alarmProperty = (Property*)alarmProps;
@@ -2259,6 +2288,14 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
     ICalErrorCode error;
  
 
+    error = validateCalendarRequired(obj);
+
+    if(error != 0) {
+        return error;
+    }
+
+
+
     error = validateCalendarProps(obj);
 
     if(error != 0) {
@@ -2272,8 +2309,6 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
     if(error != 0) {
         return error;
     }
-
-    D;
 
     error = validateCalendarAlarmProps(obj);
 
