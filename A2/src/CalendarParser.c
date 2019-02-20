@@ -2032,8 +2032,8 @@ char *printCalendar(const Calendar *obj) {
 
 /* Freeing all of the contents of the Calendar */
 void deleteCalendar(Calendar *obj) {
-    if(obj == NULL) {
-        free(obj);
+    if((Calendar *)obj == NULL) {
+        free((Calendar *)obj);
         obj = NULL;
         return;
     }
@@ -2041,7 +2041,7 @@ void deleteCalendar(Calendar *obj) {
     freeList(obj->events); /* This calls the free Alarms as well */
     freeList(obj->properties);
 
-    free(obj);
+    free((Calendar *)obj);
     obj = NULL;
 }
 
@@ -2172,8 +2172,46 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
     return OK;
 }
 
+
+ICalErrorCode validateCalendarProps(const Calendar* obj) {
+    if(obj == NULL) {
+        return INV_CAL;
+    }
+
+    if(obj->properties == NULL) {
+        return INV_CAL;
+    }
+
+    void *calProps;
+
+    ListIterator calPropIter = createIterator(obj->properties);
+
+
+    while((calProps = nextElement(&calPropIter)) != NULL) {
+        Property *calProp = (Property*)calProps;
+        if(isEmpty(calProp->propName) || isEmpty(calProp->propDescr)) {
+            return INV_CAL;
+        }
+       // char *strCalProp = obj->properties->printData(calProp);
+        //printf("%s", strCalProp);
+        // deallocator(strCalProp);
+    }
+
+    return OK;
+}
+
+
 /* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
+    ICalErrorCode error;
+    error = validateCalendarProps((Calendar *)obj);
+
+    if(error != 0) {
+       //deleteCalendar((Calendar *)obj);
+        return error;
+    }
+
+
 
     void *event;
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
@@ -2190,8 +2228,7 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
                 return INV_EVENT;
             }
-            // printf("strlen -> %lu\n", strlen(eventProperty->propName));
-            // printf("strlen -> %lu\n", strlen(eventProperty->propDescr)); 
+ 
         }
         //fprintf(fp,"END:VEVENT\r\n");
     }
