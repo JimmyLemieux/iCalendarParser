@@ -1696,7 +1696,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
             } else {
 
                 newEventProp = malloc(sizeof(Property) * strlen(right) + 200);
-                printf("strlen -> %lu\n", strlen(right));
+                //printf("strlen -> %lu\n", strlen(right));
                 if(isEmpty(right) || isEmpty(left)) {
                     deallocator(left);
                     deallocator(right);
@@ -2187,6 +2187,8 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
         ListIterator eventPropIter = createIterator(listEvent->properties);
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
+            printf("strlen -> %lu\n", strlen(eventProperty->propName));
+            printf("strlen -> %lu\n", strlen(eventProperty->propDescr)); 
         }
         //fprintf(fp,"END:VEVENT\r\n");
     }
