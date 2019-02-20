@@ -189,7 +189,6 @@ void deleteAlarm(void *toBeDeleted) {
 
 char *printProperty(void *toBePrinted) {
     char * str;
-    int len;
     Property *tempProp;
     if(toBePrinted == NULL) {
         return NULL;
@@ -197,17 +196,17 @@ char *printProperty(void *toBePrinted) {
 
     tempProp = (Property *)toBePrinted;
 
-    len = strlen(tempProp->propDescr) + strlen(tempProp->propName) + 500;
 
-    str = calloc(1, len * sizeof(char));
+    str = calloc(1, sizeof(char) * 500);
     if(!isEmpty(tempProp->propName)) {
+        str = realloc(str, sizeof(char) * strlen(tempProp->propName) + 10);
         sprintf(str, "%s:", tempProp->propName);
     }
 
     if(!isEmpty(tempProp->propDescr)) {
+        str = realloc(str, sizeof(char) * strlen(tempProp->propDescr) + 10);
         strcat(str,tempProp->propDescr);
     }
-    // sprintf(str, "%s:%s\r\n", tempProp->propName,tempProp->propDescr);
     return str;
 }
 
