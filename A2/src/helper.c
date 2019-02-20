@@ -161,7 +161,7 @@ void deallocator(void *thingToFree) {
 }
 
 int isEmpty(char * string) {
-    if(string == NULL) {
+    if(string == NULL || strlen(string) == 0) {
         return 1;
     }
     return 0;
