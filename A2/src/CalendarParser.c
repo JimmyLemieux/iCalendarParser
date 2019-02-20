@@ -2175,6 +2175,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 /* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
 
+    printf("Called\n");
     void *event;
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
 
