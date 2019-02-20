@@ -150,9 +150,6 @@ void splitByFirstOccurence(char *line, char *left, char *right, char del) {
         right[i] = line[k];
     }
 
-    strcat(left, "\0");
-    strcat(right, "\0");
-
 }
 
 void deallocator(void *thingToFree) {
