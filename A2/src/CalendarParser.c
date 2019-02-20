@@ -2172,6 +2172,27 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 
 /* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
+
+    void *event;
+    /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
+
+    ListIterator eventIter = createIterator(obj->events);
+
+    while((event = nextElement(&eventIter)) != NULL) {
+        Event *listEvent = (Event*)event;
+        //char *strEvent = obj->events->printData(listEvent);
+        void *eventProps;
+        ListIterator eventPropIter = createIterator(listEvent->properties);
+        while((eventProps = nextElement(&eventPropIter)) != NULL) {
+            Property *eventProperty = (Property*)eventProps;
+            //fprintf(fp,"%s", strProp);
+            if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
+                return INV_EVENT;
+            }
+        }
+        //fprintf(fp,"END:VEVENT\r\n");
+    }
+
     return OK;
 }
 
