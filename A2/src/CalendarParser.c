@@ -1700,8 +1700,8 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                 //     free(new_event);
                 //     return INV_EVENT;
                 // }
-                strcpy(newEventProp->propName, left);
-                strcpy(newEventProp->propDescr,right);
+                if(!isEmpty(left))strcpy(newEventProp->propName, left);
+                if(!isEmpty(right))strcpy(newEventProp->propDescr,right);
                 insertBack(eventPropList,newEventProp);
 
             }
