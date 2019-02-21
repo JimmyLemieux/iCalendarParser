@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
     newEvent->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
     Property *newProp = malloc(sizeof(Property) + 5000);
-    strcpy(newProp->propName, "CLASS");
+    strcpy(newProp->propName, "CREATED");
     strcpy(newProp->propDescr, "ISCOOL");
     insertBack(newEvent->properties, newProp);
 
