@@ -2389,14 +2389,18 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                     // Attach can actually appear multiple times, it has to have the audio part in the alarm
                     // If the action in the alarm is of type audio then it can only appear once
 
-                    
 
+                    if(strcasecmp(alarmProperty->propName, "ATTACH") == 0 && strcasecmp(newAlarm->action, "AUDIO") == 0) {
+                        if(findElement(alarmProperty->propName, &findAlternateProperty, alarmProperty)) {
+                            return INV_ALARM;
+                        }
+                    }
 
                     //If any other of the properties appear more than once
                     if(findElement(newAlarm->properties, &findAlternateProperty, alarmProperty)) {
                         return INV_ALARM;
                     } 
-                } else {
+                } else { // If any other of the properties in the alarm are invalid then this is an invalid alarm
                     return INV_ALARM;
                 }
                 // Check for the alarm props in this section here 
