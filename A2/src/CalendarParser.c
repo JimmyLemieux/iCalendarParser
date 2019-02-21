@@ -2258,6 +2258,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
         Event *listEvent = (Event*)event;
 
         if(listEvent->properties == NULL || listEvent->alarms == NULL || isEmpty(listEvent->UID) || isEmpty(listEvent->creationDateTime.date) || isEmpty(listEvent->creationDateTime.time) || isEmpty(listEvent->startDateTime.date) || isEmpty(listEvent->startDateTime.time)) {
+            D;
             return INV_EVENT;
         }
 
@@ -2267,22 +2268,22 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
+                D;
                 return INV_EVENT;
             }
 
 
             if(strcasecmp(eventProperty->propName, "UID") == 0|| strcasecmp(eventProperty->propName,"DTSTAMP") == 0) {
+                D;
                 return INV_EVENT;
             }
 
             //The DTSTART PROPERTY
             // REQURIED if the method is not in the calendar props
             if(!foundMethod) {
-                strcpy(searchString, "DTSTART");
-                if(!findElement(listEvent->properties, &comparePropName, searchString)) {
+                if(isEmpty(listEvent->startDateTime.date) || isEmpty(listEvent->startDateTime.time)) {
                     return INV_EVENT;
                 }
-                strcpy(searchString, "\0");
             }
 
             /* Handle all of the properties that can only appear once in the event scope */

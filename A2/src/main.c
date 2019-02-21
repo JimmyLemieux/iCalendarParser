@@ -64,7 +64,6 @@ int main(int argc, char **argv) {
     strcpy(newProp->propDescr, "4");
     insertBack(newEvent->properties, newProp);
 
-
     insertBack(obj->events, newEvent);
 
     error = 0;
