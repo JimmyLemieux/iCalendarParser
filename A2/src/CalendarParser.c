@@ -2195,13 +2195,6 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 }
 
 
-
-/* We are going to have to check the required compomnents for cal, events and alarms */
-
-
-
-
-
 /* This function validates the required components of the cal */
 ICalErrorCode validateCalendarRequired(const Calendar *obj) {
     if(obj == NULL || obj->version == 0 || obj->prodID[0] == '\0' || strcmp(obj->prodID, "") == 0 || isEmpty((char *)obj->prodID) || obj->events == NULL) {
@@ -2389,13 +2382,11 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                     // Attach can actually appear multiple times, it has to have the audio part in the alarm
                     // If the action in the alarm is of type audio then it can only appear once
 
-
                     if(strcasecmp(alarmProperty->propName, "ATTACH") == 0 && strcasecmp(newAlarm->action, "AUDIO") == 0) {
                         if(findElement(alarmProperty->propName, &findAlternateProperty, alarmProperty)) {
                             return INV_ALARM;
                         }
                     }
-
                     //If any other of the properties appear more than once
                     if(findElement(newAlarm->properties, &findAlternateProperty, alarmProperty)) {
                         return INV_ALARM;
@@ -2409,7 +2400,6 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
     }
     return OK;
 }
-
 
 /* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
@@ -2430,5 +2420,32 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
     }
     return OK;
 }
+
+
+char *dtToJSON(DateTime prop) {
+    return NULL;
+}
+
+char *eventToJSON(const Event *event) {
+    return NULL;   
+}
+
+char *eventListToJSON(const List *eventList) {
+    return NULL;
+}
+
+char *calendarToJSON(const Calendar *cal) {
+    return NULL;
+}
+
+
+Calendar *JSONtoEvent(const char *str) {
+    return NULL;
+}
+
+void addEvent(Calendar *cal, Event *toBeAdded) {
+    
+}
+
 
 /* Ending the mandatory functions for the assignment */
