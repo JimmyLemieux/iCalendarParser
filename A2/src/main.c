@@ -21,6 +21,8 @@ int main(int argc, char **argv) {
     //     free(errorOut);
     // }
 
+    /* Manually making a calendar object */
+
     obj = malloc(sizeof(Calendar));
 
     obj->version = 2.0;
@@ -31,15 +33,15 @@ int main(int argc, char **argv) {
 
 
     Property *newCalProp = malloc(sizeof(Property) +  5000);
-    strcpy(newCalProp->propName, "SUMMARY");
-    strcpy(newCalProp->propDescr, "NICE");
+    strcpy(newCalProp->propName, "CALSCALE");
+    strcpy(newCalProp->propDescr, "AWESOME");
     insertBack(obj->properties, newCalProp);
 
 
-    Property *newCalProp2 = malloc(sizeof(Property) + 5000);
-    strcpy(newCalProp2->propName, "DESCRIPTION");
-    strcpy(newCalProp2->propDescr, "THE DESC OF PROP");
-    insertBack(obj->properties, newCalProp2);
+    // Property *newCalProp2 = malloc(sizeof(Property) + 5000);
+    // strcpy(newCalProp2->propName, "DESCRIPTION");
+    // strcpy(newCalProp2->propDescr, "THE DESC OF PROP");
+    // insertBack(obj->properties, newCalProp2);
 
 
 
@@ -58,9 +60,10 @@ int main(int argc, char **argv) {
     newEvent->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
     Property *newProp = malloc(sizeof(Property) + 5000);
-    strcpy(newProp->propName, "THIS");
+    strcpy(newProp->propName, "CLASS");
     strcpy(newProp->propDescr, "ISCOOL");
     insertBack(newEvent->properties, newProp);
+
 
     insertBack(obj->events, newEvent);
 

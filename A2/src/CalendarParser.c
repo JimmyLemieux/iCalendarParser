@@ -210,7 +210,40 @@ char *printProperty(void *toBePrinted) {
     return str;
 }
 
+
+/* This function will find a different property in the list */
+
+bool findAlternateProperty(const void *first, const void *second) {
+    Property *a = (Property *) first;
+    Property *b = (Property *) second;
+    if(strcasecmp(a->propName, b->propName) == 0 && strcasecmp(a->propDescr, b->propDescr) != 0) {
+        return true;
+    }
+    return false;
+}
+
+/* List function for finding the same property */
+
+bool comparePropName(const void *first, const void *second) {
+    Property *a = (Property *) first;
+    Property *b = (Property *) second;
+    if(strcasecmp(a->propName, b->propName) == 0) {
+        return true;
+    }
+    return false;
+}
+
+
+
+
+
+/* This function will just check the titles of the two properties */
 int compareProperties(const void *first, const void *second) {
+    Property *a = (Property *)first;
+    Property *b = (Property *)second;
+    if(strcasecmp(a->propName, b->propName) == 0) {
+        return 1;
+    }
     return 0;
 }
 
@@ -2183,6 +2216,11 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
         if(isEmpty(calProp->propName) || isEmpty(calProp->propDescr)) {
             return INV_CAL;
         }
+        /* The only properties the cal can have are these properties */
+        /* The question is, can these props appear more than once? */
+        if(strcasecmp(calProp->propName, "CALSCALE") != 0 && strcasecmp(calProp->propName, "METHOD") != 0) {
+            return INV_CAL;
+        }
     }
     return OK;
 }
@@ -2211,6 +2249,32 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             Property *eventProperty = (Property*)eventProps;
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
                 return INV_EVENT;
+            }
+            /* Handle all of the properties that can only appear once in the event scope */
+            if(strcasecmp(eventProperty->propName, "CLASS") == 0 || strcasecmp(eventProperty->propName, "DESCRIPTION") == 0 || strcasecmp(eventProperty->propName, "RESOURCES") == 0 || strcasecmp(eventProperty->propName, "STATUS") == 0
+            || strcasecmp(eventProperty->propName, "TRANSP") == 0 || strcasecmp(eventProperty->propName, "URL") == 0) {
+                /* Here we have to see if any of these properties occur again */
+                if(findElement(listEvent->properties, &findAlternateProperty, eventProperty)) {
+                    return INV_EVENT;
+                }
+            } else if(strcasecmp(eventProperty->propName, "CREATED") == 0) {
+                if(findElement(listEvent->properties, &findAlternateProperty, eventProperty)) { /* This is if the prop occurs more than once */
+                    return INV_EVENT;
+                }
+                /* Check if the this property holds a date with UTC */
+
+                if(!containsChar(eventProperty->propDescr, 'T') || eventProperty->propDescr[strlen(eventProperty->propDescr) - 1] != 'Z') {
+                    return INV_EVENT;
+                }
+                //Has to contain a valid date seperated with a T and UTC
+                char *date = calloc(1, sizeof(char ) * strlen(eventProperty->propDescr) + 10);
+                char *time = calloc(1, sizeof(char) * strlen(eventProperty->propDescr) + 10);
+                splitByFirstOccurence(eventProperty->propDescr, date,time, 'T');
+                if(strlen(date) != 8 || strlen(time) != 6) {
+                    deallocator(date);
+                    deallocator(time);
+                    return INV_EVENT;
+                } 
             }
         }
     }
