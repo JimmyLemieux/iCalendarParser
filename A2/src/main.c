@@ -24,16 +24,27 @@ int main(int argc, char **argv) {
     obj = malloc(sizeof(Calendar));
 
     obj->version = 2.0;
-    obj->prodID[0] = 0;
+    strcpy(obj->prodID, "-//hacksw/handcal//NONSGML v1.0//EN");
     obj->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
 
     obj->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
+
+    Property *newCalProp = malloc(sizeof(Property));
+    strcpy(newCalProp->propName, "SUMMARY");
+    strcpy(newCalProp->propDescr, "NICE");
+    insertBack(obj->properties, newCalProp);
+
+
+    Property *newCalProp2 = malloc(sizeof(Property));
+    strcpy(newCalProp2->propName, "DESCRIPTION");
+    strcpy(newCalProp2->propDescr, "THE DESC OF PROP");
+    insertBack(obj->properties, newCalProp2);
+
+
+
     Event * newEvent = calloc(1, sizeof(Event));
-
     newEvent->alarms = initializeList(&printAlarm, &deleteAlarm,&compareAlarms);
-
-
 
     strcpy(newEvent->creationDateTime.date, "20090901"); 
     strcpy(newEvent->creationDateTime.time, "170000");
@@ -50,7 +61,6 @@ int main(int argc, char **argv) {
     strcpy(newProp->propName, "THIS");
     strcpy(newProp->propDescr, "ISCOOL");
     insertBack(newEvent->properties, newProp);
-
 
     insertBack(obj->events, newEvent);
 

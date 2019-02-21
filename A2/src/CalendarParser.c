@@ -2171,59 +2171,29 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 
 /* This function validates the required components of the cal */
 ICalErrorCode validateCalendarRequired(const Calendar *obj) {
-    if(obj == NULL) {
+    if(obj == NULL || obj->version == 0 || obj->prodID[0] == '\0' || strcmp(obj->prodID, "") == 0 || isEmpty((char *)obj->prodID) || obj->events == NULL) {
         return INV_CAL;
     }
-    if(obj->version == 0) {
-        return INV_CAL;
-    }
-   // printf("This is the version%lf\n", obj->version);
-   if(obj->prodID[0] == '\0') {
-       return INV_CAL;
-   }
-   if(isEmpty((char *)obj->prodID)) {
-       return INV_CAL;
-   }
-
-    if(obj->events == NULL) {
-        return INV_CAL;
-    }
-    return OK;
-}
-
-/* Checks if any of the properties in the calendar are empty or malformaed in the obj */
-ICalErrorCode validateCalendarProps(const Calendar* obj) {
-    if(obj == NULL) {
-        return INV_CAL;
-    }
-
-    if(obj->properties == NULL) {
-        return INV_CAL;
-    }
-
+    /* Looking at all of the properties of the calendar */
+    /* Will have to check for special cases in the calendar */
     void *calProps;
-
     ListIterator calPropIter = createIterator(obj->properties);
-
-
     while((calProps = nextElement(&calPropIter)) != NULL) {
         Property *calProp = (Property*)calProps;
         if(isEmpty(calProp->propName) || isEmpty(calProp->propDescr)) {
             return INV_CAL;
         }
     }
-
     return OK;
 }
 
-ICalErrorCode validateCalendarEventProps(const Calendar *obj) {
+
+/* You might be able to check for alarms in this function as well */
+ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
     if(obj == NULL) {
         return INV_CAL;
     }
 
-    if(obj->events == NULL) {
-        return INV_CAL;
-    }
     void *event;
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
     ListIterator eventIter = createIterator(obj->events);
@@ -2231,15 +2201,14 @@ ICalErrorCode validateCalendarEventProps(const Calendar *obj) {
     while((event = nextElement(&eventIter)) != NULL) {
         Event *listEvent = (Event*)event;
 
-        if(listEvent->properties == NULL) {
+        if(listEvent->properties == NULL || listEvent->alarms == NULL || isEmpty(listEvent->UID) || isEmpty(listEvent->creationDateTime.date) || isEmpty(listEvent->creationDateTime.time) || isEmpty(listEvent->startDateTime.date) || isEmpty(listEvent->startDateTime.time)) {
             return INV_EVENT;
         }
-        //char *strEvent = obj->events->printData(listEvent);
+        /* Looking at the properties in the event */
         void *eventProps;
         ListIterator eventPropIter = createIterator(listEvent->properties);
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
-
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
                 return INV_EVENT;
             }
@@ -2287,31 +2256,16 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
 ICalErrorCode validateCalendar(const Calendar* obj) {
     ICalErrorCode error;
  
-
     error = validateCalendarRequired(obj);
 
     if(error != 0) {
         return error;
     }
-
-
-
-    error = validateCalendarProps(obj);
-
-    if(error != 0) {
-       //deleteCalendar((Calendar *)obj);
-        return error;
-    }
-
-
-    error = validateCalendarEventProps(obj);
-
+    error = validateCalendarEventRequired(obj);
     if(error != 0) {
         return error;
     }
-
     error = validateCalendarAlarmProps(obj);
-
     if(error != 0) {
         return error;
     }
