@@ -265,3 +265,27 @@ int containsSubstring(char *line, char *sub) {
     deallocator(temp);
     return 0;
 }
+
+int isFloat(char * string) {
+    if(string == NULL) return 0;
+    int len;
+    float ignore;
+    int ret = sscanf(string,"%f %n", &ignore,&len);
+    if(ret==1 && !string[len]) {
+        return 1;
+    }
+    return 0;
+}
+
+int isInteger(char * string) {
+    if(string == NULL) return 0;
+
+    int len;
+    int ignore;
+
+    int ret = sscanf(string, "%d %n", &ignore, &len);
+    if(ret == 1 && !string[len]) {
+        return 1;
+    }
+    return 0;
+}

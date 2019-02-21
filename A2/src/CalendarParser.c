@@ -2275,10 +2275,33 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                     deallocator(date);
                     deallocator(time);
                     return INV_EVENT;
-                } 
-
+                }
                 deallocator(date);
                 deallocator(time);
+            } else if(strcasecmp(eventProperty->propName, "GEO") == 0) {
+                /* MUST be two SEMICOLON seperated float values */
+                if(!containsChar(eventProperty->propDescr, ';')) {
+                    return INV_EVENT;
+                }
+                char *left = calloc(1, sizeof(char) * strlen(eventProperty->propDescr) + 10);
+                char *right = calloc(1, sizeof(char) * strlen(eventProperty->propDescr) + 10);
+                splitByFirstOccurence(eventProperty->propDescr, left, right, ';');
+                if(!isFloat(left) || !isFloat(right)) {
+                    return INV_EVENT;
+                }
+                deallocator(left);
+                deallocator(right);
+            } else if(strcasecmp(eventProperty->propName, "PRIORITY") == 0) {
+                /* This value has to be an integer between the number 0-9 */
+                if(isInteger(eventProperty->propDescr)) {
+                    int val = atoi(eventProperty->propDescr);
+                    if(val > 9 || val < 0) {
+                        return INV_EVENT;
+                    }
+                } else {
+                    return INV_EVENT;
+                }
+
             }
         }
     }

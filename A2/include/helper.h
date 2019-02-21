@@ -32,4 +32,5 @@ int checkBefore(char *line , char del1, char del2);
 char * removeFirstChar(char *str);
 void splitContentLine(char *line, char *left, char *right);
 int containsSubstring(char *line, char *sub);
+int isFloat(char * string);
 #endif
