@@ -30,13 +30,13 @@ int main(int argc, char **argv) {
     obj->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
 
-    Property *newCalProp = malloc(sizeof(Property));
+    Property *newCalProp = malloc(sizeof(Property) +  5000);
     strcpy(newCalProp->propName, "SUMMARY");
     strcpy(newCalProp->propDescr, "NICE");
     insertBack(obj->properties, newCalProp);
 
 
-    Property *newCalProp2 = malloc(sizeof(Property));
+    Property *newCalProp2 = malloc(sizeof(Property) + 5000);
     strcpy(newCalProp2->propName, "DESCRIPTION");
     strcpy(newCalProp2->propDescr, "THE DESC OF PROP");
     insertBack(obj->properties, newCalProp2);
