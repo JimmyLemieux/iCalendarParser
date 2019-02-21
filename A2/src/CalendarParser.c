@@ -2301,7 +2301,10 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                 } else {
                     return INV_EVENT;
                 }
-
+            } else if(strcasecmp(eventProperty->propName, "SEQUENCE") == 0) {
+                if(!isInteger(eventProperty->propDescr)) {
+                    return INV_EVENT;
+                }
             }
         }
     }
