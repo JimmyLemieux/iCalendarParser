@@ -2276,6 +2276,9 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                     deallocator(time);
                     return INV_EVENT;
                 } 
+
+                deallocator(date);
+                deallocator(time);
             }
         }
     }
