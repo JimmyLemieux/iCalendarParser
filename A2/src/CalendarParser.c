@@ -2383,7 +2383,7 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                     // If the action in the alarm is of type audio then it can only appear once
 
                     if(strcasecmp(alarmProperty->propName, "ATTACH") == 0 && strcasecmp(newAlarm->action, "AUDIO") == 0) {
-                        if(findElement(alarmProperty->propName, &findAlternateProperty, alarmProperty)) {
+                        if(findElement(newAlarm->properties, &findAlternateProperty, alarmProperty)) {
                             return INV_ALARM;
                         }
                     }
@@ -2439,12 +2439,12 @@ char *calendarToJSON(const Calendar *cal) {
 }
 
 
-Calendar *JSONtoEvent(const char *str) {
+Event *JSONtoEvent(const char *str) {
     return NULL;
 }
 
 void addEvent(Calendar *cal, Event *toBeAdded) {
-    
+
 }
 
 
