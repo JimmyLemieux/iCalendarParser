@@ -2270,6 +2270,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                 char *date = calloc(1, sizeof(char ) * strlen(eventProperty->propDescr) + 10);
                 char *time = calloc(1, sizeof(char) * strlen(eventProperty->propDescr) + 10);
                 splitByFirstOccurence(eventProperty->propDescr, date,time, 'T');
+                time[strlen(time) - 1] = '\0';
                 if(strlen(date) != 8 || strlen(time) != 6) {
                     deallocator(date);
                     deallocator(time);
