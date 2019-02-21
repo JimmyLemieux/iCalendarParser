@@ -226,8 +226,8 @@ bool findAlternateProperty(const void *first, const void *second) {
 
 bool comparePropName(const void *first, const void *second) {
     Property *a = (Property *) first;
-    Property *b = (Property *) second;
-    if(strcasecmp(a->propName, b->propName) == 0) {
+    char *b = (char *) second;
+    if(strcasecmp(a->propName, b) == 0) {
         return true;
     }
     return false;
@@ -2216,10 +2216,23 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
         if(isEmpty(calProp->propName) || isEmpty(calProp->propDescr)) {
             return INV_CAL;
         }
+
+        /* If any of the required properties appear in the calendar props for some reason? */ 
+        if(strcasecmp(calProp->propName, "VERSION") == 0 || strcasecmp(calProp->propName, "PRODID") == 0) {
+            return INV_CAL;
+        } 
         /* The only properties the cal can have are these properties */
         /* The question is, can these props appear more than once? */
         if(strcasecmp(calProp->propName, "CALSCALE") != 0 && strcasecmp(calProp->propName, "METHOD") != 0) {
             return INV_CAL;
+        }
+
+        if(strcasecmp(calProp->propName, "CALSCALE") == 0 || strcasecmp(calProp->propName, "METHOD") == 0) {
+            //If the property appears more than once then it is invalid
+            if(findElement(obj->properties, &findAlternateProperty, calProp)) {
+                return INV_CAL;
+            }
+
         }
     }
     return OK;
@@ -2228,9 +2241,21 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
 
 /* You might be able to check for alarms in this function as well */
 ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
+    char searchString[256];
+    int foundMethod = 0;
     if(obj == NULL) {
         return INV_CAL;
     }
+
+    //Go through the calendar properties and see if there is a method
+
+    strcpy(searchString, "METHOD");
+    
+    if(findElement(obj->properties, &comparePropName, searchString)) {
+        foundMethod = 1;
+    }
+    strcpy(searchString, "\0");
+
 
     void *event;
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
@@ -2242,6 +2267,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
         if(listEvent->properties == NULL || listEvent->alarms == NULL || isEmpty(listEvent->UID) || isEmpty(listEvent->creationDateTime.date) || isEmpty(listEvent->creationDateTime.time) || isEmpty(listEvent->startDateTime.date) || isEmpty(listEvent->startDateTime.time)) {
             return INV_EVENT;
         }
+
         /* Looking at the properties in the event */
         void *eventProps;
         ListIterator eventPropIter = createIterator(listEvent->properties);
@@ -2250,61 +2276,53 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
                 return INV_EVENT;
             }
+
+
+            if(strcasecmp(eventProperty->propName, "UID") == 0|| strcasecmp(eventProperty->propName,"DTSTAMP") == 0) {
+                return INV_EVENT;
+            }
+
+            //The DTSTART PROPERTY
+            // REQURIED if the method is not in the calendar props
+            if(!foundMethod) {
+                strcpy(searchString, "DTSTART");
+                if(!findElement(listEvent->properties, &comparePropName, searchString)) {
+                    return INV_EVENT;
+                }
+                strcpy(searchString, "\0");
+            }
+
             /* Handle all of the properties that can only appear once in the event scope */
-            if(strcasecmp(eventProperty->propName, "CLASS") == 0 || strcasecmp(eventProperty->propName, "DESCRIPTION") == 0 || strcasecmp(eventProperty->propName, "RESOURCES") == 0 || strcasecmp(eventProperty->propName, "STATUS") == 0
-            || strcasecmp(eventProperty->propName, "TRANSP") == 0 || strcasecmp(eventProperty->propName, "URL") == 0) {
+            if(strcasecmp(eventProperty->propName, "CLASS") == 0 || strcasecmp(eventProperty->propName, "CREATED") == 0 || strcasecmp(eventProperty->propName, "DESCRIPTION") == 0 
+            || strcasecmp(eventProperty->propName, "GEO") == 0 || strcasecmp(eventProperty->propName, "LAST-MODIFIED") == 0 || strcasecmp(eventProperty->propName, "LOCATION") == 0 || strcasecmp(eventProperty->propName, "ORGANIZER") == 0 
+            || strcasecmp(eventProperty->propName, "PRIORITY") == 0 || strcasecmp(eventProperty->propName, "SEQUENCE") == 0 || strcasecmp(eventProperty->propName, "STATUS") == 0 || strcasecmp(eventProperty->propName, "SUMMARY") == 0
+            || strcasecmp(eventProperty->propName, "TRANSP") == 0 || strcasecmp(eventProperty->propName,"URL") == 0 || strcasecmp(eventProperty->propName, "RECURRENCE-ID") == 0 || strcasecmp(eventProperty->propName, "RRULE") == 0 || strcasecmp(eventProperty->propName, "DTEND") == 0 || strcasecmp(eventProperty->propName, "DURATION") == 0
+            || strcasecmp(eventProperty->propName, "DTSTART") == 0) {
                 /* Here we have to see if any of these properties occur again */
+
                 if(findElement(listEvent->properties, &findAlternateProperty, eventProperty)) {
                     return INV_EVENT;
                 }
-            } else if(strcasecmp(eventProperty->propName, "CREATED") == 0) {
-                if(findElement(listEvent->properties, &findAlternateProperty, eventProperty)) { /* This is if the prop occurs more than once */
-                    return INV_EVENT;
-                }
-                /* Check if the this property holds a date with UTC */
-
-                if(!containsChar(eventProperty->propDescr, 'T') || eventProperty->propDescr[strlen(eventProperty->propDescr) - 1] != 'Z') {
-                    return INV_EVENT;
-                }
-                //Has to contain a valid date seperated with a T and UTC
-                char *date = calloc(1, sizeof(char ) * strlen(eventProperty->propDescr) + 10);
-                char *time = calloc(1, sizeof(char) * strlen(eventProperty->propDescr) + 10);
-                splitByFirstOccurence(eventProperty->propDescr, date,time, 'T');
-                time[strlen(time) - 1] = '\0';
-                if(strlen(date) != 8 || strlen(time) != 6) {
-                    deallocator(date);
-                    deallocator(time);
-                    return INV_EVENT;
-                }
-                deallocator(date);
-                deallocator(time);
-            } else if(strcasecmp(eventProperty->propName, "GEO") == 0) {
-                /* MUST be two SEMICOLON seperated float values */
-                if(!containsChar(eventProperty->propDescr, ';')) {
-                    return INV_EVENT;
-                }
-                char *left = calloc(1, sizeof(char) * strlen(eventProperty->propDescr) + 10);
-                char *right = calloc(1, sizeof(char) * strlen(eventProperty->propDescr) + 10);
-                splitByFirstOccurence(eventProperty->propDescr, left, right, ';');
-                if(!isFloat(left) || !isFloat(right)) {
-                    return INV_EVENT;
-                }
-                deallocator(left);
-                deallocator(right);
-            } else if(strcasecmp(eventProperty->propName, "PRIORITY") == 0) {
-                /* This value has to be an integer between the number 0-9 */
-                if(isInteger(eventProperty->propDescr)) {
-                    int val = atoi(eventProperty->propDescr);
-                    if(val > 9 || val < 0) {
+                if(strcasecmp(eventProperty->propName, "DTEND") == 0) {
+                    // THE DURATION PROPERTY CANNOT APPEAR IN THE PROPS
+                    strcpy(searchString, "DURATION");
+                    if(findElement(listEvent->properties, &comparePropName, searchString)) {
                         return INV_EVENT;
                     }
-                } else {
-                    return INV_EVENT;
+                    strcpy(searchString, "\0");
+                }  
+                
+                if(strcasecmp(eventProperty->propName, "DURATION") == 0) {
+                    strcpy(searchString, "DTEND");
+                    if(findElement(listEvent->properties, &comparePropName, searchString)) {
+                        return INV_EVENT;
+                    }
                 }
-            } else if(strcasecmp(eventProperty->propName, "SEQUENCE") == 0) {
-                if(!isInteger(eventProperty->propDescr)) {
-                    return INV_EVENT;
-                }
+            } else if(strcasecmp(eventProperty->propName, "ATTENDEE") != 0 && strcasecmp(eventProperty->propName, "COMMENT") != 0 && strcasecmp(eventProperty->propName, "CATEGORIES") != 0
+            && strcasecmp(eventProperty->propName, "CONTACT") != 0 && strcasecmp(eventProperty->propName, "EXDATE") != 0 && strcasecmp(eventProperty->propName, "REQUEST-STATUS") != 0
+            && strcasecmp(eventProperty->propName, "RELATED-TO") != 0 && strcasecmp(eventProperty->propName, "RESOURCES") != 0 && strcasecmp(eventProperty->propName, "RDATE") != 0 
+            && strcasecmp(eventProperty->propName, "ATTACH") != 0) {
+                return INV_EVENT;
             }
         }
     }
@@ -2312,6 +2330,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
 }
 
 ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
+    char searchString[256];
     if(obj == NULL) {
         return INV_CAL;
     }
@@ -2339,6 +2358,48 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                 if(isEmpty(alarmProperty->propName) || isEmpty(alarmProperty->propDescr)) {
                     return INV_ALARM;
                 }
+
+                if(strcasecmp(alarmProperty->propName, "ACTION") == 0 || strcasecmp(alarmProperty->propName, "TRIGGER") == 0) {
+                    return INV_ALARM;
+                }
+
+
+                if(strcasecmp(alarmProperty->propName, "DURATION") == 0 || strcasecmp(alarmProperty->propName, "REPEAT") == 0 
+                || strcasecmp(alarmProperty->propName, "ATTACH") == 0 || strcasecmp(alarmProperty->propName, "DESCRIPTION") == 0
+                || strcasecmp(alarmProperty->propName, "ATTENDEE") == 0) {
+                    
+                    //If this occurrs so must the repeat prop
+                    if(strcasecmp(alarmProperty->propName, "DURATION") == 0) {
+                        strcpy(searchString, "REPEAT");
+                        if(!findElement(newAlarm->properties, &comparePropName, searchString)) {
+                            return INV_ALARM;
+                        }
+
+                        strcpy(searchString, "\0");
+                    }
+
+                    if(strcasecmp(alarmProperty->propName, "REPEAT") == 0) {
+                        strcpy(searchString, "DURATION");
+                        if(!findElement(newAlarm->properties, &comparePropName, searchString)) {
+                            return INV_ALARM;
+                        }
+                        strcpy(searchString, "\0");
+                    }
+
+                    // Attach can actually appear multiple times, it has to have the audio part in the alarm
+                    // If the action in the alarm is of type audio then it can only appear once
+
+                    
+
+
+                    //If any other of the properties appear more than once
+                    if(findElement(newAlarm->properties, &findAlternateProperty, alarmProperty)) {
+                        return INV_ALARM;
+                    } 
+                } else {
+                    return INV_ALARM;
+                }
+                // Check for the alarm props in this section here 
             }
         }
     }
