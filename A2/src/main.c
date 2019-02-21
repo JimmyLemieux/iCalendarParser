@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
     Property *newProp = malloc(sizeof(Property) + 5000);
     strcpy(newProp->propName, "CREATED");
-    strcpy(newProp->propDescr, "20190220T173245Z");
+    strcpy(newProp->propDescr, "20190220T173245");
     insertBack(newEvent->properties, newProp);
 
 
