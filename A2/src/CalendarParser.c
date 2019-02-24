@@ -2419,6 +2419,8 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
     if(error != 0) {
         return error;
     }
+
+    calendarToJSON(obj);
     return OK;
 }
 
@@ -2435,7 +2437,30 @@ char *eventListToJSON(const List *eventList) {
     return NULL;
 }
 
+
+
+/* This takes the calendar arguments and converts them into a json object, that is just for the top level of the calendar */
 char *calendarToJSON(const Calendar *cal) {
+    char *tempJSON;
+
+    if(cal == NULL || cal->events == NULL) {
+        return "{}";
+    }
+
+
+
+    tempJSON = calloc(1, sizeof(char) * 200);
+
+
+    tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 100);
+
+
+    sprintf(tempJSON, "{\"version\":%d,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", (int)cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
+
+    printf("%s\n",tempJSON);
+
+    deallocator(tempJSON);    
+
     return NULL;
 }
 
