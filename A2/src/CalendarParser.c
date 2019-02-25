@@ -2430,6 +2430,7 @@ char *dtToJSON(DateTime prop) {
     char *b = calloc(1, sizeof(char) * 6);
     prop.UTC ? strcpy(b,"true") : strcpy(b,"false");
     sprintf(tempDateJSON, "{\"date\":\"%s\",\"time\":\"%s\",\"isUTC\":%s}",prop.date,prop.time,b);
+    deallocator(b);
     return tempDateJSON;
 }
 
