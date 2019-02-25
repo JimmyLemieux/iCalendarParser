@@ -2426,14 +2426,49 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
 
 
 char *dtToJSON(DateTime prop) {
-    return NULL;
+    char *tempDateJSON = calloc(1, sizeof(char) * (strlen(prop.date) + strlen(prop.time)) + 100); 
+    char *b = calloc(1, sizeof(char) * 6);
+    prop.UTC ? strcpy(b,"true") : strcpy(b,"false");
+    sprintf(tempDateJSON, "{\"date\":\"%s\",\"time\":\"%s\",\"isUTC\":%s}",prop.date,prop.time,b);
+    return tempDateJSON;
 }
 
 char *eventToJSON(const Event *event) {
-    return NULL;   
+
+    //This function will take the event and convert it to some JSON.
+    // This function will be used in the eventListToJSON function.
+
+    if(event == NULL || event->alarms == NULL) {
+        return "{}";
+    }
+
+    char *tempDTJSON = dtToJSON(event->startDateTime);
+    char *tempEventJSON = calloc(1, sizeof(char) * (strlen(tempDTJSON)) + 150);
+
+    sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"SOME VAL FOR SUMMARY\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms));
+
+    return tempEventJSON;   
 }
 
+
+/* This function will go through the event list and then make a list of events */
 char *eventListToJSON(const List *eventList) {
+
+    void *event;
+
+    ListIterator eventIter = createIterator((List *)eventList);   
+
+    while((event = nextElement(&eventIter)) != NULL) {   
+        Event *listEvent = (Event *)event;
+
+        char *eventJSON = eventToJSON(listEvent); //This will need to be freed
+        printf("%s\n", eventJSON);
+        deallocator(eventJSON);
+    
+    } 
+
+
+
     return NULL;
 }
 
@@ -2448,7 +2483,6 @@ char *calendarToJSON(const Calendar *cal) {
     }
 
 
-
     tempJSON = calloc(1, sizeof(char) * 200);
 
 
@@ -2460,6 +2494,11 @@ char *calendarToJSON(const Calendar *cal) {
     printf("%s\n",tempJSON);
 
     deallocator(tempJSON);    
+
+
+    printf("Printing out the JSON Events\n");
+
+    eventListToJSON(cal->events);
 
     return NULL;
 }
