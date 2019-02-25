@@ -2447,6 +2447,8 @@ char *eventToJSON(const Event *event) {
 
     sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"SOME VAL FOR SUMMARY\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms));
 
+    deallocator(tempDTJSON);
+
     return tempEventJSON;   
 }
 
