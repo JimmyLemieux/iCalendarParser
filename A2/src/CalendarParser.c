@@ -2457,21 +2457,35 @@ char *eventToJSON(const Event *event) {
 /* This function will go through the event list and then make a list of events */
 char *eventListToJSON(const List *eventList) {
 
+    int count = 0;
+
+    int listLength = getLength((List *)eventList);
     void *event;
+
+    char *tempListJSON = calloc(1, sizeof(char) * 10);
+    tempListJSON[0] = '[';
+
 
     ListIterator eventIter = createIterator((List *)eventList);   
 
     while((event = nextElement(&eventIter)) != NULL) {   
         Event *listEvent = (Event *)event;
 
+
         char *eventJSON = eventToJSON(listEvent); //This will need to be freed
-        printf("%s\n", eventJSON);
+        tempListJSON = realloc(tempListJSON, sizeof(char) * strlen(eventJSON) + 50);
+        if(count < listLength - 1)strcat(eventJSON, ",");
+        strcat(tempListJSON, eventJSON);
         deallocator(eventJSON);
-    
+        count++;
     } 
 
+    strcat(tempListJSON,"]");
 
+    printf("%s\n", tempListJSON);
+    
 
+    deallocator(tempListJSON);
     return NULL;
 }
 

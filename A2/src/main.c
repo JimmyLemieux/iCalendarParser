@@ -64,7 +64,31 @@ int main(int argc, char **argv) {
     strcpy(newProp->propDescr, "4");
     insertBack(newEvent->properties, newProp);
 
+    Property *newProp2 = malloc(sizeof(Property) + 5000);
+    strcpy(newProp2->propName, "SUMMARY");
+    strcpy(newProp2->propDescr, "4");
+    insertBack(newEvent->properties, newProp2);
+
+
     insertBack(obj->events, newEvent);
+
+
+
+    Event * newEvent2 = calloc(1, sizeof(Event));
+    newEvent2->alarms = initializeList(&printAlarm, &deleteAlarm,&compareAlarms);
+
+    strcpy(newEvent2->creationDateTime.date, "20090901"); 
+    strcpy(newEvent2->creationDateTime.time, "170000");
+    newEvent2->creationDateTime.UTC = 1;
+
+    strcpy(newEvent2->startDateTime.date, "20090901"); 
+    strcpy(newEvent2->startDateTime.time, "170000");
+    newEvent2->startDateTime.UTC = 1;
+
+    strcpy(newEvent2->UID, "SOME EVENT UID");
+    newEvent2->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
+
+    insertBack(obj->events, newEvent2);
 
     error = 0;
 
