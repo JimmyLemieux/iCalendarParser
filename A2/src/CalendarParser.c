@@ -2538,6 +2538,8 @@ Event *JSONtoEvent(const char *str) {
     char *rmVal = removeFirstChar(val); 
 
     //Remove the last two values
+
+    /* This is the error, returning instance of new pointer so can't be freed */
     rmVal[strlen(rmVal) - 1] = '\0'; 
     rmVal[strlen(rmVal) - 1] = '\0';
 
