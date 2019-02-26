@@ -2562,6 +2562,8 @@ Event *JSONtoEvent(const char *str) {
     printf("Test\n");
     printf("In obj -> %s\n", event->UID);
 
+    deallocator(event->alarms);
+    deallocator(event->properties);
     deallocator(event);
 
 
