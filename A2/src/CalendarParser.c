@@ -2532,14 +2532,12 @@ Calendar* JSONtoCalendar(const char* str) {
 
     Calendar *cal = calloc(1, sizeof(Calendar));
     float version;
-    char *prodid;
 
-    printf("Parsing this string\n");
-    printf("%s\n", str); 
+    cal->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
+    cal->events = initializeList(&printEvent,&deleteEvent,&compareProperties);
 
     char *left = calloc(1, sizeof(char) * 500);
     char *right = calloc(1, sizeof(char) * 500);
-
 
     splitByFirstOccurence((char *)str,left,right, ':');
 
@@ -2548,8 +2546,36 @@ Calendar* JSONtoCalendar(const char* str) {
 
 
     splitByFirstOccurence(right,nextLeft,nextRight, ',');
-    printf("left: %s\n", nextLeft); // This contains the version float
-    //printf("right: %s\n", nextRight);
+
+
+    char *idLeft = calloc(1, sizeof(char) * strlen(left) + 200);
+    char *idRight = calloc(1, sizeof(char) * strlen(right) + 200); 
+
+    splitByFirstOccurence(nextRight, idLeft, idRight, ':');
+
+    char *rmIdRight = removeFirstChar(idRight);
+
+    char *fLeft = calloc(1,sizeof(char) * (strlen(left)) + 200);
+    char *fRight = calloc(1,sizeof(char) * (strlen(right)) + 200);
+
+    splitByFirstOccurence(rmIdRight, fLeft, fRight, '"');
+    
+    printf("ayy -> %s\n", fLeft);
+    strcpy(cal->prodID, fLeft);
+    version = atof(nextLeft);
+    cal->version = version;
+
+    deallocator(left);
+    deallocator(right);
+    deallocator(nextLeft);
+    deallocator(nextRight);
+    deallocator(idLeft);
+    deallocator(idRight);
+    deallocator(rmIdRight);
+    deallocator(fLeft);
+    deallocator(fRight);
+
+
 
     return cal;
 }

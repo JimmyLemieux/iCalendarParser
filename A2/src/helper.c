@@ -218,7 +218,6 @@ char * removeFirstChar(char *str) {
         temp[j] = str[i];
         j++;
     }
-
     return temp;
 }
 
