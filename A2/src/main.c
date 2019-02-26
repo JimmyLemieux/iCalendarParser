@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 
     obj = malloc(sizeof(Calendar));
 
-    obj->version = 2.543534534;
+    obj->version = 2.0;
     strcpy(obj->prodID, "-//hacksw/h,andcal//NONSGML v1.0//EN");
     obj->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
 

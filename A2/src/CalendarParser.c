@@ -2559,9 +2559,6 @@ Event *JSONtoEvent(const char *str) {
     deallocator(val);
     //deallocator(rmVal);
 
-    printf("Test\n");
-    printf("In obj -> %s\n", event->UID);
-
     deallocator(event->alarms);
     deallocator(event->properties);
     deallocator(event);
@@ -2604,7 +2601,6 @@ Calendar* JSONtoCalendar(const char* str) {
 
     splitByFirstOccurence(rmIdRight, fLeft, fRight, '"');
     
-    printf("ayy -> %s\n", fLeft);
     strcpy(cal->prodID, fLeft);
     version = atof(nextLeft);
     cal->version = version;
