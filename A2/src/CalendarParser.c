@@ -2562,7 +2562,7 @@ Event *JSONtoEvent(const char *str) {
     printf("Test\n");
     printf("In obj -> %s\n", event->UID);
 
-    //deallocator(event);
+    deallocator(event);
 
 
     return event;
