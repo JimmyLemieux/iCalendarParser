@@ -2578,7 +2578,7 @@ Calendar* JSONtoCalendar(const char* str) {
 
     deallocator((char *) str); // This is temp
 
-    deallocator(cal);
+    deleteCalendar(cal); // This is temp; 
 
 
     return cal;
