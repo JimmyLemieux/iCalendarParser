@@ -2556,7 +2556,6 @@ Event *JSONtoEvent(const char *str) {
     event->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
     event->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
 
-    deallocator(left);
     deallocator(val);
     //deallocator(rmVal);
 
