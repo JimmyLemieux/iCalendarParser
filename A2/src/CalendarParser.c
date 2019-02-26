@@ -2443,11 +2443,25 @@ char *eventToJSON(const Event *event) {
         return "{}";
     }
 
+    void *sumProp = NULL;
+
+    char *summaryValue;
     char *tempDTJSON = dtToJSON(event->startDateTime);
     char *tempEventJSON = calloc(1, sizeof(char) * (strlen(tempDTJSON)) + 150);
 
-    sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"SOME VAL FOR SUMMARY\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms));
+    sumProp = findElement(event->properties, &comparePropName, "SUMMARY");
 
+    if(sumProp) {
+        Property *tempProp = (Property *)sumProp;
+        summaryValue = calloc(1, sizeof(char) * (strlen(tempProp->propDescr)) + 10);
+        strcpy(summaryValue, tempProp->propDescr);
+    } else {
+        summaryValue = calloc(1, sizeof(char) * 3);
+        strcpy(summaryValue, "");
+    }
+
+    sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"%s\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms), summaryValue);
+    deallocator(summaryValue);
     deallocator(tempDTJSON);
 
     return tempEventJSON;   
@@ -2483,10 +2497,9 @@ char *eventListToJSON(const List *eventList) {
     strcat(tempListJSON,"]");
 
     printf("%s\n", tempListJSON);
-    
 
     deallocator(tempListJSON);
-    return NULL;
+    return tempListJSON;
 }
 
 
@@ -2498,22 +2511,13 @@ char *calendarToJSON(const Calendar *cal) {
     if(cal == NULL || cal->events == NULL) {
         return "{}";
     }
-
-
     tempJSON = calloc(1, sizeof(char) * 200);
-
-
     tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 100);
-
-
     sprintf(tempJSON, "{\"version\":%d,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", (int)cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
-
     deallocator(tempJSON);    
-
-
     eventListToJSON(cal->events);
 
-    return NULL;
+    return tempJSON;
 }
 
 
