@@ -2513,7 +2513,7 @@ char *calendarToJSON(const Calendar *cal) {
     }
     tempJSON = calloc(1, sizeof(char) * 200);
     tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 100);
-    sprintf(tempJSON, "{\"version\":%d,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", (int)cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
+    sprintf(tempJSON, "{\"version\":%f,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
     //deallocator(tempJSON);    
     //eventListToJSON(cal->events);
 
