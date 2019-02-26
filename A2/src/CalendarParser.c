@@ -2523,7 +2523,40 @@ char *calendarToJSON(const Calendar *cal) {
 
 
 Event *JSONtoEvent(const char *str) {
-    return NULL;
+    if((char *)str == NULL)return NULL;
+
+    Event *event = calloc(1, sizeof(Event));
+
+    /* In this form {"UID":"value"} */
+
+    char *left = calloc(1, sizeof(char) * strlen(str) + 10);
+    char *val = calloc(1, sizeof(char) * strlen(str) + 10);
+
+    splitByFirstOccurence((char *)str, left , val, ':');
+    deallocator(left);
+
+    char *rmVal = removeFirstChar(val); 
+
+    //Remove the last two values
+    rmVal[strlen(rmVal) - 1] = '\0'; 
+    rmVal[strlen(rmVal) - 1] = '\0';
+
+    strcpy(event->UID, rmVal);
+
+    event->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
+    event->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
+
+    deallocator(left);
+    deallocator(val);
+    //deallocator(rmVal);
+
+    printf("Test\n");
+    printf("In obj -> %s\n", event->UID);
+
+    //deallocator(event);
+
+
+    return event;
 }
 
 Calendar* JSONtoCalendar(const char* str) {
@@ -2574,13 +2607,10 @@ Calendar* JSONtoCalendar(const char* str) {
     deallocator(rmIdRight);
     deallocator(fLeft);
     deallocator(fRight);
-
-
     deallocator((char *) str); // This is temp
-
     deleteCalendar(cal); // This is temp; 
 
-
+    JSONtoEvent("{\"UID\":\"value\"}");
     return cal;
 }
 
