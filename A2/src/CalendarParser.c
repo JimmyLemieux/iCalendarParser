@@ -2514,9 +2514,10 @@ char *calendarToJSON(const Calendar *cal) {
     tempJSON = calloc(1, sizeof(char) * 200);
     tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 100);
     sprintf(tempJSON, "{\"version\":%d,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", (int)cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
-    deallocator(tempJSON);    
-    eventListToJSON(cal->events);
+    //deallocator(tempJSON);    
+    //eventListToJSON(cal->events);
 
+    JSONtoCalendar(tempJSON);
     return tempJSON;
 }
 
@@ -2525,8 +2526,37 @@ Event *JSONtoEvent(const char *str) {
     return NULL;
 }
 
-void addEvent(Calendar *cal, Event *toBeAdded) {
+Calendar* JSONtoCalendar(const char* str) {
+    if((char *)str == NULL)return NULL;
 
+
+    Calendar *cal = calloc(1, sizeof(Calendar));
+    float version;
+    char *prodid;
+
+    printf("Parsing this string\n");
+    printf("%s\n", str); 
+
+    char *left = calloc(1, sizeof(char) * 500);
+    char *right = calloc(1, sizeof(char) * 500);
+
+
+    splitByFirstOccurence((char *)str,left,right, ':');
+
+    char *nextLeft = calloc(1, sizeof(char) *strlen(left) + 10);
+    char *nextRight = calloc(1, sizeof(char) * strlen(right) + 10);
+
+
+    splitByFirstOccurence(right,nextLeft,nextRight, ',');
+    printf("left: %s\n", nextLeft); // This contains the version float
+    //printf("right: %s\n", nextRight);
+
+    return cal;
+}
+
+void addEvent(Calendar *cal, Event *toBeAdded) {
+    if(toBeAdded == NULL || cal == NULL) return;
+    insertBack(cal->events, toBeAdded);
 }
 
 
