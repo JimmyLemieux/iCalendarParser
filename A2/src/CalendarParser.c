@@ -2258,7 +2258,6 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
         Event *listEvent = (Event*)event;
 
         if(listEvent->properties == NULL || listEvent->alarms == NULL || isEmpty(listEvent->UID) || isEmpty(listEvent->creationDateTime.date) || isEmpty(listEvent->creationDateTime.time) || isEmpty(listEvent->startDateTime.date) || isEmpty(listEvent->startDateTime.time)) {
-            D;
             return INV_EVENT;
         }
 
@@ -2268,7 +2267,6 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
-                D;
                 return INV_EVENT;
             }
 
@@ -2517,7 +2515,11 @@ char *calendarToJSON(const Calendar *cal) {
     //deallocator(tempJSON);    
     //eventListToJSON(cal->events);
 
-    JSONtoCalendar(tempJSON);
+    printf("JSON CALENDAR -> %s\n", tempJSON);
+
+    eventListToJSON(cal->events);
+
+   // JSONtoCalendar(tempJSON);
     return tempJSON;
 }
 
@@ -2548,32 +2550,23 @@ Event *JSONtoEvent(const char *str) {
     }
 
     deallocator(rmVal);
-
     strcpy(event->UID, UIDStr);
-
     deallocator(UIDStr);
-
+    
     event->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
     event->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
-
     deallocator(val);
-    //deallocator(rmVal);
-
     deallocator(event->alarms);
     deallocator(event->properties);
     deallocator(event);
-
-
     return event;
 }
 
 Calendar* JSONtoCalendar(const char* str) {
     if((char *)str == NULL)return NULL;
 
-
     Calendar *cal = calloc(1, sizeof(Calendar));
     float version;
-
     cal->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
     cal->events = initializeList(&printEvent,&deleteEvent,&compareProperties);
 
@@ -2585,9 +2578,7 @@ Calendar* JSONtoCalendar(const char* str) {
     char *nextLeft = calloc(1, sizeof(char) *strlen(left) + 10);
     char *nextRight = calloc(1, sizeof(char) * strlen(right) + 10);
 
-
     splitByFirstOccurence(right,nextLeft,nextRight, ',');
-
 
     char *idLeft = calloc(1, sizeof(char) * strlen(left) + 200);
     char *idRight = calloc(1, sizeof(char) * strlen(right) + 200); 
