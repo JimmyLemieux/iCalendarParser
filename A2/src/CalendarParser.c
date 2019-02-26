@@ -2540,10 +2540,18 @@ Event *JSONtoEvent(const char *str) {
     //Remove the last two values
 
     /* This is the error, returning instance of new pointer so can't be freed */
-    rmVal[strlen(rmVal) - 1] = '\0'; 
-    rmVal[strlen(rmVal) - 1] = '\0';
 
-    strcpy(event->UID, rmVal);
+    char *UIDStr = calloc(1, sizeof(char) * (strlen(rmVal)) + 10);
+
+    for(int i=0;i<strlen(rmVal) - 2;i++) {
+        UIDStr[i] = rmVal[i];
+    }
+
+    deallocator(rmVal);
+
+    strcpy(event->UID, UIDStr);
+
+    deallocator(UIDStr);
 
     event->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
     event->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
