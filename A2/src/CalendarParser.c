@@ -2473,7 +2473,7 @@ char *eventListToJSON(const List *eventList) {
 
 
         char *eventJSON = eventToJSON(listEvent); //This will need to be freed
-        tempListJSON = realloc(tempListJSON, sizeof(char) * strlen(eventJSON) + 50);
+        tempListJSON = realloc(tempListJSON, sizeof(char) * strlen(eventJSON) + strlen(tempListJSON));
         if(count < listLength - 1)strcat(eventJSON, ",");
         strcat(tempListJSON, eventJSON);
         deallocator(eventJSON);
