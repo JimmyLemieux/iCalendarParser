@@ -2463,7 +2463,7 @@ char *eventListToJSON(const List *eventList) {
     void *event;
 
     char *tempListJSON = calloc(1, sizeof(char) * 10);
-    tempListJSON[0] = '[';
+    strcpy(tempListJSON, "[");
 
 
     ListIterator eventIter = createIterator((List *)eventList);   
