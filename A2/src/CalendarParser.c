@@ -2508,12 +2508,8 @@ char *calendarToJSON(const Calendar *cal) {
 
     sprintf(tempJSON, "{\"version\":%d,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", (int)cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
 
-    printf("%s\n",tempJSON);
-
     deallocator(tempJSON);    
 
-
-    printf("Printing out the JSON Events\n");
 
     eventListToJSON(cal->events);
 
