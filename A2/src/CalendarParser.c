@@ -2206,11 +2206,14 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
     ListIterator calPropIter = createIterator(obj->properties);
     while((calProps = nextElement(&calPropIter)) != NULL) {
         Property *calProp = (Property*)calProps;
+        //If one of the calendar props is empty then it is an error
         if(isEmpty(calProp->propName) || isEmpty(calProp->propDescr)) {
             return INV_CAL;
         }
 
         /* If any of the required properties appear in the calendar props for some reason? */ 
+
+        /* this would mean that there is a duplicate in the properties */
         if(strcasecmp(calProp->propName, "VERSION") == 0 || strcasecmp(calProp->propName, "PRODID") == 0) {
             return INV_CAL;
         } 
@@ -2222,10 +2225,15 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
 
         if(strcasecmp(calProp->propName, "CALSCALE") == 0 || strcasecmp(calProp->propName, "METHOD") == 0) {
             //If the property appears more than once then it is invalid
-            if(findElement(obj->properties, &findAlternateProperty, calProp)) {
+            int count = 0;
+
+            while(findElement(obj->properties, &comparePropName, calProp)) {
+                count++;
+            }
+            // If the certain property occurs more than once, then invalid
+            if(count > 1) {
                 return INV_CAL;
             }
-
         }
     }
     return OK;
@@ -2240,14 +2248,15 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
         return INV_CAL;
     }
 
+
     //Go through the calendar properties and see if there is a method
 
-    strcpy(searchString, "METHOD");
+    // strcpy(searchString, "METHOD");
     
-    if(findElement(obj->properties, &comparePropName, searchString)) {
-        foundMethod = 1;
-    }
-    strcpy(searchString, "\0");
+    // if(findElement(obj->properties, &comparePropName, searchString)) {
+    //     foundMethod = 1;
+    // }
+    // strcpy(searchString, "\0");
 
 
     void *event;
@@ -2257,6 +2266,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
     while((event = nextElement(&eventIter)) != NULL) {
         Event *listEvent = (Event*)event;
 
+        //If any of the required parts are empty and not there
         if(listEvent->properties == NULL || listEvent->alarms == NULL || isEmpty(listEvent->UID) || isEmpty(listEvent->creationDateTime.date) || isEmpty(listEvent->creationDateTime.time) || isEmpty(listEvent->startDateTime.date) || isEmpty(listEvent->startDateTime.time)) {
             return INV_EVENT;
         }
@@ -2266,22 +2276,14 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
         ListIterator eventPropIter = createIterator(listEvent->properties);
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
+            //If any of the properties are null or empty
             if(isEmpty(eventProperty->propName) || isEmpty(eventProperty->propDescr)) {
                 return INV_EVENT;
             }
 
-
-            if(strcasecmp(eventProperty->propName, "UID") == 0|| strcasecmp(eventProperty->propName,"DTSTAMP") == 0) {
-                D;
+            //If any of the requiered properties are in the optional properties than that is an issue
+            if(strcasecmp(eventProperty->propName, "UID") == 0|| strcasecmp(eventProperty->propName,"DTSTAMP") == 0 || strcasecmp(eventProperty->propName, "DTSTART") == 0) {
                 return INV_EVENT;
-            }
-
-            //The DTSTART PROPERTY
-            // REQURIED if the method is not in the calendar props
-            if(!foundMethod) {
-                if(isEmpty(listEvent->startDateTime.date) || isEmpty(listEvent->startDateTime.time)) {
-                    return INV_EVENT;
-                }
             }
 
             /* Handle all of the properties that can only appear once in the event scope */
@@ -2289,12 +2291,19 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             || strcasecmp(eventProperty->propName, "GEO") == 0 || strcasecmp(eventProperty->propName, "LAST-MODIFIED") == 0 || strcasecmp(eventProperty->propName, "LOCATION") == 0 || strcasecmp(eventProperty->propName, "ORGANIZER") == 0 
             || strcasecmp(eventProperty->propName, "PRIORITY") == 0 || strcasecmp(eventProperty->propName, "SEQUENCE") == 0 || strcasecmp(eventProperty->propName, "STATUS") == 0 || strcasecmp(eventProperty->propName, "SUMMARY") == 0
             || strcasecmp(eventProperty->propName, "TRANSP") == 0 || strcasecmp(eventProperty->propName,"URL") == 0 || strcasecmp(eventProperty->propName, "RECURRENCE-ID") == 0 || strcasecmp(eventProperty->propName, "RRULE") == 0 || strcasecmp(eventProperty->propName, "DTEND") == 0 || strcasecmp(eventProperty->propName, "DURATION") == 0
-            || strcasecmp(eventProperty->propName, "DTSTART") == 0) {
+            ) {
                 /* Here we have to see if any of these properties occur again */
+                
+                int count = 0;
 
-                if(findElement(listEvent->properties, &findAlternateProperty, eventProperty)) {
-                    return INV_EVENT;
+
+                if(findElement(listEvent->properties, &comparePropName, eventProperty)) {
+                    count++;
                 }
+
+                if(count > 1) return INV_EVENT;
+
+
                 if(strcasecmp(eventProperty->propName, "DTEND") == 0) {
                     // THE DURATION PROPERTY CANNOT APPEAR IN THE PROPS
                     strcpy(searchString, "DURATION");
@@ -2310,7 +2319,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                         return INV_EVENT;
                     }
                 }
-            } else if(strcasecmp(eventProperty->propName, "ATTENDEE") != 0 && strcasecmp(eventProperty->propName, "COMMENT") != 0 && strcasecmp(eventProperty->propName, "CATEGORIES") != 0
+            } else if(strcasecmp(eventProperty->propName, "ATTENDEE") != 0 && strcasecmp(eventProperty->propName, "COMMENT") != 0 && strcasecmp(eventProperty->propName, "CATEGORIES") != 0 // These are the properties that can appear multiple times
             && strcasecmp(eventProperty->propName, "CONTACT") != 0 && strcasecmp(eventProperty->propName, "EXDATE") != 0 && strcasecmp(eventProperty->propName, "REQUEST-STATUS") != 0
             && strcasecmp(eventProperty->propName, "RELATED-TO") != 0 && strcasecmp(eventProperty->propName, "RESOURCES") != 0 && strcasecmp(eventProperty->propName, "RDATE") != 0 
             && strcasecmp(eventProperty->propName, "ATTACH") != 0) {
@@ -2340,7 +2349,8 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
            // printf("BEGIN ALARM:\n");
             Alarm *newAlarm = (Alarm*)listAlarm;
             void *alarmProps;
-            if(newAlarm->properties == NULL) {
+            // This is to check if any of the required properties in the function are required
+            if(newAlarm->properties == NULL || isEmpty(newAlarm->action) || isEmpty(newAlarm->trigger)) {
                 return INV_ALARM;
             }
             ListIterator alarmPropsIter = createIterator(newAlarm->properties);
@@ -2356,6 +2366,8 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                 }
 
 
+
+                //These are the propeties that can appear only once
                 if(strcasecmp(alarmProperty->propName, "DURATION") == 0 || strcasecmp(alarmProperty->propName, "REPEAT") == 0 
                 || strcasecmp(alarmProperty->propName, "ATTACH") == 0 || strcasecmp(alarmProperty->propName, "DESCRIPTION") == 0
                 || strcasecmp(alarmProperty->propName, "ATTENDEE") == 0) {
@@ -2387,13 +2399,17 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                         }
                     }
                     //If any other of the properties appear more than once
-                    if(findElement(newAlarm->properties, &findAlternateProperty, alarmProperty)) {
-                        return INV_ALARM;
+                    int count = 0;
+                    while(findElement(newAlarm->properties, &comparePropName, alarmProperty)) {
+                        count++;
                     } 
+
+
+                    
+                    if(count > 1) return INV_ALARM;
                 } else { // If any other of the properties in the alarm are invalid then this is an invalid alarm
                     return INV_ALARM;
                 }
-                // Check for the alarm props in this section here 
             }
         }
     }
@@ -2512,14 +2528,9 @@ char *calendarToJSON(const Calendar *cal) {
     tempJSON = calloc(1, sizeof(char) * 200);
     tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 100);
     sprintf(tempJSON, "{\"version\":%f,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
-    //deallocator(tempJSON);    
-    //eventListToJSON(cal->events);
-
     printf("JSON CALENDAR -> %s\n", tempJSON);
-
     eventListToJSON(cal->events);
-
-   // JSONtoCalendar(tempJSON);
+    deallocator(tempJSON);
     return tempJSON;
 }
 
@@ -2528,8 +2539,6 @@ Event *JSONtoEvent(const char *str) {
     if((char *)str == NULL)return NULL;
 
     Event *event = calloc(1, sizeof(Event));
-
-    /* In this form {"UID":"value"} */
 
     char *left = calloc(1, sizeof(char) * strlen(str) + 10);
     char *val = calloc(1, sizeof(char) * strlen(str) + 10);
@@ -2551,8 +2560,7 @@ Event *JSONtoEvent(const char *str) {
 
     deallocator(rmVal);
     strcpy(event->UID, UIDStr);
-    deallocator(UIDStr);
-    
+    deallocator(UIDStr);    
     event->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
     event->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
     deallocator(val);
