@@ -2317,9 +2317,12 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             ) {
                 /* Here we have to see if any of these properties occur again */
 
-                if(findDupeEventProps(listEvent, eventProperty) > 1) {
-                    return INV_EVENT;
-                } 
+
+                if(strcasecmp(eventProperty->propName, "DTEND") != 0 && strcasecmp(eventProperty->propName, "DURATION") != 0) {
+                    if(findDupeEventProps(listEvent, eventProperty) > 1) {
+                        return INV_EVENT;
+                    } 
+                }
 
                 if(strcasecmp(eventProperty->propName, "DTEND") == 0) {
                     // THE DURATION PROPERTY CANNOT APPEAR IN THE PROPS
