@@ -91,6 +91,14 @@ int main(int argc, char **argv) {
     strcpy(eventProps->propDescr, "Some Description");
 
 
+    Property *eventProps2 = calloc(1, sizeof(Property) + 200);
+
+    strcpy(eventProps2->propName, "GEO");
+    strcpy(eventProps2->propDescr, "This is something else");
+
+    insertBack(newEvent2->properties, eventProps2);
+
+
     insertBack(newEvent2->properties, eventProps);
     
 

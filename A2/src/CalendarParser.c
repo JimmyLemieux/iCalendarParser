@@ -2226,6 +2226,7 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
         if(strcasecmp(calProp->propName, "CALSCALE") == 0 || strcasecmp(calProp->propName, "METHOD") == 0) {
             //If the property appears more than once then it is invalid
             int count = 0;
+
             if(findElement(obj->properties, &comparePropName, calProp) != NULL) { 
                 count++;
             }
@@ -2284,7 +2285,8 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                 
                 int count = 0;
 
-                if(findElement(listEvent->properties, &comparePropName, eventProperty)) {
+                //Find this element that will be changed
+                if(findElement(listEvent->properties, &findAlternateProperty, eventProperty)) {
                     count++;
                 }
 
