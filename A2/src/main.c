@@ -80,12 +80,40 @@ int main(int argc, char **argv) {
     newEvent2->startDateTime.UTC = 1;
 
     strcpy(newEvent2->UID, "SOME EVENT UID");
+
+    //Adding an alarm to the event
+
+    Alarm *newAlarm = calloc(1, sizeof(Alarm));
+
+    strcpy(newAlarm->action, "Some action");
+
+
+    newAlarm->trigger = calloc(1, sizeof(char) * 200);
+    strcpy(newAlarm->trigger, "There is some trigger here");
+    newAlarm->properties = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
+
+
+    insertBack(newEvent2->alarms,newAlarm); 
+
+
     newEvent2->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
+
+
+    Property *summaryProp = calloc(1, sizeof(Property) + 200);
+
+    strcpy(summaryProp->propName, "SUMMARY");
+
+    strcpy(summaryProp->propDescr, "THIS IS A SUMMARY TEST");
+
+
+    insertBack(newEvent2->properties, summaryProp);
 
 
     //Add some properties to the event
 
     Property *eventProps = calloc(1, sizeof(Property) + 200);
+
+    // This should be an error
 
     strcpy(eventProps->propName, "GEO");
     strcpy(eventProps->propDescr, "Some Description");

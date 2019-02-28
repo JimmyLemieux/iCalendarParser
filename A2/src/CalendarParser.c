@@ -2412,7 +2412,7 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
         return error;
     }
 
-    //calendarToJSON(obj);
+    calendarToJSON(obj);
     return OK;
 }
 
