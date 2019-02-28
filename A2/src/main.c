@@ -110,6 +110,26 @@ int main(int argc, char **argv) {
     insertBack(newEvent2->alarms,newAlarm); 
 
 
+
+
+    Alarm *newAlarm2 = calloc(1, sizeof(Alarm));
+
+    strcpy(newAlarm2->action, "New Alarm Action");
+    newAlarm2->trigger = calloc(1, sizeof(char) * 100);
+    strcpy(newAlarm2->trigger,"New Alarm Trigger");
+
+    newAlarm2->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
+
+    Property *newAlarmProperty2 = calloc(1, sizeof(Property) + 200);
+
+    strcpy(newAlarmProperty2->propName,"DURATION");
+    strcpy(newAlarmProperty2->propDescr, "Duration");
+
+
+    insertBack(newAlarm2->properties,newAlarmProperty2);
+
+    insertBack(newEvent2->alarms, newAlarm2);
+
     newEvent2->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
 
@@ -165,6 +185,8 @@ int main(int argc, char **argv) {
         //     errorOut = printError(error);
         // }
         // free(errorOut); 
+
+        writeCalendar("outFiles/testOut.ics", obj);
         deleteCalendar(obj);
     }
     return 0;

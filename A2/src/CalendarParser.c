@@ -86,7 +86,7 @@ char* printEvent(void *toBePrinted) {
     //tempStr = realloc(tempStr, sizeof(char) * strlen(temp) + 1);
    // strcat(tempStr, temp);
     strcat(tempStr, tempDTStamp);
-    printf("The DTSTAMP is %s\n",tempDTStamp);
+  //  printf("The DTSTAMP is %s\n",tempDTStamp);
     deallocator(tempDTStamp); // Dont need this anymore
 
     
@@ -2145,7 +2145,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
     while((calProps = nextElement(&calPropIter)) != NULL) {
         Property *calProp = (Property*)calProps;
         char *strCalProp = obj->properties->printData(calProp);
-        fprintf(fp, "%s",strCalProp);
+        fprintf(fp, "%s\r\n",strCalProp);
         deallocator(strCalProp);
     }
 
@@ -2179,7 +2179,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
             while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
                 Property *alarmProperty = (Property*)alarmProps;
                 char *strAlarmProps = newAlarm->properties->printData(alarmProperty);
-                fprintf(fp,"%s", strAlarmProps);
+                fprintf(fp,"%s\r\n", strAlarmProps);
                 deallocator(strAlarmProps);
             }
             fprintf(fp,"END:VALARM\r\n");
@@ -2190,7 +2190,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
         while((eventProps = nextElement(&eventPropIter)) != NULL) {
             Property *eventProperty = (Property*)eventProps;
             char *strProp = listEvent->properties->printData(eventProperty);
-            fprintf(fp,"%s", strProp);
+            fprintf(fp,"%s\r\n", strProp);
             deallocator(strProp);
         }
         fprintf(fp,"END:VEVENT\r\n");
