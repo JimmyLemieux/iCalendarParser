@@ -2275,14 +2275,12 @@ int findDupeAlarmProps(const Alarm *alarm, Property *compareAlarmProp) {
     return count;
 }
 
-
 /* You might be able to check for alarms in this function as well */
 ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
     char searchString[256];
     if(obj == NULL) {
         return INV_CAL;
     }
-
 
     void *event;
     /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
@@ -2374,6 +2372,8 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
             }
 
             if(strcasecmp(newAlarm->action, "AUDIO") != 0) return INV_ALARM;
+
+            
             ListIterator alarmPropsIter = createIterator(newAlarm->properties);
             while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
                 Property *alarmProperty = (Property*)alarmProps;
@@ -2503,6 +2503,10 @@ char *eventToJSON(const Event *event) {
 /* This function will go through the event list and then make a list of events */
 char *eventListToJSON(const List *eventList) {
 
+    if(eventList == NULL) {
+        return "[]";
+    }
+
     int count = 0;
 
     int listLength = getLength((List *)eventList);
@@ -2567,7 +2571,6 @@ Event *JSONtoEvent(const char *str) {
     char *rmVal = removeFirstChar(val); 
 
     //Remove the last two values
-
     /* This is the error, returning instance of new pointer so can't be freed */
 
     char *UIDStr = calloc(1, sizeof(char) * (strlen(rmVal)) + 10);

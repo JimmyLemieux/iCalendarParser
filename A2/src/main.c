@@ -178,23 +178,9 @@ int main(int argc, char **argv) {
 
 
     if(error == 0) {
-
         error = validateCalendar(obj);
-
-
         errorOut = printError(error);
-
         free(errorOut);
-        //printCalendar(obj);
-        // if(argc != 3) {
-        //     error = writeCalendar("outFiles/testOut.ics", obj);
-        //     errorOut = printError(error);
-        // } else {
-        //     error = writeCalendar(argv[2], obj);
-        //     errorOut = printError(error);
-        // }
-        // free(errorOut); 
-
         writeCalendar("outFiles/testOut.ics", obj);
         deleteCalendar(obj);
     }

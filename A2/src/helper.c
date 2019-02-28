@@ -235,7 +235,6 @@ void splitContentLine(char *line, char *left, char *right) {
     } else {
         splitByFirstOccurence(line, left,right,':');
     }
-
 }
 
 
