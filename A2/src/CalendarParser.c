@@ -2225,15 +2225,11 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
 
         if(strcasecmp(calProp->propName, "CALSCALE") == 0 || strcasecmp(calProp->propName, "METHOD") == 0) {
             //If the property appears more than once then it is invalid
-            int count = 0;
 
-            if(findElement(obj->properties, &comparePropName, calProp) != NULL) { 
-                count++;
-            }
-            // If the certain property occurs more than once, then invalid
-            if(count > 1) {
+            if(findElement(obj->properties, &findAlternateProperty, calProp) != NULL) { 
                 return INV_CAL;
             }
+
         }
     }
     return OK;
@@ -2283,14 +2279,11 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             ) {
                 /* Here we have to see if any of these properties occur again */
                 
-                int count = 0;
-
                 //Find this element that will be changed
                 if(findElement(listEvent->properties, &findAlternateProperty, eventProperty)) {
-                    count++;
+                    return INV_EVENT;
                 }
 
-                if(count > 1) return INV_EVENT;
 
 
                 if(strcasecmp(eventProperty->propName, "DTEND") == 0) {
@@ -2387,12 +2380,9 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                         }
                     }
                     //If any other of the properties appear more than once
-                    int count = 0;
-                    if(findElement(newAlarm->properties, &comparePropName, alarmProperty) != NULL) {
-                        count++;
-                    } 
-                    
-                    if(count > 1) return INV_ALARM;
+                    if(findElement(newAlarm->properties, &findAlternateProperty, alarmProperty) != NULL) {
+                        return INV_ALARM;
+                    }
                 } else { // If any other of the properties in the alarm are invalid then this is an invalid alarm
                     return INV_ALARM;
                 }
