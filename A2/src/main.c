@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
 
     //This will load from a file
     if(!isDriver) {
+        printf("*****RUNNING THE CREATE CALENDAR FUNCTIO*****\n");
         error = createCalendar(argv[1], &obj);
         printf("printing the status of create Calendar\n");
         errorOut = printError(error);
@@ -33,6 +34,8 @@ int main(int argc, char **argv) {
     }
 
     /* Manually making a calendar object */
+
+    printf("*****USING THE MANUAL DRIVER*****\n");
 
     obj = malloc(sizeof(Calendar));
 
