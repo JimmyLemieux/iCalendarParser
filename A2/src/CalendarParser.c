@@ -216,6 +216,7 @@ char *printProperty(void *toBePrinted) {
 bool findAlternateProperty(const void *first, const void *second) {
     Property *a = (Property *) first;
     Property *b = (Property *) second;
+
     if(strcasecmp(a->propName, b->propName) == 0 && strcasecmp(a->propDescr, b->propDescr) != 0) {
         return true;
     }
@@ -2226,7 +2227,8 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
         if(strcasecmp(calProp->propName, "CALSCALE") == 0 || strcasecmp(calProp->propName, "METHOD") == 0) {
             //If the property appears more than once then it is invalid
 
-            if(findElement(obj->properties, &findAlternateProperty, calProp) != NULL) { 
+            if(findElement(obj->properties, &findAlternateProperty, calProp)) {
+                D;
                 return INV_CAL;
             }
 
