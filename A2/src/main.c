@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
         error = createCalendar(argv[1], &obj);
         printf("printing the status of create Calendar\n");
         errorOut = printError(error);
+        free(errorOut);
         error = validateCalendar(obj);
         printf("printing the status of validate calendar\n");
         errorOut = printError(error);
