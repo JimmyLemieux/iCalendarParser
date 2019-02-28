@@ -223,6 +223,12 @@ bool findAlternateProperty(const void *first, const void *second) {
     return false;
 }
 
+
+/* Quick hack to traverse to whole list with findElement */
+bool endOfListCompare(const void *first, const void *second) {
+    return false;
+}
+
 /* List function for finding the same property */
 
 bool comparePropName(const void *first, const void *second) {
@@ -2237,6 +2243,39 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
 }
 
 
+int findDupeEventProps(const Event *event, Property *compareEventProp) {
+    if(event == NULL || compareEventProp == NULL) {
+        return 0;
+    }
+
+    int count = 0;
+    void *prop;
+
+    ListIterator propIter = createIterator(event->properties);
+
+    while((prop = nextElement(&propIter)) != NULL) {
+        Property * newProp = (Property *)prop;
+        if(strcasecmp(newProp->propName, compareEventProp->propName) == 0) count ++;
+    }
+
+    return count;
+}
+
+int findDupeAlarmProps(const Alarm *alarm, Property *compareAlarmProp) {
+    if(alarm == NULL || compareAlarmProp == NULL) {
+        return 0;
+    }
+    int count =0;
+    void *prop;
+    ListIterator propIter = createIterator(alarm->properties);
+    while((prop = nextElement(&propIter)) != NULL) {
+        Property *newProp = (Property *)prop;
+        if(strcasecmp(newProp->propName, compareAlarmProp->propName) == 0)count++;
+    }
+    return count;
+}
+
+
 /* You might be able to check for alarms in this function as well */
 ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
     char searchString[256];
@@ -2276,16 +2315,13 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             if(strcasecmp(eventProperty->propName, "CLASS") == 0 || strcasecmp(eventProperty->propName, "CREATED") == 0 || strcasecmp(eventProperty->propName, "DESCRIPTION") == 0 
             || strcasecmp(eventProperty->propName, "GEO") == 0 || strcasecmp(eventProperty->propName, "LAST-MODIFIED") == 0 || strcasecmp(eventProperty->propName, "LOCATION") == 0 || strcasecmp(eventProperty->propName, "ORGANIZER") == 0 
             || strcasecmp(eventProperty->propName, "PRIORITY") == 0 || strcasecmp(eventProperty->propName, "SEQUENCE") == 0 || strcasecmp(eventProperty->propName, "STATUS") == 0 || strcasecmp(eventProperty->propName, "SUMMARY") == 0
-            || strcasecmp(eventProperty->propName, "TRANSP") == 0 || strcasecmp(eventProperty->propName,"URL") == 0 || strcasecmp(eventProperty->propName, "RECURRENCE-ID") == 0 || strcasecmp(eventProperty->propName, "RRULE") == 0 || strcasecmp(eventProperty->propName, "DTEND") == 0 || strcasecmp(eventProperty->propName, "DURATION") == 0
+            || strcasecmp(eventProperty->propName, "TRANSP") == 0 || strcasecmp(eventProperty->propName,"URL") == 0 || strcasecmp(eventProperty->propName, "RECURRENCE-ID") == 0  || strcasecmp(eventProperty->propName, "DTEND") == 0 || strcasecmp(eventProperty->propName, "DURATION") == 0
             ) {
                 /* Here we have to see if any of these properties occur again */
-                
-                //Find this element that will be changed
-                if(findElement(listEvent->properties, &findAlternateProperty, eventProperty)) {
+
+                if(findDupeEventProps(listEvent, eventProperty) > 1) {
                     return INV_EVENT;
-                }
-
-
+                } 
 
                 if(strcasecmp(eventProperty->propName, "DTEND") == 0) {
                     // THE DURATION PROPERTY CANNOT APPEAR IN THE PROPS
@@ -2305,7 +2341,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             } else if(strcasecmp(eventProperty->propName, "ATTENDEE") != 0 && strcasecmp(eventProperty->propName, "COMMENT") != 0 && strcasecmp(eventProperty->propName, "CATEGORIES") != 0 // These are the properties that can appear multiple times
             && strcasecmp(eventProperty->propName, "CONTACT") != 0 && strcasecmp(eventProperty->propName, "EXDATE") != 0 && strcasecmp(eventProperty->propName, "REQUEST-STATUS") != 0
             && strcasecmp(eventProperty->propName, "RELATED-TO") != 0 && strcasecmp(eventProperty->propName, "RESOURCES") != 0 && strcasecmp(eventProperty->propName, "RDATE") != 0 
-            && strcasecmp(eventProperty->propName, "ATTACH") != 0) {
+            && strcasecmp(eventProperty->propName, "ATTACH") != 0 && strcasecmp(eventProperty->propName, "RRULE") != 0) {
                 return INV_EVENT;
             }
         }
@@ -2380,8 +2416,8 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                             return INV_ALARM;
                         }
                     }
-                    //If any other of the properties appear more than once
-                    if(findElement(newAlarm->properties, &findAlternateProperty, alarmProperty) != NULL) {
+
+                    if(findDupeAlarmProps(newAlarm, alarmProperty) > 1) {
                         return INV_ALARM;
                     }
                 } else { // If any other of the properties in the alarm are invalid then this is an invalid alarm

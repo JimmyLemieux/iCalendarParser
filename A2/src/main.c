@@ -128,14 +128,14 @@ int main(int argc, char **argv) {
 
     // This should be an error, There is a property that cannot appear more than once
 
-    strcpy(eventProps->propName, "GEO");
+    strcpy(eventProps->propName, "COMMENT");
     strcpy(eventProps->propDescr, "Some Description");
 
 
     Property *eventProps2 = calloc(1, sizeof(Property) + 200);
 
-    strcpy(eventProps2->propName, "GEO");
-    strcpy(eventProps2->propDescr, "Some Description");
+    strcpy(eventProps2->propName, "DTEND");
+    strcpy(eventProps2->propDescr, "Some");
 
     insertBack(newEvent2->properties, eventProps2);
 
