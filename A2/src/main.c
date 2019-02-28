@@ -82,6 +82,18 @@ int main(int argc, char **argv) {
     strcpy(newEvent2->UID, "SOME EVENT UID");
     newEvent2->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
+
+    //Add some properties to the event
+
+    Property *eventProps = calloc(1, sizeof(Property) + 200);
+
+    strcpy(eventProps->propName, "GEO");
+    strcpy(eventProps->propDescr, "Some Description");
+
+
+    insertBack(newEvent2->properties, eventProps);
+    
+
     insertBack(obj->events, newEvent2);
 
     error = 0;

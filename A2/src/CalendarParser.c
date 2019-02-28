@@ -2226,8 +2226,7 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
         if(strcasecmp(calProp->propName, "CALSCALE") == 0 || strcasecmp(calProp->propName, "METHOD") == 0) {
             //If the property appears more than once then it is invalid
             int count = 0;
-
-            while(findElement(obj->properties, &comparePropName, calProp)) {
+            if(findElement(obj->properties, &comparePropName, calProp) != NULL) { 
                 count++;
             }
             // If the certain property occurs more than once, then invalid
@@ -2243,20 +2242,9 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
 /* You might be able to check for alarms in this function as well */
 ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
     char searchString[256];
-    int foundMethod = 0;
     if(obj == NULL) {
         return INV_CAL;
     }
-
-
-    //Go through the calendar properties and see if there is a method
-
-    // strcpy(searchString, "METHOD");
-    
-    // if(findElement(obj->properties, &comparePropName, searchString)) {
-    //     foundMethod = 1;
-    // }
-    // strcpy(searchString, "\0");
 
 
     void *event;
@@ -2295,7 +2283,6 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                 /* Here we have to see if any of these properties occur again */
                 
                 int count = 0;
-
 
                 if(findElement(listEvent->properties, &comparePropName, eventProperty)) {
                     count++;
@@ -2366,7 +2353,6 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                 }
 
 
-
                 //These are the propeties that can appear only once
                 if(strcasecmp(alarmProperty->propName, "DURATION") == 0 || strcasecmp(alarmProperty->propName, "REPEAT") == 0 
                 || strcasecmp(alarmProperty->propName, "ATTACH") == 0 || strcasecmp(alarmProperty->propName, "DESCRIPTION") == 0
@@ -2400,11 +2386,9 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                     }
                     //If any other of the properties appear more than once
                     int count = 0;
-                    while(findElement(newAlarm->properties, &comparePropName, alarmProperty)) {
+                    if(findElement(newAlarm->properties, &comparePropName, alarmProperty) != NULL) {
                         count++;
                     } 
-
-
                     
                     if(count > 1) return INV_ALARM;
                 } else { // If any other of the properties in the alarm are invalid then this is an invalid alarm
@@ -2434,7 +2418,7 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
         return error;
     }
 
-    calendarToJSON(obj);
+    //calendarToJSON(obj);
     return OK;
 }
 
