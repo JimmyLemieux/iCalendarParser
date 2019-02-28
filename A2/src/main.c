@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 
     Property *newProp2 = malloc(sizeof(Property) + 5000);
     strcpy(newProp2->propName, "SUMMARY");
-    strcpy(newProp2->propDescr, "Nigga got hoes bitch nigga");
+    strcpy(newProp2->propDescr, "Some inappropriate text");
     insertBack(newEvent->properties, newProp2);
 
 
@@ -108,12 +108,11 @@ int main(int argc, char **argv) {
 
     insertBack(newEvent2->properties, summaryProp);
 
-
     //Add some properties to the event
 
     Property *eventProps = calloc(1, sizeof(Property) + 200);
 
-    // This should be an error
+    // This should be an error, There is a property that cannot appear more than once
 
     strcpy(eventProps->propName, "GEO");
     strcpy(eventProps->propDescr, "Some Description");
