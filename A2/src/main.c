@@ -58,10 +58,10 @@ int main(int argc, char **argv) {
     strcpy(newProp->propDescr, "4");
     insertBack(newEvent->properties, newProp);
 
-    Property *newProp2 = malloc(sizeof(Property) + 5000);
-    strcpy(newProp2->propName, "SUMMARY");
-    strcpy(newProp2->propDescr, "Some inappropriate text");
-    insertBack(newEvent->properties, newProp2);
+    // Property *newProp2 = malloc(sizeof(Property) + 5000);
+    // strcpy(newProp2->propName, "SUMMARY");
+    // strcpy(newProp2->propDescr, "Some inappropriate text");
+    // insertBack(newEvent->properties, newProp2);
 
 
     insertBack(obj->events, newEvent);
