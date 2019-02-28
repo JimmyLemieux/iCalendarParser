@@ -11,15 +11,24 @@ int main(int argc, char **argv) {
     char *errorOut;
     
 
-    // if(argc != 2) {
-    //     error = createCalendar("test/sample1.ics", &obj);
-    //     errorOut = printError(error);
-    //     free(errorOut);
-    // } else {
-    //     error = createCalendar(argv[1], &obj);
-    //     errorOut = printError(error);
-    //     free(errorOut);
-    // }
+    int isDriver = 0;
+
+    if(argc == 3) {
+        if(strcasecmp(argv[2], "1") == 0) isDriver = 1;
+    }
+
+    //This will load from a file
+    if(!isDriver) {
+        error = createCalendar(argv[1], &obj);
+        printf("printing the status of create Calendar\n");
+        errorOut = printError(error);
+        error = validateCalendar(obj);
+        printf("printing the status of validate calendar\n");
+        errorOut = printError(error);
+        deleteCalendar(obj);
+        free(errorOut);
+        return 0;
+    }
 
     /* Manually making a calendar object */
 

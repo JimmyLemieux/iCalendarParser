@@ -2228,7 +2228,6 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
             //If the property appears more than once then it is invalid
 
             if(findElement(obj->properties, &findAlternateProperty, calProp)) {
-                D;
                 return INV_CAL;
             }
 
