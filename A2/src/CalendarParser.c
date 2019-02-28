@@ -2498,7 +2498,6 @@ char *eventToJSON(const Event *event) {
     sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"%s\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms), summaryValue);
     deallocator(summaryValue);
     deallocator(tempDTJSON);
-
     return tempEventJSON;   
 }
 
@@ -2523,7 +2522,6 @@ char *eventListToJSON(const List *eventList) {
 
     while((event = nextElement(&eventIter)) != NULL) {   
         Event *listEvent = (Event *)event;
-
 
         char *eventJSON = eventToJSON(listEvent); //This will need to be freed
         tempListJSON = realloc(tempListJSON, sizeof(char) * strlen(eventJSON) + strlen(tempListJSON) + 10);
@@ -2648,6 +2646,5 @@ void addEvent(Calendar *cal, Event *toBeAdded) {
     if(toBeAdded == NULL || cal == NULL) return;
     insertBack(cal->events, toBeAdded);
 }
-
 
 /* Ending the mandatory functions for the assignment */
