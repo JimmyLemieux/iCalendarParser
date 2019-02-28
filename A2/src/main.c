@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
     //This will load from a file
     if(!isDriver) {
-        printf("*****RUNNING THE CREATE CALENDAR FUNCTIO*****\n");
+        printf("*****RUNNING THE CREATE CALENDAR FUNCTION*****\n");
         error = createCalendar(argv[1], &obj);
         printf("printing the status of create Calendar\n");
         errorOut = printError(error);
@@ -31,9 +31,6 @@ int main(int argc, char **argv) {
             printf("ENDING THE CALENDAR PARSER FUNCTION\n");
             return 0;
         }
-
-
-
 
         error = validateCalendar(obj);
         printf("printing the status of validate calendar\n");
@@ -82,14 +79,7 @@ int main(int argc, char **argv) {
     strcpy(newProp->propDescr, "4");
     insertBack(newEvent->properties, newProp);
 
-    // Property *newProp2 = malloc(sizeof(Property) + 5000);
-    // strcpy(newProp2->propName, "SUMMARY");
-    // strcpy(newProp2->propDescr, "Some inappropriate text");
-    // insertBack(newEvent->properties, newProp2);
-
-
     insertBack(obj->events, newEvent);
-
 
 
     Event * newEvent2 = calloc(1, sizeof(Event));

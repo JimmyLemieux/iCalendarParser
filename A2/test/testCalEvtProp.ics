@@ -186,7 +186,8 @@ summary:This is some summary of the eve
 BEGIN:VALARM
 ACTION:euwiqoe
 TRIGGER:riweorwep
-END:VALARM
+END:VA
+ LARM
 END:VEVENT
 BEGIN:VEVENT
 UID:uid1@example.com
