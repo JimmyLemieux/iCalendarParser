@@ -35,6 +35,8 @@ int main(int argc, char **argv) {
         error = validateCalendar(obj);
         printf("printing the status of validate calendar\n");
         errorOut = printError(error);
+
+        writeCalendar("outFiles/testOut.ics", obj);
         deleteCalendar(obj);
         free(errorOut);
         return 0;
@@ -125,8 +127,15 @@ int main(int argc, char **argv) {
     strcpy(newAlarmProperty2->propName,"DURATION");
     strcpy(newAlarmProperty2->propDescr, "Duration");
 
-
     insertBack(newAlarm2->properties,newAlarmProperty2);
+
+
+    Property *newAlarmProperty3 = calloc(1, sizeof(Property) + 200);
+
+    strcpy(newAlarmProperty3->propName, "REPEAT");
+    strcpy(newAlarmProperty3->propDescr, "Some Repeat");
+
+    insertBack(newAlarm2->properties, newAlarmProperty3);
 
     insertBack(newEvent2->alarms, newAlarm2);
 
