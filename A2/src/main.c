@@ -25,6 +25,16 @@ int main(int argc, char **argv) {
         printf("printing the status of create Calendar\n");
         errorOut = printError(error);
         free(errorOut);
+
+        if(error != 0) {
+            // The delete calendar would have already been called in the calendar parser funtion
+            printf("ENDING THE CALENDAR PARSER FUNCTION\n");
+            return 0;
+        }
+
+
+
+
         error = validateCalendar(obj);
         printf("printing the status of validate calendar\n");
         errorOut = printError(error);
