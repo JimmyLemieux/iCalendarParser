@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <strings.h>
 #include "CalendarParser.h"
 
 /* I am going to implement the dateTime helper functions */
