@@ -2412,13 +2412,15 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                     // If the action in the alarm is of type audio then it can only appear once
 
                     if(strcasecmp(alarmProperty->propName, "ATTACH") == 0 && strcasecmp(newAlarm->action, "AUDIO") == 0) {
-                        if(findElement(newAlarm->properties, &findAlternateProperty, alarmProperty)) {
+                        if(findDupeAlarmProps(newAlarm, alarmProperty) > 1) {
                             return INV_ALARM;
                         }
                     }
 
-                    if(findDupeAlarmProps(newAlarm, alarmProperty) > 1) {
-                        return INV_ALARM;
+                    if(strcasecmp(alarmProperty->propName, "ATTATCH") != 0) { // Anything other than attach, check for dupe
+                        if(findDupeAlarmProps(newAlarm, alarmProperty) > 1) {
+                            return INV_ALARM;
+                        }
                     }
                 } else { // If any other of the properties in the alarm are invalid then this is an invalid alarm
                     return INV_ALARM;
