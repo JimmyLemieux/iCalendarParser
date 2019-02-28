@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
     newEvent->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
 
     Property *newProp = malloc(sizeof(Property) + 5000);
-    strcpy(newProp->propName, "UID");
+    strcpy(newProp->propName, "PRIORITY");
     strcpy(newProp->propDescr, "4");
     insertBack(newEvent->properties, newProp);
 
@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
 
     Alarm *newAlarm = calloc(1, sizeof(Alarm));
 
-    strcpy(newAlarm->action, "Some action");
+    strcpy(newAlarm->action, "AUDIO");
 
 
     newAlarm->trigger = calloc(1, sizeof(char) * 200);
@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
 
     Alarm *newAlarm2 = calloc(1, sizeof(Alarm));
 
-    strcpy(newAlarm2->action, "New Alarm Action");
+    strcpy(newAlarm2->action, "AUDIO");
     newAlarm2->trigger = calloc(1, sizeof(char) * 100);
     strcpy(newAlarm2->trigger,"New Alarm Trigger");
 

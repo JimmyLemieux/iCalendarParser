@@ -2372,6 +2372,8 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
             if(newAlarm->properties == NULL || isEmpty(newAlarm->action) || isEmpty(newAlarm->trigger)) {
                 return INV_ALARM;
             }
+
+            if(strcasecmp(newAlarm->action, "AUDIO") != 0) return INV_ALARM;
             ListIterator alarmPropsIter = createIterator(newAlarm->properties);
             while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
                 Property *alarmProperty = (Property*)alarmProps;
@@ -2379,6 +2381,7 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                 if(isEmpty(alarmProperty->propName) || isEmpty(alarmProperty->propDescr)) {
                     return INV_ALARM;
                 }
+
 
                 if(strcasecmp(alarmProperty->propName, "ACTION") == 0 || strcasecmp(alarmProperty->propName, "TRIGGER") == 0) {
                     return INV_ALARM;
