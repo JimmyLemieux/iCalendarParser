@@ -145,20 +145,10 @@ void splitByFirstOccurence(char *line, char *left, char *right, char del) {
     for(i = 0;i<find;i++) {
         left[i] = line[i];
     }
-
-    if(find == 0) {
-        left[0] = '\0';
-    }
-
     
     for(k = find+1,i=0;k<strlen(line);k++,i++) {
         right[i] = line[k];
     }
-
-    if(i == 0) {
-        right[0] = '\0';
-    }
-
 
 }
 
@@ -218,6 +208,7 @@ char * removeFirstChar(char *str) {
         temp[j] = str[i];
         j++;
     }
+
     return temp;
 }
 
@@ -235,6 +226,7 @@ void splitContentLine(char *line, char *left, char *right) {
     } else {
         splitByFirstOccurence(line, left,right,':');
     }
+
 }
 
 
@@ -261,29 +253,5 @@ int containsSubstring(char *line, char *sub) {
         }
     }
     deallocator(temp);
-    return 0;
-}
-
-int isFloat(char * string) {
-    if(string == NULL) return 0;
-    int len;
-    float ignore;
-    int ret = sscanf(string,"%f %n", &ignore,&len);
-    if(ret==1 && !string[len]) {
-        return 1;
-    }
-    return 0;
-}
-
-int isInteger(char * string) {
-    if(string == NULL) return 0;
-
-    int len;
-    int ignore;
-
-    int ret = sscanf(string, "%d %n", &ignore, &len);
-    if(ret == 1 && !string[len]) {
-        return 1;
-    }
     return 0;
 }

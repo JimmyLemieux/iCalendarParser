@@ -1748,7 +1748,6 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
         if(calOpen == 1 && eventOpen == 1 && alarmOpen == 1) {
             /* The properties that are in the alarm comp */
             //printf("LEFT:%s\tRIGHT:%s\n",left,right);
-
             if(isEmpty(left) || isEmpty(right)) {
                 deallocator(left);
                 deallocator(right);
@@ -2120,7 +2119,6 @@ char *printError(ICalErrorCode err) {
     return temp;
 }
 
-
 /* This function will return the calendar object and write to a file, my guess is this could return write_error */
 ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
     if(fileName == NULL || isEmpty(fileName) || !containsSubstring(fileName, ".ics") || obj == NULL) {
@@ -2204,7 +2202,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 
 /* This function validates the required components of the cal */
 ICalErrorCode validateCalendarRequired(const Calendar *obj) {
-    if(obj == NULL || obj->version == 0 || obj->prodID[0] == '\0' || strcmp(obj->prodID, "") == 0 || isEmpty((char *)obj->prodID) || obj->events == NULL) {
+    if(obj == NULL || obj->version == 0 || isEmpty(obj->prodID) || strcmp(obj->prodID, "") == 0 || isEmpty((char *)obj->prodID) || obj->events == NULL) {
         return INV_CAL;
     }
     /* Looking at all of the properties of the calendar */
@@ -2294,6 +2292,9 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             return INV_EVENT;
         }
 
+        if(strlen(listEvent->startDateTime.date) != 8 || strlen(listEvent->creationDateTime.date) != 8 || strlen(listEvent->startDateTime.time) != 6 || strlen(listEvent->creationDateTime.time) != 6) {
+            return INV_EVENT;
+        }
         /* Looking at the properties in the event */
         void *eventProps;
         ListIterator eventPropIter = createIterator(listEvent->properties);
@@ -2392,9 +2393,7 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
 
 
                 //These are the propeties that can appear only once
-                if(strcasecmp(alarmProperty->propName, "DURATION") == 0 || strcasecmp(alarmProperty->propName, "REPEAT") == 0 
-                || strcasecmp(alarmProperty->propName, "ATTACH") == 0 || strcasecmp(alarmProperty->propName, "DESCRIPTION") == 0
-                || strcasecmp(alarmProperty->propName, "ATTENDEE") == 0) {
+                if(strcasecmp(alarmProperty->propName, "DURATION") == 0 || strcasecmp(alarmProperty->propName, "REPEAT") == 0) {
                     
                     //If this occurrs so must the repeat prop
                     if(strcasecmp(alarmProperty->propName, "DURATION") == 0) {
@@ -2412,21 +2411,6 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                             return INV_ALARM;
                         }
                         strcpy(searchString, "\0");
-                    }
-
-                    // Attach can actually appear multiple times, it has to have the audio part in the alarm
-                    // If the action in the alarm is of type audio then it can only appear once
-
-                    if(strcasecmp(alarmProperty->propName, "ATTACH") == 0 && strcasecmp(newAlarm->action, "AUDIO") == 0) {
-                        if(findDupeAlarmProps(newAlarm, alarmProperty) > 1) {
-                            return INV_ALARM;
-                        }
-                    }
-
-                    if(strcasecmp(alarmProperty->propName, "ATTATCH") != 0) { // Anything other than attach, check for dupe
-                        if(findDupeAlarmProps(newAlarm, alarmProperty) > 1) {
-                            return INV_ALARM;
-                        }
                     }
                 } else { // If any other of the properties in the alarm are invalid then this is an invalid alarm
                     return INV_ALARM;
@@ -2455,7 +2439,6 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
         return error;
     }
 
-    calendarToJSON(obj);
     return OK;
 }
 
@@ -2533,7 +2516,7 @@ char *eventListToJSON(const List *eventList) {
 
     strcat(tempListJSON,"]");
 
-    printf("%s\n", tempListJSON);
+    //printf("%s\n", tempListJSON);
 
     deallocator(tempListJSON);
     return tempListJSON;
@@ -2551,7 +2534,7 @@ char *calendarToJSON(const Calendar *cal) {
     tempJSON = calloc(1, sizeof(char) * 200);
     tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 100);
     sprintf(tempJSON, "{\"version\":%d,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", (int)cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
-    printf("JSON CALENDAR -> %s\n", tempJSON);
+    //printf("JSON CALENDAR -> %s\n", tempJSON);
     eventListToJSON(cal->events);
     deallocator(tempJSON);
     return tempJSON;
@@ -2638,7 +2621,7 @@ Calendar* JSONtoCalendar(const char* str) {
     deallocator((char *) str); // This is temp
     deleteCalendar(cal); // This is temp; 
 
-    JSONtoEvent("{\"UID\":\"value\"}");
+    //JSONtoEvent("{\"UID\":\"value\"}");
     return cal;
 }
 
