@@ -2202,7 +2202,7 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) {
 
 /* This function validates the required components of the cal */
 ICalErrorCode validateCalendarRequired(const Calendar *obj) {
-    if(obj == NULL || obj->version == 0 || isEmpty(obj->prodID) || strcmp(obj->prodID, "") == 0 || isEmpty((char *)obj->prodID) || obj->events == NULL) {
+    if(obj == NULL || obj->version == 0 || obj->prodID[0] == '\0' || strcmp(obj->prodID, "") == 0 || isEmpty((char *)obj->prodID) || obj->events == NULL) {
         return INV_CAL;
     }
     /* Looking at all of the properties of the calendar */
