@@ -1988,71 +1988,69 @@ char *printCalendar(const Calendar *obj) {
     strEvent = calloc(1, sizeof(char) * 20);
     strcpy(strEvent, "Hello, World!\0");
 
-
     //printf("BEGIN CALENDAR\n");
     //printf("\tVERSION:%.2f\n", obj->version);
     //printf("\tPRODID:%s\n", obj->prodID);
 
+    // void *calProps;
 
-    void *calProps;
+    // ListIterator calPropIter = createIterator(obj->properties);
 
-    ListIterator calPropIter = createIterator(obj->properties);
-
-    while((calProps = nextElement(&calPropIter)) != NULL) {
-        Property *calProp = (Property*)calProps;
-        char *strCalProp = obj->properties->printData(calProp);
-        //printf("%s", strCalProp);
-        deallocator(strCalProp);
-    }
-
+    // while((calProps = nextElement(&calPropIter)) != NULL) {
+    //     Property *calProp = (Property*)calProps;
+    //     char *strCalProp = obj->properties->printData(calProp);
+    //     //printf("%s", strCalProp);
+    //     deallocator(strCalProp);
+    // }
 
 
-    /* FIND EVENTS AND PRINT THEM */
-    void *event;
-    /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
 
-    ListIterator eventIter = createIterator(obj->events);
+    // /* FIND EVENTS AND PRINT THEM */
+    // void *event;
+    // /* HERE WE WILL GO THROUGH THE OBJS EVENTS */
 
-    while((event = nextElement(&eventIter)) != NULL) {
-        //printf("BEGIN EVENT:\n");
-        Event *listEvent = (Event*)event;
-        char *strEvent = obj->events->printData(listEvent);
-        //printf("%s", strEvent);
-        deallocator(strEvent);
+    // ListIterator eventIter = createIterator(obj->events);
 
-        void *listAlarm;
+    // while((event = nextElement(&eventIter)) != NULL) {
+    //     //printf("BEGIN EVENT:\n");
+    //     Event *listEvent = (Event*)event;
+    //     char *strEvent = obj->events->printData(listEvent);
+    //     //printf("%s", strEvent);
+    //     deallocator(strEvent);
 
-        ListIterator alarmIter = createIterator(listEvent->alarms);
+    //     void *listAlarm;
 
-        while((listAlarm = nextElement(&alarmIter)) != NULL) {
-           // printf("BEGIN ALARM:\n");
-            Alarm *newAlarm = (Alarm*)listAlarm;
-            char *strAlarm = listEvent->alarms->printData(newAlarm);
-            //printf("%s", strAlarm);
-            deallocator(strAlarm);
+    //     ListIterator alarmIter = createIterator(listEvent->alarms);
 
-            void *alarmProps;
-            ListIterator alarmPropsIter = createIterator(newAlarm->properties);
+    //     while((listAlarm = nextElement(&alarmIter)) != NULL) {
+    //        // printf("BEGIN ALARM:\n");
+    //         Alarm *newAlarm = (Alarm*)listAlarm;
+    //         char *strAlarm = listEvent->alarms->printData(newAlarm);
+    //         //printf("%s", strAlarm);
+    //         deallocator(strAlarm);
 
-            while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
-                Property *alarmProperty = (Property*)alarmProps;
-                char *strAlarmProps = newAlarm->properties->printData(alarmProperty);
-                //printf("%s", strAlarmProps);
-                deallocator(strAlarmProps);
-            }
-            //printf("END ALARM:\n");
-        }
+    //         void *alarmProps;
+    //         ListIterator alarmPropsIter = createIterator(newAlarm->properties);
 
-        void *eventProps;
-        ListIterator eventPropIter = createIterator(listEvent->properties);
-        while((eventProps = nextElement(&eventPropIter)) != NULL) {
-            Property *eventProperty = (Property*)eventProps;
-            char *strProp = listEvent->properties->printData(eventProperty);
-            //printf("%s", strProp);
-            deallocator(strProp);
-        }
-       // printf("END EVENT:\n");
-    }
+    //         while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
+    //             Property *alarmProperty = (Property*)alarmProps;
+    //             char *strAlarmProps = newAlarm->properties->printData(alarmProperty);
+    //             //printf("%s", strAlarmProps);
+    //             deallocator(strAlarmProps);
+    //         }
+    //         //printf("END ALARM:\n");
+    //     }
+
+    //     void *eventProps;
+    //     ListIterator eventPropIter = createIterator(listEvent->properties);
+    //     while((eventProps = nextElement(&eventPropIter)) != NULL) {
+    //         Property *eventProperty = (Property*)eventProps;
+    //         char *strProp = listEvent->properties->printData(eventProperty);
+    //         //printf("%s", strProp);
+    //         deallocator(strProp);
+    //     }
+    //    // printf("END EVENT:\n");
+    // }
     //printf("END CALENDAR\n");
 
     return strEvent;
@@ -2115,7 +2113,7 @@ char *printError(ICalErrorCode err) {
         default:
             strcpy(temp,"OTHER_ERROR");
     }
-    printf("Error -> %s\n", temp);
+    //printf("Error -> %s\n", temp);
     return temp;
 }
 
