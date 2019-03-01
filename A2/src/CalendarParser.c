@@ -2393,7 +2393,7 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
 
 
                 //These are the propeties that can appear only once
-                if(strcasecmp(alarmProperty->propName, "DURATION") == 0 || strcasecmp(alarmProperty->propName, "REPEAT") == 0) {
+                if(strcasecmp(alarmProperty->propName, "DURATION") == 0 || strcasecmp(alarmProperty->propName, "REPEAT") == 0 || strcasecmp(alarmProperty->propName, "ATTACH") == 0) {
                     
                     //If this occurrs so must the repeat prop
                     if(strcasecmp(alarmProperty->propName, "DURATION") == 0) {
@@ -2411,6 +2411,11 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
                             return INV_ALARM;
                         }
                         strcpy(searchString, "\0");
+                    }
+
+                    /* Check if the property occurs more than once */
+                    if(findDupeAlarmProps(newAlarm, alarmProperty) > 1) {
+                        return INV_ALARM;
                     }
                 } else { // If any other of the properties in the alarm are invalid then this is an invalid alarm
                     return INV_ALARM;
@@ -2515,8 +2520,6 @@ char *eventListToJSON(const List *eventList) {
     } 
 
     strcat(tempListJSON,"]");
-
-    //printf("%s\n", tempListJSON);
 
     deallocator(tempListJSON);
     return tempListJSON;
