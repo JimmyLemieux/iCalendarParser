@@ -23,6 +23,8 @@
     z-index: 2;
     color: white;
     box-shadow: 0 8px 16px -6px black;
+    padding: 0px;
+    margin-bottom: 0%;
 }
 
 .jumbotron video {
@@ -31,7 +33,7 @@
     z-index: -1;
     top: 0;
     width: 100%;
-    height: 90%;
+    height: 100%;
     object-fit: cover;
 }
 
@@ -63,7 +65,7 @@
 }
 
 .my-6 {
-    background-color: azure;
+    background-color: white;
     width: 75%;
     animation: pulse 20s linear infinite;
 }
@@ -88,4 +90,24 @@
     height: 10vh;
     z-index: -100;
     width:100%;
+}
+
+
+#sub-heading {
+    position: absolute;
+    display: inline-block;
+    padding-top: 2em;
+    margin: 0 auto;
+    opacity: 0.5;
+    background-color: #f7f7f7;
+}
+
+#quote {
+    font-style: italic;
+    font-size: 25px;
+}
+
+#quote-tag {
+    font-style: italic;
+    font-size: 15px;
 }
