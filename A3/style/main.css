@@ -102,6 +102,12 @@
     background-color: #f7f7f7;
 }
 
+#main-content {
+    position: absolute;
+    margin: 0 auto;
+
+}
+
 #quote {
     font-style: italic;
     font-size: 25px;
