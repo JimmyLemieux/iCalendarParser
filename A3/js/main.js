@@ -1,7 +1,5 @@
 $(document).ready(function() {
 
-
-
     //This is to make the logo increase
     var homeImage = $("#home-img");
     var ht = homeImage.height();
@@ -9,7 +7,7 @@ $(document).ready(function() {
     var mult = 1.4;
 
     homeImage.on("mouseenter", function() {
-        $(this).animate({height: ht*mult, width: wd*mult}, 100); 
+        $(this).animate({height: ht*mult, width: wd*mult}, 200); 
     });
 
     homeImage.on("mouseleave", function() {
