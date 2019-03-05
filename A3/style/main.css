@@ -1,4 +1,19 @@
 
+@keyframes pulse {
+
+    0% {
+        transform: scale(1,1);
+    }
+
+    50% {
+        transform: scale(0.8, 0.8);
+    }
+
+    100% {
+        transform: scale(1,1);
+    }
+}
+
 .jumbotron {
     position: relative;
     height: 100vh;
@@ -6,7 +21,6 @@
     text-align: center;
     align-items: center;
     z-index: -99;
-    background-color:#3a3b3d;
     color: white;
     box-shadow: 0 8px 16px -6px black;
 }
@@ -50,22 +64,14 @@
 .my-6 {
     background-color: azure;
     width: 75%;
+    animation: pulse 20s linear infinite;
 }
 
-@keyframes pulse {
 
-    0% {
-        transform: scale(1,1);
-    }
-
-    50% {
-        transform: scale(0.8, 0.8);
-    }
-
-    100% {
-        transform: scale(1,1);
-    }
+#main-subhead {
+    font-style: italic;
 }
+
 
 #main-header-img {
     animation: pulse 20s linear infinite;
