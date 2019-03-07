@@ -46,4 +46,11 @@ $(document).ready(function() {
         console.log("Added to the table!");
     }
 
+
+    //Button action
+
+    $("#upload-file-btn").click(function(event) {
+        event.preventDefault();
+        console.log("The Event was called here!");
+    });
 });
