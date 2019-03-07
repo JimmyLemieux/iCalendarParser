@@ -21,8 +21,8 @@
         <div class="home-section">
             <div class="container">
                 <div class="row">
-                    <div class="col"><a href="https://www.youtube.com"><img id="home-img" src="../assets/cube.png" alt="home"/></a></div>
-                    <div class="col"><p id="nav-item"> Parse </p></div>
+                    <div class="col"><a href="#"><img id="home-img" src="../assets/cube.png" alt="home"/></a></div>
+                    <div class="col"><p id="nav-item"> Files </p></div>
                     <div class="col"><p id="nav-item"> Upload </p></div>
                     <div class="col"><p id="nav-item"> iView </p></div>
                     <div class="col"><p id="nav-item"> Info </p></div>
@@ -61,18 +61,52 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
-                    <div class="status-image-container">
-                        <img src="../assets/icon-purple-atom.png" alt="iconAtom"/>
-                    </div>
                     <div class="status-bar-container">
                         <div class="status-bar">
                             <div class="alert alert-success" role="alert">
-                                <h4 class="alert-heading">Success!</h4>
-                                <p>The file was parsed successfully!</p>
+                                <h4 class="alert-heading">Temporary Status Bar</h4>
+                                <p>There will be information here about the status of the parser</p>
                                 <hr>
-                                <p class="mb-0">This is the footer</p>
+                                <p class="mb-0">Information about the parser</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="file-view-container">
+                        <p class="lead">
+                            File Log Viewer Section
+                        </p>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">File name (click to download)</th>
+                                    <th scope="col">Version</th>
+                                    <th scope="col">Product ID</th>
+                                    <th scope="col">Number of events</th>
+                                    <th scope="col">Number of properties</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">testCalSimpleUTC.ics</th>
+                                    <td>2.0</td>
+                                    <td>-//hacksw/handcal//NONSGML v1.0//EN</td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">megaCal.ics</th>
+                                    <td>2.0</td>
+                                    <td>SomePropertyName</td>
+                                    <td>5</td>
+                                    <td>10</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

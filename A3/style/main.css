@@ -132,7 +132,7 @@
     position: relative;
     display: flex;
     width: 100%;
-    background-color: #f7f7f7;
+    background-color: #fafafa;
 }
 
 .status-image-container {
@@ -158,17 +158,22 @@
 .status-bar-container {
     position: relative;
     text-align: center;
-    
+
 }
 
 .status-bar {
     position: relative;
-    border: 1px solid black;
     width:75%;
     margin: 0 auto;
 }
 
-
+.file-view-container {
+    position: relative;
+    text-align: center;
+    overflow: scroll;
+    width: 90%;
+    margin: 0 auto;
+}
 
 #quote {
     font-style: italic;
