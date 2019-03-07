@@ -40,12 +40,6 @@
     }
 }
 
-table {
-    overflow: scroll;
-    table-layout: auto;
-    text-align: center;
-    margin: auto;
-}
 
 .jumbotron {
     position: relative;
@@ -178,11 +172,16 @@ table {
     position: relative;
     text-align: center;
     width: 95%;
-    max-width: 95%;
-    max-height: 300px;
-    overflow: auto;
     margin: 0 auto;
     padding-bottom: 30px;
+}
+
+.file-view-table {
+    position: relative;
+    max-width: 95%;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: scroll;
 }
 
 .upload-row {
