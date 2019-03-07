@@ -32,4 +32,17 @@ $(document).ready(function() {
     homeImage.on("mouseleave", function() {
         $(this).animate({height: ht, width: wd}, 100); 
     });
+
+    //Start to fill in the array values to the table
+    //Some testing data will be used for inserting into the table
+
+    var fileNames = ["Another.ics", "AnotherFile.ics", "SomeThing.ics", "MegaFile.ics"];
+
+    var fileVersions = [2.0, 5.1, 69.9, 23.2];
+
+    for(var i = 0;i<fileNames.length;i++) {
+        $("#file-table-contents").append("<tr><th scope=\"row\">" + fileNames[i] + "</th><td>"+ fileVersions[i] + "</td><td>SOME ID</td><td>2</td><td>10</td></tr>");
+        console.log("Added to the table!");
+    }
+
 });

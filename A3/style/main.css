@@ -178,6 +178,7 @@ table {
     position: relative;
     text-align: center;
     width: 95%;
+    max-width: 95%;
     max-height: 300px;
     overflow: auto;
     margin: 0 auto;
