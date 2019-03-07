@@ -40,6 +40,7 @@ $(document).ready(function() {
 
     var fileVersions = [2.0, 5.1, 69.9, 23.2];
 
+    // So far this is working as expected, this will later use ajax calls to get JSON from my parser
     for(var i = 0;i<fileNames.length;i++) {
         $("#file-table-contents").append("<tr><th scope=\"row\">" + fileNames[i] + "</th><td>"+ fileVersions[i] + "</td><td>SOME ID</td><td>2</td><td>10</td></tr>");
         console.log("Added to the table!");
