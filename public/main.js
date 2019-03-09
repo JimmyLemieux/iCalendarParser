@@ -72,8 +72,10 @@ $(document).ready(function() {
     });
 
     // Adding a populater for the calendar table
-
+    //This should actually be null at first
     for(var i = 0;i<2;i++) {
         $("#calendar-table-contents").append("<tr><td>2</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>");
     }
+
+    
 });
