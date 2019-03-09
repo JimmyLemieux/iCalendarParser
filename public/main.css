@@ -195,6 +195,15 @@
     text-align: center;
 }
 
+.calendar-table-view {
+    position: relative;
+    max-width: 95%;
+    max-height: 500px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    padding-bottom: 50px;
+}
+
 .dropdown-menu badge {
     width: 100%;
 }
