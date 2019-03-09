@@ -59,29 +59,22 @@ $(document).ready(function() {
 
     for(var i = 0;i<fileNames.length;i++) {
         $(".dropdown-menu").append("<p class=\"item\">" + fileNames[i] + "</p>");
-        console.log("Called");
     }
 
-    $(".dropdown-menu").find(".item").each(function(element) {
+    //For the drop down table here
+    $(".dropdown-menu").find(".item").each(function() {
         $(this).on("click", function() {
             var newTitle = $(this).text();
             $("#drop-title").text(newTitle);
         });
     });
 
+    // Adding a populater for the calendar table
 
-    // var menuItems = [];
-    // $(".dropdown-menu").find("#drop-item").each(function() {
-    //     console.log($(this).text());
-    //     menuItems.push($(this));
-    // });
+    for(var i = 0;i<10;i++) {
+        console.log("In");
+    }
 
-    // console.log(menuItems.length);
 
-    // menuItems.forEach(element => {
-    //     element.on("click", function() {
-    //         console.log("Element was clicked!");
-    //     });
-    // });
 
 });
