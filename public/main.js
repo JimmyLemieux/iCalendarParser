@@ -36,7 +36,7 @@ $(document).ready(function() {
     //Start to fill in the array values to the table
     //Some testing data will be used for inserting into the table
 
-    var fileNames = ["Another.ics", "AnotherFile.ics", "SomeThing.ics", "MegaFile.ics", "HereIsAnotherFile.ics"];
+    var fileNames = ["Another.ics", "AnotherFile.ics", "SomeThing.ics", "MegaFile.ics", "HereIsAnotherFile.ics", "SomeReallyBigFileThatIsUsedForATestInTheLongRun.ics"];
 
     var fileVersions = [2.0, 5.1, 69.9, 23.2,12.2];
 
