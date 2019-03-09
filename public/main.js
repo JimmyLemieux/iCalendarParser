@@ -41,16 +41,47 @@ $(document).ready(function() {
     var fileVersions = [2.0, 5.1, 69.9, 23.2,12.2];
 
     // So far this is working as expected, this will later use ajax calls to get JSON from my parser
-    for(var i = 0;i<fileNames.length;i++) {
-        $("#file-table-contents").append("<tr><th scope=\"row\">" + fileNames[i] + "</th><td>"+ fileVersions[i] + "</td><td>SOME ID</td><td>2</td><td>100000000000090909090990909090909090909090990909</td></tr>");
+    for(var i = 0;i<500;i++) {
+        $("#file-table-contents").append("<tr><th scope=\"row\">" + fileNames[0] + "</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>100000000000090909090990909090909090909090990909</td></tr>");
         console.log("Added to the table!");
     }
 
 
-    //Button action
-
+    //Button action for the file view panel
     $("#upload-file-btn").click(function(event) {
         event.preventDefault();
         console.log("The Event was called here!");
     });
+
+    //File drop down title changer
+
+    // Populate the drop down menu here
+
+    for(var i = 0;i<fileNames.length;i++) {
+        $(".dropdown-menu").append("<p class=\"item\">" + fileNames[i] + "</p>");
+        console.log("Called");
+    }
+
+    $(".dropdown-menu").find(".item").each(function(element) {
+        $(this).on("click", function() {
+            var newTitle = $(this).text();
+            $("#drop-title").text(newTitle);
+        });
+    });
+
+
+    // var menuItems = [];
+    // $(".dropdown-menu").find("#drop-item").each(function() {
+    //     console.log($(this).text());
+    //     menuItems.push($(this));
+    // });
+
+    // console.log(menuItems.length);
+
+    // menuItems.forEach(element => {
+    //     element.on("click", function() {
+    //         console.log("Element was clicked!");
+    //     });
+    // });
+
 });

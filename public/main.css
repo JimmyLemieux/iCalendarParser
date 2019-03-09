@@ -181,6 +181,7 @@
     max-height: 300px;
     overflow-y: scroll;
     overflow-x: scroll;
+    padding-bottom: 50px;
 }
 
 .upload-row {
@@ -193,6 +194,17 @@
     margin: 0 auto;
     text-align: center;
 }
+
+.dropdown-menu badge {
+    width: 100%;
+}
+
+#cal-dropdown {
+    position: relative;
+    float: left;
+    padding-top: 20px;
+}
+
 
 #quote {
     font-style: italic;
