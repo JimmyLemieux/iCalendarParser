@@ -1,3 +1,5 @@
+ 'use strict'
+
  const ffi = require("ffi"); //This is so the C functions can connect to our library
 
  const express = require("express"); // Express library
@@ -22,6 +24,6 @@
     res.sendFile(__dirname + '/public/index.html');
  });
 
- app.listen(8000, function(error) {
+ app.listen(32629, function(error) {
     console.log("Running on PORT 32629!");
  });
