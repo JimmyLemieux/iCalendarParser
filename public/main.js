@@ -72,7 +72,8 @@ $(document).ready(function() {
     // Adding a populater for the calendar table
 
     for(var i = 0;i<10;i++) {
-        console.log("In");
+        $("#calendar-table-contents").append("<tr><th scope=\"row\">" + fileNames[0] + "</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>100009090990909</td><td>2</td></tr>");
+        console.log("Added to the calendar part");
     }
 
 
