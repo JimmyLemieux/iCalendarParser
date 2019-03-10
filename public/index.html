@@ -107,7 +107,7 @@
                         <p class="lead"><i> Calendar Viewer</i></p>
                         <div class="btn-group" id="cal-dropdown">
                             <button class="btn btn-secondary btn-sm dropdown-toggle" id= "drop-title" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select an .ics</button>
-                            <div class="dropdown-menu">
+                            <div class="dropdown-menu" id="file-list">
                             </div>
                         </div>
                         <div class="calendar-table-section">
@@ -145,7 +145,13 @@
                     </div>
                 </div>
             </div>
-            <button type="button" id="add-button"> Primary </button>
+            <div class="btn-group dropup" id="add-button">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add</button>
+                <div class="dropdown-menu" id="add-menu-items">
+                    Create Calendar
+                    Create Event
+                </div>
+            </div>
         </div>
     </div>
 </body>

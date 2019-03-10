@@ -58,7 +58,7 @@ $(document).ready(function() {
     // Populate the drop down menu here
 
     for(var i = 0;i<fileNames.length;i++) {
-        $(".dropdown-menu").append("<p class=\"item\">" + fileNames[i] + "</p>");
+        $("#file-list").append("<p class=\"item\">" + fileNames[i] + "</p>");
     }
 
     //For the drop down table here
