@@ -42,7 +42,7 @@ $(document).ready(function() {
 
     // So far this is working as expected, this will later use ajax calls to get JSON from my parser
     for(var i = 0;i<500;i++) {
-        $("#file-table-contents").append("<tr><th scope=\"row\">" + fileNames[0] + "</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>100000000000090909090990909090909090909090990909</td></tr>");
+        $("#file-table-contents").append("<tr><th scope=\"row\">" + fileNames[0] + "</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>9</td></tr>");
         console.log("Added to the table!");
     }
 
@@ -58,7 +58,7 @@ $(document).ready(function() {
     // Populate the drop down menu here
 
     for(var i = 0;i<fileNames.length;i++) {
-        $(".dropdown-menu").append("<p class=\"item\">" + fileNames[i] + "</p>");
+        $("#file-list").append("<p class=\"item\">" + fileNames[i] + "</p>");
     }
 
     //For the drop down table here
@@ -66,16 +66,16 @@ $(document).ready(function() {
         $(this).on("click", function() {
             var newTitle = $(this).text();
             $("#drop-title").text(newTitle);
+            $("#calendar-table-contents").empty(); // Clear the table of its contents
+            $("#calendar-table-contents").append("<tr><td>" + newTitle +"</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>"); // Add the content we will get from the server and parsing
         });
     });
 
     // Adding a populater for the calendar table
-
-    for(var i = 0;i<10;i++) {
-        $("#calendar-table-contents").append("<tr><th scope=\"row\">" + fileNames[0] + "</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>100009090990909</td><td>2</td></tr>");
-        console.log("Added to the calendar part");
+    //This should actually be null at first
+    for(var i = 0;i<2;i++) {
+        $("#calendar-table-contents").append("<tr><td>2</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>");
     }
 
-
-
+    
 });
