@@ -78,11 +78,9 @@ app.get('/uploads/:name', function(req , res){
 //******************** Your code goes here ********************
 
 let sharedLib = ffi.Library('./libcal.dylib', {
-   'makeObj' : ['string', ['string']]
+   'makeObj' : ['string', ['string']],
+   'getEventListJSON' : ['string', ['string']]   
 });
-
-
-
 
 app.get('/obj', function(req,res) {
    let files = fs.readdirSync('./uploads/');
@@ -95,6 +93,14 @@ app.get('/obj', function(req,res) {
      arr[i] = sharedLib.makeObj(files[i]);
    }
    res.send(arr);
+});
+
+app.get('/eventList', function(req, res) {
+  let files = fs.readdirSync('./uploads/');
+  console.log(files[0]);
+  let response = sharedLib.getEventListJSON(files[0]);
+  res.send(response);
+
 });
 
 //Sample endpoint

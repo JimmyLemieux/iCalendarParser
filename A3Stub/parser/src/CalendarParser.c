@@ -2634,7 +2634,7 @@ void addEvent(Calendar *cal, Event *toBeAdded) {
 /* Ending the mandatory functions for the assignment */
 
 
-/*wrapper  */
+/*Wrapper Functions*/
 
 char *makeObj(char *fileName) {
 	char *fileDir = calloc(1, sizeof(char) * 1000);
@@ -2647,5 +2647,25 @@ char *makeObj(char *fileName) {
 
 	if(e != 0) return "{}";
 	return calendarToJSON(obj);
-
 }
+
+char *validateObj(char *fileName) {
+}
+
+char *getEventListJSON(char *fileName) {
+    char *fileDir = calloc(1, sizeof(char) * 1000);
+    strcpy(fileDir, "uploads/");
+    strcat(fileDir,fileName);
+    Calendar *obj;
+    ICalErrorCode e = createCalendar(fileDir, &obj);
+    if(e != 0) return "{}";
+    return eventListToJSON(obj->events);
+}
+
+char *getAlarmListJSON(char * fileName) {
+}
+
+char *getPropListJSON(char *fileName) {
+}
+
+
