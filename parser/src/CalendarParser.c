@@ -8,7 +8,7 @@
 #include <strings.h>
 #include "LinkedListAPI.h"
 #include "CalendarParser.h"
-#include "helper.c"
+#include "helper.h"
 #define D printf("debug\n")
 #define R printf("Check for Return\n")
 // #include "LinkedListAPI.h"
@@ -2536,8 +2536,8 @@ char *calendarToJSON(const Calendar *cal) {
     tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 100);
     sprintf(tempJSON, "{\"version\":%d,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", (int)cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
     //printf("JSON CALENDAR -> %s\n", tempJSON);
-    eventListToJSON(cal->events);
-   // deallocator(tempJSON);
+    //eventListToJSON(cal->events);
+    //deallocator(tempJSON);
     return tempJSON;
 }
 
@@ -2569,10 +2569,10 @@ Event *JSONtoEvent(const char *str) {
     deallocator(UIDStr);    
     event->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
     event->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
-    //deallocator(val);
-    //deallocator(event->alarms);
-    //deallocator(event->properties);
-    //deallocator(event);
+    deallocator(val);
+    // deallocator(event->alarms);
+    // deallocator(event->properties);
+    // deallocator(event);
     return event;
 }
 
@@ -2620,7 +2620,7 @@ Calendar* JSONtoCalendar(const char* str) {
     deallocator(fLeft);
     deallocator(fRight);
     deallocator((char *) str); // This is temp
-//    deleteCalendar(cal); // This is temp; 
+    //deleteCalendar(cal); // This is temp; 
 
     //JSONtoEvent("{\"UID\":\"value\"}");
     return cal;
