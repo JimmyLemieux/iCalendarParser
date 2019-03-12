@@ -77,7 +77,7 @@ app.get('/uploads/:name', function(req , res){
 
 //******************** Your code goes here ********************
 
-let sharedLib = ffi.Library('./libcal', {
+let sharedLib = ffi.Library('./libcal.dylib', {
    'makeObj' : ['string', ['string']]
 });
 
@@ -93,9 +93,7 @@ app.get('/obj', function(req,res) {
 
    for(var i =0;i<files.length;i++) {
      arr[i] = sharedLib.makeObj(files[i]);
-     console.log(arr[i]);
    }
-
    res.send(arr);
 });
 

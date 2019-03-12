@@ -41,11 +41,21 @@ $(document).ready(function() {
     var fileVersions = [2.0, 5.1, 69.9, 23.2,12.2];
 
     // So far this is working as expected, this will later use ajax calls to get JSON from my parser
-    for(var i = 0;i<500;i++) {
-        $("#file-table-contents").append("<tr><th scope=\"row\">" + fileNames[0] + "</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>9</td></tr>");
-        console.log("Added to the table!");
-    }
 
+    
+
+    $.ajax({url: "http://localhost:32629/obj",
+        dataType: 'json',
+        success: function(data) {
+            console.log(data);
+            for(var i = 0;i<data.length;i++) {
+                if(data[i] == "{}")continue;
+                var retData = JSON.parse(data[i]);
+                console.log(retData);
+                $("#file-table-contents").append("<tr><th scope=\"row\">" + "test" + "</th><td>"+ retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" +retData['numProps']+"</td><td>" + retData['numEvents'] + "</td></tr>")  
+            }
+        }
+    });
 
     //File drop down title changer
 
