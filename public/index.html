@@ -99,7 +99,10 @@
                         </div>
                         <!--Making a button that will be used to upload to the server-->
                         <!--This button will be for calling certain C functions-->
-                        <button class="btn btn-primary" id="upload-file-btn">Upload File</button>
+                        <form ref="uploadForm" id="uploadForm" action="http://localhost:32629/upload" method="post" encType="multipart/form-data">
+                            <input type="file" name="someUpload" id="upload-file-btn"/>
+                            <input type="submit" value="upload"/>
+                        </form>
                     </div>
                 </div>
             </div>
