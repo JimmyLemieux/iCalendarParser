@@ -22,9 +22,29 @@
  const portNum = process.argv[2];
 
 
+
+ let sharedLib = ffi.Library('./libcal', {
+    'makeObj' : ['string', ['string']]
+ });
+
+
+
+
+app.get('/obj', function(req,res) {
+    let files = fs.readdirSync('./uploads/');
+
+    var arr = [];
+
+    for(var i =0;i<file.length;i++) {
+      arr[i] = sharedLib.makeObj(files[i]);
+    }
+
+    res.send(arr);
+});
+
  // Obfuscating the javascript code
  // Send obfuscated JS, do not change
- 
+
  //As of right now this is not working too proper, I think it has something to do with the file paths or something like that
  //There isn't that much that is going on here
 app.get('/main.js',function(req,res){
@@ -45,7 +65,7 @@ app.get('/main.js',function(req,res){
    if(!req.files) {
      return res.status(400).send('No files were uploaded.');
    }
-  
+
    let uploadFile = req.files.someUpload;
    // Use the mv() method to place the file somewhere on your server
    uploadFile.mv('uploads/' + uploadFile.name, function(err) { // This will move the file to the server
@@ -55,7 +75,7 @@ app.get('/main.js',function(req,res){
      res.redirect('/');
    });
  });
- 
+
  //Respond to GET requests for files in the uploads/ directory
  app.get('/uploads/:name', function(req , res){
    fs.stat('uploads/' + req.params.name, function(err, stat) {
@@ -78,6 +98,6 @@ app.get('/main.js',function(req,res){
    res.send("This is an end point");
  });
 
- app.listen(32629, function(error) {
+ app.listen(portNum, function(error) {
     console.log("Running on PORT 32629!");
  });

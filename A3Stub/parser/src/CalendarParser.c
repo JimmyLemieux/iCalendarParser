@@ -89,7 +89,7 @@ char* printEvent(void *toBePrinted) {
   //  printf("The DTSTAMP is %s\n",tempDTStamp);
     deallocator(tempDTStamp); // Dont need this anymore
 
-    
+
 
     char *tempDTStart = calloc(1, sizeof(char) * 100);
 
@@ -120,7 +120,7 @@ char* printEvent(void *toBePrinted) {
     if(tempEvent->startDateTime.UTC) {
         strcat(tempDTStart, "Z\r\n");
     } else {
-        strcat(tempDTStart, "\r\n"); 
+        strcat(tempDTStart, "\r\n");
     }
 
 //    temp = calloc(1, sizeof(char) * (500));
@@ -1598,7 +1598,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                             return INV_DT;
                         }
 
-                        
+
                         time[strlen(time) - 1] = '\0';
                         new_event->startDateTime.UTC = true;
                     } else {
@@ -1671,7 +1671,7 @@ ICalErrorCode fetchCalEvents(Calendar *obj, char **lines,int arraySize) {
                         free(new_event);
                         return INV_DT;
                     }
-        
+
                     if(containsChar(time,'Z')) {
                         if(strlen(time) != 7) {
                             deallocator(date);
@@ -2214,12 +2214,12 @@ ICalErrorCode validateCalendarRequired(const Calendar *obj) {
             return INV_CAL;
         }
 
-        /* If any of the required properties appear in the calendar props for some reason? */ 
+        /* If any of the required properties appear in the calendar props for some reason? */
 
         /* this would mean that there is a duplicate in the properties */
         if(strcasecmp(calProp->propName, "VERSION") == 0 || strcasecmp(calProp->propName, "PRODID") == 0) {
             return INV_CAL;
-        } 
+        }
         /* The only properties the cal can have are these properties */
         /* The question is, can these props appear more than once? */
         if(strcasecmp(calProp->propName, "CALSCALE") != 0 && strcasecmp(calProp->propName, "METHOD") != 0) {
@@ -2309,8 +2309,8 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
             }
 
             /* Handle all of the properties that can only appear once in the event scope */
-            if(strcasecmp(eventProperty->propName, "CLASS") == 0 || strcasecmp(eventProperty->propName, "CREATED") == 0 || strcasecmp(eventProperty->propName, "DESCRIPTION") == 0 
-            || strcasecmp(eventProperty->propName, "GEO") == 0 || strcasecmp(eventProperty->propName, "LAST-MODIFIED") == 0 || strcasecmp(eventProperty->propName, "LOCATION") == 0 || strcasecmp(eventProperty->propName, "ORGANIZER") == 0 
+            if(strcasecmp(eventProperty->propName, "CLASS") == 0 || strcasecmp(eventProperty->propName, "CREATED") == 0 || strcasecmp(eventProperty->propName, "DESCRIPTION") == 0
+            || strcasecmp(eventProperty->propName, "GEO") == 0 || strcasecmp(eventProperty->propName, "LAST-MODIFIED") == 0 || strcasecmp(eventProperty->propName, "LOCATION") == 0 || strcasecmp(eventProperty->propName, "ORGANIZER") == 0
             || strcasecmp(eventProperty->propName, "PRIORITY") == 0 || strcasecmp(eventProperty->propName, "SEQUENCE") == 0 || strcasecmp(eventProperty->propName, "STATUS") == 0 || strcasecmp(eventProperty->propName, "SUMMARY") == 0
             || strcasecmp(eventProperty->propName, "TRANSP") == 0 || strcasecmp(eventProperty->propName,"URL") == 0 || strcasecmp(eventProperty->propName, "RECURRENCE-ID") == 0  || strcasecmp(eventProperty->propName, "DTEND") == 0 || strcasecmp(eventProperty->propName, "DURATION") == 0
             ) {
@@ -2320,7 +2320,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                 if(strcasecmp(eventProperty->propName, "DTEND") != 0 && strcasecmp(eventProperty->propName, "DURATION") != 0) {
                     if(findDupeEventProps(listEvent, eventProperty) > 1) {
                         return INV_EVENT;
-                    } 
+                    }
                 }
 
                 if(strcasecmp(eventProperty->propName, "DTEND") == 0) {
@@ -2330,8 +2330,8 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                         return INV_EVENT;
                     }
                     strcpy(searchString, "\0");
-                }  
-                
+                }
+
                 if(strcasecmp(eventProperty->propName, "DURATION") == 0) {
                     strcpy(searchString, "DTEND");
                     if(findElement(listEvent->properties, &comparePropName, searchString)) {
@@ -2340,7 +2340,7 @@ ICalErrorCode validateCalendarEventRequired(const Calendar *obj) {
                 }
             } else if(strcasecmp(eventProperty->propName, "ATTENDEE") != 0 && strcasecmp(eventProperty->propName, "COMMENT") != 0 && strcasecmp(eventProperty->propName, "CATEGORIES") != 0 // These are the properties that can appear multiple times
             && strcasecmp(eventProperty->propName, "CONTACT") != 0 && strcasecmp(eventProperty->propName, "EXDATE") != 0 && strcasecmp(eventProperty->propName, "REQUEST-STATUS") != 0
-            && strcasecmp(eventProperty->propName, "RELATED-TO") != 0 && strcasecmp(eventProperty->propName, "RESOURCES") != 0 && strcasecmp(eventProperty->propName, "RDATE") != 0 
+            && strcasecmp(eventProperty->propName, "RELATED-TO") != 0 && strcasecmp(eventProperty->propName, "RESOURCES") != 0 && strcasecmp(eventProperty->propName, "RDATE") != 0
             && strcasecmp(eventProperty->propName, "ATTACH") != 0 && strcasecmp(eventProperty->propName, "RRULE") != 0) {
                 return INV_EVENT;
             }
@@ -2375,7 +2375,7 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
 
             if(strcasecmp(newAlarm->action, "AUDIO") != 0) return INV_ALARM;
 
-            
+
             ListIterator alarmPropsIter = createIterator(newAlarm->properties);
             while((alarmProps = nextElement(&alarmPropsIter)) != NULL) {
                 Property *alarmProperty = (Property*)alarmProps;
@@ -2392,7 +2392,7 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
 
                 //These are the propeties that can appear only once
                 if(strcasecmp(alarmProperty->propName, "DURATION") == 0 || strcasecmp(alarmProperty->propName, "REPEAT") == 0 || strcasecmp(alarmProperty->propName, "ATTACH") == 0) {
-                    
+
                     //If this occurrs so must the repeat prop
                     if(strcasecmp(alarmProperty->propName, "DURATION") == 0) {
                         strcpy(searchString, "REPEAT");
@@ -2427,7 +2427,7 @@ ICalErrorCode validateCalendarAlarmProps(const Calendar *obj) {
 /* More validation of the calendar, including DT and properties */
 ICalErrorCode validateCalendar(const Calendar* obj) {
     ICalErrorCode error;
- 
+
     error = validateCalendarRequired(obj);
 
     if(error != 0) {
@@ -2447,7 +2447,7 @@ ICalErrorCode validateCalendar(const Calendar* obj) {
 
 
 char *dtToJSON(DateTime prop) {
-    char *tempDateJSON = calloc(1, sizeof(char) * (strlen(prop.date) + strlen(prop.time)) + 100); 
+    char *tempDateJSON = calloc(1, sizeof(char) * (strlen(prop.date) + strlen(prop.time)) + 100);
     char *b = calloc(1, sizeof(char) * 6);
     prop.UTC ? strcpy(b,"true") : strcpy(b,"false");
     sprintf(tempDateJSON, "{\"date\":\"%s\",\"time\":\"%s\",\"isUTC\":%s}",prop.date,prop.time,b);
@@ -2484,7 +2484,7 @@ char *eventToJSON(const Event *event) {
     sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"%s\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms), summaryValue);
     deallocator(summaryValue);
     deallocator(tempDTJSON);
-    return tempEventJSON;   
+    return tempEventJSON;
 }
 
 
@@ -2504,9 +2504,9 @@ char *eventListToJSON(const List *eventList) {
     strcpy(tempListJSON, "[");
 
 
-    ListIterator eventIter = createIterator((List *)eventList);   
+    ListIterator eventIter = createIterator((List *)eventList);
 
-    while((event = nextElement(&eventIter)) != NULL) {   
+    while((event = nextElement(&eventIter)) != NULL) {
         Event *listEvent = (Event *)event;
 
         char *eventJSON = eventToJSON(listEvent); //This will need to be freed
@@ -2515,7 +2515,7 @@ char *eventListToJSON(const List *eventList) {
         strcat(tempListJSON, eventJSON);
         deallocator(eventJSON);
         count++;
-    } 
+    }
 
     strcat(tempListJSON,"]");
 
@@ -2553,7 +2553,7 @@ Event *JSONtoEvent(const char *str) {
     splitByFirstOccurence((char *)str, left , val, ':');
     deallocator(left);
 
-    char *rmVal = removeFirstChar(val); 
+    char *rmVal = removeFirstChar(val);
 
     //Remove the last two values
     /* This is the error, returning instance of new pointer so can't be freed */
@@ -2566,7 +2566,7 @@ Event *JSONtoEvent(const char *str) {
 
     deallocator(rmVal);
     strcpy(event->UID, UIDStr);
-    deallocator(UIDStr);    
+    deallocator(UIDStr);
     event->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
     event->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
     deallocator(val);
@@ -2595,7 +2595,7 @@ Calendar* JSONtoCalendar(const char* str) {
     splitByFirstOccurence(right,nextLeft,nextRight, ',');
 
     char *idLeft = calloc(1, sizeof(char) * strlen(left) + 200);
-    char *idRight = calloc(1, sizeof(char) * strlen(right) + 200); 
+    char *idRight = calloc(1, sizeof(char) * strlen(right) + 200);
 
     splitByFirstOccurence(nextRight, idLeft, idRight, ':');
 
@@ -2605,7 +2605,7 @@ Calendar* JSONtoCalendar(const char* str) {
     char *fRight = calloc(1,sizeof(char) * (strlen(right)) + 200);
 
     splitByFirstOccurence(rmIdRight, fLeft, fRight, '"');
-    
+
     strcpy(cal->prodID, fLeft);
     version = atof(nextLeft);
     cal->version = version;
@@ -2620,7 +2620,7 @@ Calendar* JSONtoCalendar(const char* str) {
     deallocator(fLeft);
     deallocator(fRight);
     deallocator((char *) str); // This is temp
-    //deleteCalendar(cal); // This is temp; 
+    //deleteCalendar(cal); // This is temp;
 
     //JSONtoEvent("{\"UID\":\"value\"}");
     return cal;
@@ -2632,3 +2632,20 @@ void addEvent(Calendar *cal, Event *toBeAdded) {
 }
 
 /* Ending the mandatory functions for the assignment */
+
+
+/*wrapper  */
+
+char *makeObj(char *fileName) {
+	char *fileDir = calloc(1, sizeof(char) * 1000);
+	strcpy(fileDir, "uploads/");
+
+	strcat(fileDir, fileName);
+
+	Calendar *obj;
+	ICalErrorCode e = createCalendar(fileDir, &obj);
+
+	if(e != 0) return "{}";
+	return calendarToJSON(obj);
+
+}
