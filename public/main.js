@@ -47,12 +47,6 @@ $(document).ready(function() {
     }
 
 
-    //Button action for the file view panel
-    $("#upload-file-btn").click(function(event) {
-        event.preventDefault();
-        console.log("The Event was called here!");
-    });
-
     //File drop down title changer
 
     // Populate the drop down menu here
@@ -76,6 +70,4 @@ $(document).ready(function() {
     for(var i = 0;i<2;i++) {
         $("#calendar-table-contents").append("<tr><td>2</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>");
     }
-
-    
 });
