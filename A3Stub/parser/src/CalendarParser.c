@@ -2476,14 +2476,14 @@ char *eventToJSON(const Event *event) {
         Property *tempProp = (Property *)sumProp;
         summaryValue = calloc(1, sizeof(char) * (strlen(tempProp->propDescr)) + 10);
         strcpy(summaryValue, tempProp->propDescr);
+        tempEventJSON = realloc(tempEventJSON, sizeof(char) * strlen(summaryValue) + 1500);
     } else {
         summaryValue = calloc(1, sizeof(char) * 3);
         strcpy(summaryValue, "");
     }
 
+
     sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"%s\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms), summaryValue);
-    deallocator(summaryValue);
-    deallocator(tempDTJSON);
     return tempEventJSON;
 }
 
@@ -2508,18 +2508,15 @@ char *eventListToJSON(const List *eventList) {
 
     while((event = nextElement(&eventIter)) != NULL) {
         Event *listEvent = (Event *)event;
-
         char *eventJSON = eventToJSON(listEvent); //This will need to be freed
-        tempListJSON = realloc(tempListJSON, sizeof(char) * strlen(eventJSON) + strlen(tempListJSON) + 10);
+        tempListJSON = realloc(tempListJSON, sizeof(char) * strlen(eventJSON) + strlen(tempListJSON) + 100);
         if(count < listLength - 1)strcat(eventJSON, ",");
         strcat(tempListJSON, eventJSON);
         deallocator(eventJSON);
-        count++;
+        count++;    
     }
 
-    strcat(tempListJSON,"]");
-
-    //deallocator(tempListJSON);
+    strcat(tempListJSON, "]");
     return tempListJSON;
 }
 
@@ -2533,11 +2530,8 @@ char *calendarToJSON(const Calendar *cal) {
         return "{}";
     }
     tempJSON = calloc(1, sizeof(char) * 200);
-    tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 100);
+    tempJSON = realloc(tempJSON, sizeof(char) * (strlen(cal->prodID)) + 10000);
     sprintf(tempJSON, "{\"version\":%d,\"prodID\":\"%s\",\"numProps\":%d,\"numEvents\":%d}", (int)cal->version,cal->prodID,2+getLength(cal->properties), getLength(cal->events));
-    //printf("JSON CALENDAR -> %s\n", tempJSON);
-    //eventListToJSON(cal->events);
-    //deallocator(tempJSON);
     return tempJSON;
 }
 
@@ -2570,9 +2564,6 @@ Event *JSONtoEvent(const char *str) {
     event->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
     event->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
     deallocator(val);
-    // deallocator(event->alarms);
-    // deallocator(event->properties);
-    // deallocator(event);
     return event;
 }
 
@@ -2650,22 +2641,32 @@ char *makeObj(char *fileName) {
 }
 
 char *validateObj(char *fileName) {
+    return NULL;
 }
 
-char *getEventListJSON(char *fileName) {
+
+char *eventJSONWrapper(char * fileName) {
     char *fileDir = calloc(1, sizeof(char) * 1000);
     strcpy(fileDir, "uploads/");
-    strcat(fileDir,fileName);
+
+    strcat(fileDir, fileName);
     Calendar *obj;
     ICalErrorCode e = createCalendar(fileDir, &obj);
     if(e != 0) return "{}";
+
+    e = validateCalendar(obj);
+
+    if(e != 0) return "{}";
+
     return eventListToJSON(obj->events);
 }
 
 char *getAlarmListJSON(char * fileName) {
+    return NULL;
 }
 
 char *getPropListJSON(char *fileName) {
+    return NULL;
 }
 
 

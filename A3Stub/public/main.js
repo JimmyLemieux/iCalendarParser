@@ -36,33 +36,46 @@ $(document).ready(function() {
     //Start to fill in the array values to the table
     //Some testing data will be used for inserting into the table
 
-    var fileNames = ["Another.ics", "AnotherFile.ics", "SomeThing.ics", "MegaFile.ics", "HereIsAnotherFile.ics", "SomeReallyBigFileThatIsUsedForATestInTheLongRun.ics"];
-
-    var fileVersions = [2.0, 5.1, 69.9, 23.2,12.2];
-
+    var fileNames = [];
     // So far this is working as expected, this will later use ajax calls to get JSON from my parser
+    // $.ajax({url: "http://localhost:32628/fileNames",
+    //     dataTyoe: 'json',
+    //     success: function(data) {
+    //         for(var i = 0;i<data.length;i++) {
+    //             // console.log(data[i]);
+    //         }
+    //     }
+    // });
 
-    
 
     $.ajax({url: "http://localhost:32629/obj",
         dataType: 'json',
         success: function(data) {
-            console.log(data);
             for(var i = 0;i<data.length;i++) {
                 if(data[i] == "{}")continue;
                 var retData = JSON.parse(data[i]);
-                console.log(retData);
                 $("#file-table-contents").append("<tr><th scope=\"row\">" + "test" + "</th><td>"+ retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" +retData['numProps']+"</td><td>" + retData['numEvents'] + "</td></tr>")  
             }
         }
     });
 
-    //File drop down title changer
 
+    $("#uploadForm").on('submit', function(e) {
+        $.ajax({url: "http://localhost:32629/upload",
+            type: "POST",
+            success: function(data, textStatus, xhr) {
+                console.log(textStatus);
+            }
+        });
+
+        console.log("Here"); 
+    });
+
+    //File drop down title changer
     // Populate the drop down menu here
 
     for(var i = 0;i<fileNames.length;i++) {
-        $("#file-list").append("<p class=\"item\">" + fileNames[i] + "</p>");
+        $("#file-list").append("<p class=\"item\">Here</p>");
     }
 
     //For the drop down table here
@@ -71,13 +84,13 @@ $(document).ready(function() {
             var newTitle = $(this).text();
             $("#drop-title").text(newTitle);
             $("#calendar-table-contents").empty(); // Clear the table of its contents
-            $("#calendar-table-contents").append("<tr><td>" + newTitle +"</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>"); // Add the content we will get from the server and parsing
+            $("#calendar-table-contents").append("<tr><td>" + newTitle +"</th><td>here</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>"); // Add the content we will get from the server and parsing
         });
     });
 
     // Adding a populater for the calendar table
     //This should actually be null at first
     for(var i = 0;i<2;i++) {
-        $("#calendar-table-contents").append("<tr><td>2</th><td>"+ fileVersions[0] + "</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>");
+        $("#calendar-table-contents").append("<tr><td>2</th><td>Here</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>");
     }
 });

@@ -26,6 +26,13 @@ const portNum = process.argv[2];
 
  app.use(express.static(path.join(__dirname, 'uploads')));
 
+
+let sharedLib = ffi.Library('./libcal.dylib', {
+  'makeObj' : ['string', ['string']],
+  'eventJSONWrapper' : ['string', ['string']]   
+});
+
+
 app.get('/',function(req,res){
   res.sendFile(path.join(__dirname+'/public/index.html'));
 });
@@ -50,9 +57,9 @@ app.post('/upload', function(req, res) {
   if(!req.files) {
     return res.status(400).send('No files were uploaded.');
   }
-
+ 
   let uploadFile = req.files.uploadFile;
-
+ 
   // Use the mv() method to place the file somewhere on your server
   uploadFile.mv('uploads/' + uploadFile.name, function(err) {
     if(err) {
@@ -62,6 +69,8 @@ app.post('/upload', function(req, res) {
     res.redirect('/');
   });
 });
+
+
 
 //Respond to GET requests for files in the uploads/ directory
 app.get('/uploads/:name', function(req , res){
@@ -77,31 +86,28 @@ app.get('/uploads/:name', function(req , res){
 
 //******************** Your code goes here ********************
 
-let sharedLib = ffi.Library('./libcal.dylib', {
-   'makeObj' : ['string', ['string']],
-   'getEventListJSON' : ['string', ['string']]   
-});
+
 
 app.get('/obj', function(req,res) {
    let files = fs.readdirSync('./uploads/');
-
    var arr = [];
-
-   console.log(files);
-
    for(var i =0;i<files.length;i++) {
      arr[i] = sharedLib.makeObj(files[i]);
    }
+   //Sending the json from server to client side of the application
    res.send(arr);
 });
 
 app.get('/eventList', function(req, res) {
   let files = fs.readdirSync('./uploads/');
-  console.log(files[0]);
-  let response = sharedLib.getEventListJSON(files[0]);
-  res.send(response);
+  let arr = [];
+  for(var i = 0;i<files.length;i++) {
+    arr[i] = sharedLib.eventJSONWrapper(files[i]);
+  }
+  res.send(arr);
 
 });
+
 
 //Sample endpoint
 app.get('/someendpoint', function(req , res){
