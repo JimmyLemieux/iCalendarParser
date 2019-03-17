@@ -1,31 +1,19 @@
 {
-  "name": "2750",
+  "name": "a3",
   "version": "1.0.0",
-  "description": "",
+  "description": "CIS2750 W18 - A3",
   "main": "app.js",
   "scripts": {
-    "test": "runner"
+    "dev": "nodemon app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JimmyLemieux/iCalendarParser.git"
-  },
-  "author": "J",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/JimmyLemieux/iCalendarParser/issues"
-  },
-  "homepage": "https://github.com/JimmyLemieux/iCalendarParser#readme",
   "dependencies": {
-    "express": "^4.16.4",
-    "express-fileupload": "^1.1.1-alpha.3",
-    "ffi": "^2.3.0",
-    "javascript-obfuscator": "^0.18.1",
-    "nodemon": "^1.18.10",
-    "run": "^1.4.0",
-    "server": "^1.0.18"
-  },
-  "devDependencies": {
-    "webpack-dev-server": "^3.2.1"
+    "express": "^4.16.2",
+    "express-fileupload": "^0.4.0",
+    "ffi": "^2.2.0",
+    "http": "0.0.0",
+    "javascript-obfuscator": "^0.14.3",
+    "nodemon": "^1.18.10"
   }
 }
