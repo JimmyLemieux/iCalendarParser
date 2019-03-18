@@ -2520,31 +2520,53 @@ char *eventListToJSON(const List *eventList) {
     return tempListJSON;
 }
 
+char *propToJSON(const Property *prop) {
+    if(prop == NULL) {
+        return "{}";
+    }
+    char *tempProp = calloc(1, sizeof(char) * (strlen(prop->propDescr) + strlen(prop->propName) + 1000));
+    sprintf(tempProp, "{name:\"%s\",description:\"%s\"}", prop->propName, prop->propDescr);
+    return tempProp;
+}
+
+char *propListToJSON(const List *propList) {
+    if(propList == NULL) {
+        return "[]";
+    }
+
+    int lengthList = getLength((List *)propList);
+    int count = 0;
+    char *tempListJSON = calloc(1, sizeof(char) * 10);
+
+    strcat(tempListJSON, "[");
+
+    ListIterator propIter = createIterator((List *)propList);
+
+    void *prop;
+
+    while((prop = nextElement(&propIter)) != NULL) {
+        Property *listProp = (Property *)prop;
+        char *propJSON = propToJSON(listProp);
+        tempListJSON = realloc(tempListJSON, sizeof(char) * (strlen(propJSON)) + 1000);
+        if(count < lengthList - 1) strcat(propJSON, ",");
+        count++;
+        strcat(tempListJSON, propJSON);
+    }
+    strcat(tempListJSON, "]");
+    return tempListJSON;
+}
+
 
 char *alarmToJSON(const Alarm *alarm) {
+
+    //Just show action trigger and num of props
     if(alarm == NULL || alarm->properties == NULL) {
         return "{}";
     }
-
-    void *sumProp = NULL;
-
-    char *summaryValue;
     char *tempAlarmJSON = calloc(1, sizeof(char) * (strlen(alarm->trigger) + strlen(alarm->action)) + 1000);
-
-    sumProp = findElement(event->properties, &comparePropName, "SUMMARY");
-
-    if(sumProp) {
-        Property *tempProp = (Property *)sumProp;
-        summaryValue = calloc(1, sizeof(char) * (strlen(tempProp->propDescr)) + 10);
-        strcpy(summaryValue, tempProp->propDescr);
-        tempEventJSON = realloc(tempEventJSON, sizeof(char) * strlen(summaryValue) + 1500);
-    } else {
-        summaryValue = calloc(1, sizeof(char) * 3);
-        strcpy(summaryValue, "");
-    }
-
-    sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"%s\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms), summaryValue);
-
+    //Need to make a property to JSON function that will convert everything to JSON for the properties
+    sprintf(tempAlarmJSON, "{action:\"%s\",trigger:\"%s\",numProps:%d}", alarm->action, alarm->trigger, 2+getLength(alarm->properties));
+    return tempAlarmJSON;
 }
  
 
@@ -2553,21 +2575,30 @@ char *alarmListToJSON(const List *alarmList) {
         return "[]";
     }
 
+    int listLength = getLength((List *)alarmList);
+
+    char *tempAlarmList = calloc(1, sizeof(char) * 10);
+    strcat(tempAlarmList, "[");
     int count = 0;
     void *event;
     ListIterator eventIter = createIterator((List *) alarmList);
-
     while((event = nextElement(&eventIter)) != NULL) {
         void *alarm;
         Event *listEvent = event;
         ListIterator alarmIter = createIterator(listEvent->alarms);
         while((alarm = nextElement(&alarmIter)) != NULL) {
             Alarm *listAlarm = alarm;
-            //Make an alarm to JSON
-
-
+            char *alarmJSON = alarmToJSON(listAlarm);
+            if(count < listLength - 1)strcat(alarmJSON, ",");
+            tempAlarmList = realloc(tempAlarmList, sizeof(char) * (strlen(listAlarm->action) + strlen(listAlarm->trigger) + 1000));
+            strcat(tempAlarmList, alarmJSON);
+            count++;
         }
     }
+    strcat(tempAlarmList, "]");
+
+    printf("%s\n", tempAlarmList);
+    return tempAlarmList;
 
 }
 
