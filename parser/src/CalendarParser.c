@@ -2521,6 +2521,57 @@ char *eventListToJSON(const List *eventList) {
 }
 
 
+char *alarmToJSON(const Alarm *alarm) {
+    if(alarm == NULL || alarm->properties == NULL) {
+        return "{}";
+    }
+
+    void *sumProp = NULL;
+
+    char *summaryValue;
+    char *tempAlarmJSON = calloc(1, sizeof(char) * (strlen(alarm->trigger) + strlen(alarm->action)) + 1000);
+
+    sumProp = findElement(event->properties, &comparePropName, "SUMMARY");
+
+    if(sumProp) {
+        Property *tempProp = (Property *)sumProp;
+        summaryValue = calloc(1, sizeof(char) * (strlen(tempProp->propDescr)) + 10);
+        strcpy(summaryValue, tempProp->propDescr);
+        tempEventJSON = realloc(tempEventJSON, sizeof(char) * strlen(summaryValue) + 1500);
+    } else {
+        summaryValue = calloc(1, sizeof(char) * 3);
+        strcpy(summaryValue, "");
+    }
+
+    sprintf(tempEventJSON, "{\"startDT\":%s,\"numProps\":%d,\"numAlarms\":%d,\"summary\":\"%s\"}", tempDTJSON, 3+getLength(event->properties), getLength(event->alarms), summaryValue);
+
+}
+ 
+
+char *alarmListToJSON(const List *alarmList) {
+    if(alarmList == NULL) {
+        return "[]";
+    }
+
+    int count = 0;
+    void *event;
+    ListIterator eventIter = createIterator((List *) alarmList);
+
+    while((event = nextElement(&eventIter)) != NULL) {
+        void *alarm;
+        Event *listEvent = event;
+        ListIterator alarmIter = createIterator(listEvent->alarms);
+        while((alarm = nextElement(&alarmIter)) != NULL) {
+            Alarm *listAlarm = alarm;
+            //Make an alarm to JSON
+
+
+        }
+    }
+
+}
+
+
 
 /* This takes the calendar arguments and converts them into a json object, that is just for the top level of the calendar */
 char *calendarToJSON(const Calendar *cal) {
