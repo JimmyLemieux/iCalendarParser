@@ -59,7 +59,7 @@ app.post('/upload', function(req, res) {
     return res.status(400).send('No files were uploaded.');
   }
  
-  let uploadFile = req.files.uploadFile;
+  let uploadFile = req.files.someUpload;
  
   // Use the mv() method to place the file somewhere on your server
   uploadFile.mv('uploads/' + uploadFile.name, function(err) {
