@@ -2570,6 +2570,7 @@ char *alarmToJSON(const Alarm *alarm) {
 }
  
 
+//I have to re write this to take in just an object and loop over all events and alarms and put it into a JSON string
 char *alarmListToJSON(const List *alarmList) {
     if(alarmList == NULL) {
         return "[]";
@@ -2715,14 +2716,14 @@ char *eventJSONWrapper(char * fileName) {
     return eventListToJSON(obj->events);
 }
 
-char *getAlarmListJSON(char * fileName) {
+char *alarmJSONWrapper(char * fileName) {
     char *fileDir = calloc(1, sizeof(char) * 1000);
     strcpy(fileDir, "uploads/"); 
     strcat(fileDir, fileName);
     Calendar * obj;
     ICalErrorCode e = createCalendar(fileDir, &obj);
     if(e != 0) return "{}";
-    return NULL;
+    return alarmListToJSON(obj);
 }
 
 char *getPropListJSON(char *fileName) {

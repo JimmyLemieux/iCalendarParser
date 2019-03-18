@@ -13,7 +13,6 @@ $(document).ready(function() {
     });
 
     navObjs.forEach(element => {
-        console.log(element.width + " " + element.height);
         var navItemObj = element.objRef;
         navItemObj.on("mouseenter", function() {
             $(this).animate({fontSize: 25}, 100);
@@ -38,7 +37,6 @@ $(document).ready(function() {
         async: false,
         success: function(data) {
             for(var i = 0;i<data.length;i++) {
-                console.log(data[i]);
                 var retData = JSON.parse(data[i]);
                 if(!retData["isValid"]) continue;
                 $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"http://localhost:32629/uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>"+ retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" +retData['numProps']+"</td><td>" + retData['numEvents'] + "</td></tr>");
@@ -54,7 +52,6 @@ $(document).ready(function() {
             var newTitle = $(this).text();
 
             //We are going to parse the event list contents and then put them into the table
-            
             // Make an ajax call to our parser and then do what you do
             let url = "http://localhost:32629/eventList/" + newTitle;
             $.ajax({
@@ -62,13 +59,23 @@ $(document).ready(function() {
                 dataType: 'json',
                 async: false,
                 success: function(data) {
-                    console.log(data);
                     $("#calendar-table-contents").empty(); // Clear the table of its contents
                     for(var i = 0;i<data.length;i++) {
                         $("#calendar-table-contents").append("<tr><td>" + (i+1) +"</th><td>" + data[i]["startDT"]["date"] + "</td><td>" + data[i]["startDT"]["time"] +"</td><td>" + data[i]["summary"] + "</td><td>" + data[i]["numProps"] + "</td><td>" + data[i]["numAlarms"] + "</td></tr>"); // Add the content we will get from the server and parsing
                     }
 
                 }
+            });
+
+            var alarmURL = "http://localhost:32629/alarmList/" + newTitle;
+            $.ajax({
+                url: alarmURL,
+                dataType: 'json',
+                async: false,
+                success: function(data) {
+                    //console.log(data);
+                }
+
             });
             $("#drop-title").text(newTitle);
         });
