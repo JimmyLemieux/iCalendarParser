@@ -2574,29 +2574,20 @@ char *alarmListToJSON(const List *alarmList) {
     if(alarmList == NULL) {
         return "[]";
     }
-
     int listLength = getLength((List *)alarmList);
-
     char *tempAlarmList = calloc(1, sizeof(char) * 10);
     strcat(tempAlarmList, "[");
     int count = 0;
-    void *event;
+    void *alarm;
     ListIterator eventIter = createIterator((List *) alarmList);
-    while((event = nextElement(&eventIter)) != NULL) {
-        void *alarm;
-        Event *listEvent = event;
-        ListIterator alarmIter = createIterator(listEvent->alarms);
-        while((alarm = nextElement(&alarmIter)) != NULL) {
-            Alarm *listAlarm = alarm;
-            char *alarmJSON = alarmToJSON(listAlarm);
-            if(count < listLength - 1)strcat(alarmJSON, ",");
-            tempAlarmList = realloc(tempAlarmList, sizeof(char) * (strlen(listAlarm->action) + strlen(listAlarm->trigger) + 1000));
-            strcat(tempAlarmList, alarmJSON);
-            count++;
-        }
+    while((alarm = nextElement(&eventIter)) != NULL) {
+        Alarm *listAlarm = (Alarm *)alarm;
+        char *alarmJSON = alarmToJSON(listAlarm);
+        tempAlarmList = realloc(tempAlarmList, sizeof(char) * (strlen(listAlarm->action) + strlen(listAlarm->trigger) + 1000));
+        if(count < listLength - 1) strcat(alarmJSON, ",");
+        strcat(tempAlarmList, alarmJSON);
     }
     strcat(tempAlarmList, "]");
-
     printf("%s\n", tempAlarmList);
     return tempAlarmList;
 
@@ -2678,11 +2669,9 @@ Calendar* JSONtoCalendar(const char* str) {
     char *fRight = calloc(1,sizeof(char) * (strlen(right)) + 200);
 
     splitByFirstOccurence(rmIdRight, fLeft, fRight, '"');
-
     strcpy(cal->prodID, fLeft);
     version = atof(nextLeft);
     cal->version = version;
-
     deallocator(left);
     deallocator(right);
     deallocator(nextLeft);
@@ -2693,31 +2682,20 @@ Calendar* JSONtoCalendar(const char* str) {
     deallocator(fLeft);
     deallocator(fRight);
     deallocator((char *) str); // This is temp
-    //deleteCalendar(cal); // This is temp;
-
-    //JSONtoEvent("{\"UID\":\"value\"}");
     return cal;
 }
-
 void addEvent(Calendar *cal, Event *toBeAdded) {
     if(toBeAdded == NULL || cal == NULL) return;
     insertBack(cal->events, toBeAdded);
 }
-
 /* Ending the mandatory functions for the assignment */
-
-
 /*Wrapper Functions*/
-
 char *makeObj(char *fileName) {
 	char *fileDir = calloc(1, sizeof(char) * 1000);
 	strcpy(fileDir, "uploads/");
-
 	strcat(fileDir, fileName);
-
 	Calendar *obj;
 	ICalErrorCode e = createCalendar(fileDir, &obj);
-
 	if(e != 0) return "{}";
 	return calendarToJSON(obj);
 }
@@ -2725,31 +2703,22 @@ char *makeObj(char *fileName) {
 char *validateObj(char *fileName) {
     return NULL;
 }
-
-
 char *eventJSONWrapper(char * fileName) {
     char *fileDir = calloc(1, sizeof(char) * 1000);
     strcpy(fileDir, "uploads/");
-
     strcat(fileDir, fileName);
     Calendar *obj;
     ICalErrorCode e = createCalendar(fileDir, &obj);
     if(e != 0) return "{}";
-
     e = validateCalendar(obj);
-
     if(e != 0) return "{}";
-
     return eventListToJSON(obj->events);
 }
 
 char *getAlarmListJSON(char * fileName) {
-
     char *fileDir = calloc(1, sizeof(char) * 1000);
     strcpy(fileDir, "uploads/"); 
-
     strcat(fileDir, fileName);
-
     Calendar * obj;
     ICalErrorCode e = createCalendar(fileDir, &obj);
     if(e != 0) return "{}";
@@ -2757,5 +2726,11 @@ char *getAlarmListJSON(char * fileName) {
 }
 
 char *getPropListJSON(char *fileName) {
+    char *fileDir = calloc(1, sizeof(char) * 1000);
+    strcpy(fileDir, "uploads/");
+    strcat(fileDir, fileName);
+    Calendar *obj;
+    ICalErrorCode e = createCalendar(fileDir, &obj); 
+    if(e != 0) return "{}";
     return NULL;
 }

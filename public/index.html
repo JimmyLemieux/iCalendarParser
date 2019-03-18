@@ -99,7 +99,7 @@
                         </div>
                         <!--Making a button that will be used to upload to the server-->
                         <!--This button will be for calling certain C functions-->
-                        <form ref="uploadForm" id="uploadForm" action="https://localhost:8800/upload" method="POST" enctype=multipart/form-data>
+                        <form ref="uploadForm" id="uploadForm" action="https://localhost:32626/upload" method="POST" enctype=multipart/form-data>
                             <input type="file" name="someUpload" id="upload-file-btn"/>
                             <input type="submit" value="upload"/>
                         </form>
@@ -116,21 +116,82 @@
                             <div class="dropdown-menu" id="file-list">
                             </div>
                         </div>
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#main-event-table">Main Events</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#event-properties-table">Event Properties</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#main-alarm-table">Main Alarm</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#alarm-properties-table">Alarm Properties</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#calendar-properties-table">Calendar Properties</a></li>
+                        </ul>
                         <div class="calendar-table-section">
                             <div class ="calendar-table-view">
-                                <table class= "table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Event No </th>
-                                            <th scope="col"> Start date </th>
-                                            <th scope="col"> Start time </th>
-                                            <th scope="col"> Summary </th>
-                                            <th scope="col"> Props </th>
-                                            <th scope="col"> Alarms </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="calendar-table-contents"></tbody>
-                                </table>
+                                <div id="main-event-table" class="tab-pane fade active">
+                                    <table class= "table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"> Event No </th>
+                                                <th scope="col"> Start date </th>
+                                                <th scope="col"> Start time </th>
+                                                <th scope="col"> Summary </th>
+                                                <th scope="col"> Props </th>
+                                                <th scope="col"> Alarms </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="calendar-table-contents"></tbody>
+                                    </table>
+                                </div>
+                                <div id="event-properties-table" class="tab-pane fade">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"> Alarm No </th>
+                                                <th scope="col"> Action </th>
+                                                <th scope="col"> Trigger </th>
+                                                <th scope="col"> Property Number </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="event-properties-table-contents"></tbody>
+                                    </table>
+                                </div>
+                                <div id="main-alarm-table" class="tab-pane fade">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"> Alarm No </th>
+                                                <th scope="col"> Action </th>
+                                                <th scope="col"> Trigger </th>
+                                                <th scope="col"> Property Number </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="event-properties-table-contents"></tbody>
+                                    </table>
+                                </div>
+                                <div id="alarm-properties-table" class="tab-pane fade">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"> Alarm No </th>
+                                                <th scope="col"> Action </th>
+                                                <th scope="col"> Trigger </th>
+                                                <th scope="col"> Property Number </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="event-properties-table-contents"></tbody>
+                                    </table>
+                                </div>
+                                <div id="calendar-properties-table" class="tab-pane fade">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"> Alarm No </th>
+                                                <th scope="col"> Action </th>
+                                                <th scope="col"> Trigger </th>
+                                                <th scope="col"> Property Number </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="event-properties-table-contents"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

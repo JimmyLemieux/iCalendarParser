@@ -33,22 +33,7 @@ $(document).ready(function() {
         $(this).animate({height: ht, width: wd}, 100); 
     });
 
-    //Start to fill in the array values to the table
-    //Some testing data will be used for inserting into the table
-
-    var fileNames = [];
-    // So far this is working as expected, this will later use ajax calls to get JSON from my parser
-    // $.ajax({url: "http://localhost:32628/fileNames",
-    //     dataTyoe: 'json',
-    //     success: function(data) {
-    //         for(var i = 0;i<data.length;i++) {
-    //             // console.log(data[i]);
-    //         }
-    //     }
-    // });
-
-
-    $.ajax({url: "http://localhost:8800/obj",
+    $.ajax({url: "http://localhost:32629/obj",
         dataType: 'json',
         async: false,
         success: function(data) {
@@ -56,7 +41,7 @@ $(document).ready(function() {
                 console.log(data[i]);
                 var retData = JSON.parse(data[i]);
                 if(!retData["isValid"]) continue;
-                $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"http://localhost:8800/uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>"+ retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" +retData['numProps']+"</td><td>" + retData['numEvents'] + "</td></tr>");
+                $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"http://localhost:32629/uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>"+ retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" +retData['numProps']+"</td><td>" + retData['numEvents'] + "</td></tr>");
                 $(".dropdown-menu").append("<p class=\"item\">" + retData["fileName"] + "</p>");
             }
         }
@@ -71,7 +56,7 @@ $(document).ready(function() {
             //We are going to parse the event list contents and then put them into the table
             
             // Make an ajax call to our parser and then do what you do
-            let url = "http://localhost:8800/eventList/" + newTitle;
+            let url = "http://localhost:32629/eventList/" + newTitle;
             $.ajax({
                 url: url,
                 dataType: 'json',
