@@ -73,4 +73,22 @@ $(document).ready(function() {
             $("#drop-title").text(newTitle);
         });
     });
+
+    // Find all of the nav tabs and apply an action to them
+
+    $(".nav").find(".nav-item").each(function() {
+        $(this).on("click", function() {
+            //Find all of the tables in the calendar-view-div
+            var id = $(this).find("a").attr("href");
+            id = id.substring(1);
+            $(".calendar-table-view").find("div").each(function() {
+                var divID =  $(this).attr("id");
+                if(id == divID) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
 });
