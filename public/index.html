@@ -99,7 +99,7 @@
                         </div>
                         <!--Making a button that will be used to upload to the server-->
                         <!--This button will be for calling certain C functions-->
-                        <form ref="uploadForm" id="uploadForm" action="https://localhost:32629/upload" method="POST" enctype=multipart/form-data>
+                        <form ref="uploadForm" id="uploadForm" action="https://localhost:8800/upload" method="POST" enctype=multipart/form-data>
                             <input type="file" name="someUpload" id="upload-file-btn"/>
                             <input type="submit" value="upload"/>
                         </form>
@@ -114,6 +114,7 @@
                         <div class="btn-group" id="cal-dropdown">
                             <button class="btn btn-secondary btn-sm dropdown-toggle" id= "drop-title" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select an .ics</button>
                             <div class="dropdown-menu" id="file-list">
+                                <p class="item">here </p>
                             </div>
                         </div>
                         <div class="calendar-table-section">

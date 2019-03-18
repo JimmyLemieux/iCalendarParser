@@ -40,6 +40,11 @@
 }
 
 
+.table {
+    background-color: #fAfAfA;
+}
+
+
 .jumbotron {
     position: relative;
     height: 110vh;
@@ -232,6 +237,13 @@
     position: relative;
     margin: 0 auto;
     text-align: center;
+}
+
+.dropdown-menu {
+    max-height: 500px;
+    max-width: 300px;
+    overflow: scroll;
+
 }
 
 .dropdown-menu badge {

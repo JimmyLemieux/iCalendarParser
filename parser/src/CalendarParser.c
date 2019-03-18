@@ -2662,11 +2662,18 @@ char *eventJSONWrapper(char * fileName) {
 }
 
 char *getAlarmListJSON(char * fileName) {
+
+    char *fileDir = calloc(1, sizeof(char) * 1000);
+    strcpy(fileDir, "uploads/"); 
+
+    strcat(fileDir, fileName);
+
+    Calendar * obj;
+    ICalErrorCode e = createCalendar(fileDir, &obj);
+    if(e != 0) return "{}";
     return NULL;
 }
 
 char *getPropListJSON(char *fileName) {
     return NULL;
 }
-
-

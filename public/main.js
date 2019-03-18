@@ -48,49 +48,44 @@ $(document).ready(function() {
     // });
 
 
-    $.ajax({url: "http://localhost:32629/obj",
+    $.ajax({url: "http://localhost:8800/obj",
         dataType: 'json',
+        async: false,
         success: function(data) {
             for(var i = 0;i<data.length;i++) {
-                if(data[i] == "{}")continue;
+                console.log(data[i]);
                 var retData = JSON.parse(data[i]);
-                $("#file-table-contents").append("<tr><th scope=\"row\">" + "test" + "</th><td>"+ retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" +retData['numProps']+"</td><td>" + retData['numEvents'] + "</td></tr>")  
+                if(!retData["isValid"]) continue;
+                $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"http://localhost:8800/uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>"+ retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" +retData['numProps']+"</td><td>" + retData['numEvents'] + "</td></tr>");
+                $(".dropdown-menu").append("<p class=\"item\">" + retData["fileName"] + "</p>");
             }
         }
     });
 
 
-    $("#uploadForm").on('submit', function(e) {
-        $.ajax({url: "http://localhost:32629/upload",
-            type: "POST",
-            success: function(data, textStatus, xhr) {
-                console.log(textStatus);
-            }
-        });
-
-        console.log("Here"); 
-    });
-
-    //File drop down title changer
-    // Populate the drop down menu here
-
-    for(var i = 0;i<fileNames.length;i++) {
-        $("#file-list").append("<p class=\"item\">Here</p>");
-    }
-
     //For the drop down table here
     $(".dropdown-menu").find(".item").each(function() {
         $(this).on("click", function() {
             var newTitle = $(this).text();
+
+            //We are going to parse the event list contents and then put them into the table
+            
+            // Make an ajax call to our parser and then do what you do
+            let url = "http://localhost:8800/eventList/" + newTitle;
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                async: false,
+                success: function(data) {
+                    console.log(data);
+                    $("#calendar-table-contents").empty(); // Clear the table of its contents
+                    for(var i = 0;i<data.length;i++) {
+                        $("#calendar-table-contents").append("<tr><td>" + (i+1) +"</th><td>" + data[i]["startDT"]["date"] + "</td><td>" + data[i]["startDT"]["time"] +"</td><td>" + data[i]["summary"] + "</td><td>" + data[i]["numProps"] + "</td><td>" + data[i]["numAlarms"] + "</td></tr>"); // Add the content we will get from the server and parsing
+                    }
+
+                }
+            });
             $("#drop-title").text(newTitle);
-            $("#calendar-table-contents").empty(); // Clear the table of its contents
-            $("#calendar-table-contents").append("<tr><td>" + newTitle +"</th><td>here</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>"); // Add the content we will get from the server and parsing
         });
     });
-
-    // Adding a populater for the calendar table
-    //This should actually be null at first
-    for(var i = 0;i<2;i++) {
-        $("#calendar-table-contents").append("<tr><td>2</th><td>Here</td><td>SOME ID</td><td>2</td><td>10</td><td>2</td></tr>");
-    }
 });

@@ -87,25 +87,25 @@ app.get('/uploads/:name', function(req , res){
 //******************** Your code goes here ********************
 
 
-
 app.get('/obj', function(req,res) {
    let files = fs.readdirSync('./uploads/');
+   console.log(files);
    var arr = [];
    for(var i =0;i<files.length;i++) {
-     arr[i] = sharedLib.makeObj(files[i]);
+     let JSONString = sharedLib.makeObj(files[i]);
+     let JSONObject = JSON.parse(JSONString);
+     if (JSONString == "{}" ? JSONObject["isValid"] = 0 : JSONObject["isValid"] = 1);
+     JSONObject["fileName"] = files[i];
+     arr[i] = JSON.stringify(JSONObject);
    }
    //Sending the json from server to client side of the application
    res.send(arr);
 });
 
-app.get('/eventList', function(req, res) {
-  let files = fs.readdirSync('./uploads/');
-  let arr = [];
-  for(var i = 0;i<files.length;i++) {
-    arr[i] = sharedLib.eventJSONWrapper(files[i]);
-  }
-  res.send(arr);
-
+app.get('/eventList/:name', function(req, res) {
+  let fileName = req.params.name;
+  let JSONString = sharedLib.eventJSONWrapper(fileName);
+  res.send(JSONString);
 });
 
 
