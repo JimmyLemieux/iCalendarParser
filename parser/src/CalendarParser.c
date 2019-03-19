@@ -2524,7 +2524,7 @@ char *propToJSON(const Property *prop, int eventNumber) {
     if(prop == NULL) {
         return "{}";
     }
-    char *tempProp = calloc(1, sizeof(char) * (strlen(prop->propDescr) + strlen(prop->propName) + 1000));
+    char *tempProp = calloc(1, sizeof(char) * (strlen(prop->propDescr) + strlen(prop->propName) + 10000));
     sprintf(tempProp, "{\"event\":%d,\"name\":\"%s\",\"description\":\"%s\"}", eventNumber ,prop->propName, prop->propDescr);
     return tempProp;
 }
@@ -2548,9 +2548,6 @@ char *eventPropListToJSON(const List * eventList) {
         totalNumProps += getLength(listEvent->properties);
     }
 
-
-
-
     ListIterator eventIter = createIterator((List *)eventList);
     void *event;
     while((event = nextElement(&eventIter)) != NULL) {
@@ -2560,7 +2557,7 @@ char *eventPropListToJSON(const List * eventList) {
         while((prop = nextElement(&propIter)) != NULL) {
             Property *listProp = (Property *)prop;
             char *propJSON = propToJSON(listProp, eventNumber);
-            tempListJSON = realloc(tempListJSON, sizeof(char) * (strlen(listProp->propDescr) + strlen(listProp->propName) + strlen(propJSON)) + 1000);
+            tempListJSON = realloc(tempListJSON, sizeof(char) * (strlen(listProp->propDescr) + strlen(listProp->propName) + strlen(propJSON)) + 10000);
             if(count < totalNumProps - 1)strcat(propJSON, ",");
             strcat(tempListJSON, propJSON);
             count++;

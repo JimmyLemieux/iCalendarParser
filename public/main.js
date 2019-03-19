@@ -83,6 +83,11 @@ $(document).ready(function() {
                 dataType: 'json',
                 async: false,
                 success: function(data) {
+                    //Now place these into the table
+                    $("#event-properties-table-contents").empty();
+                    for(var i = 0;i<data.length;i++) {
+                        $("#event-properties-table-contents").append("<tr><td>" + data[i]["event"] +"</th><td>" + data[i]["name"] + "</td><td>" + data[i]["description"] +"</td></tr>");
+                    }
                     console.log(data);
                 }
             });

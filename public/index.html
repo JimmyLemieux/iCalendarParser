@@ -117,11 +117,9 @@
                             </div>
                         </div>
                         <ul class="nav nav-tabs">
-                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#main-event-table">Main Events</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#event-properties-table">Event Properties</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#main-alarm-table">Main Alarm</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#alarm-properties-table">Alarm Properties</a></li>
-                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#calendar-properties-table">Calendar Properties</a></li>
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#main-event-table">Events</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#event-alarm-table">Event Alarms</a></li>
+                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#event-property-table">Event Properties</a></li>
                         </ul>
                         <div class="calendar-table-section">
                             <div class ="calendar-table-view">
@@ -140,53 +138,26 @@
                                         <tbody id="calendar-table-contents"></tbody>
                                     </table>
                                 </div>
-                                <div id="event-properties-table" class="tab-pane fade">
+                                <div id="event-alarm-table" class="tab-pane fade">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th scope="col"> Alarm No </th>
+                                                <th scope="col"> Event No </th>
                                                 <th scope="col"> Action </th>
                                                 <th scope="col"> Trigger </th>
                                                 <th scope="col"> Property Number </th>
                                             </tr>
                                         </thead>
-                                        <tbody id="event-properties-table-contents"></tbody>
+                                        <tbody id="event-alarm-table-contents"></tbody>
                                     </table>
                                 </div>
-                                <div id="main-alarm-table" class="tab-pane fade">
+                                <div id="event-property-table" class="tab-pane fade">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th scope="col"> Alarm No </th>
-                                                <th scope="col"> Action </th>
-                                                <th scope="col"> Trigger </th>
-                                                <th scope="col"> Property Number </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="event-properties-table-contents"></tbody>
-                                    </table>
-                                </div>
-                                <div id="alarm-properties-table" class="tab-pane fade">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col"> Alarm No </th>
-                                                <th scope="col"> Action </th>
-                                                <th scope="col"> Trigger </th>
-                                                <th scope="col"> Property Number </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="event-properties-table-contents"></tbody>
-                                    </table>
-                                </div>
-                                <div id="calendar-properties-table" class="tab-pane fade">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col"> Alarm No </th>
-                                                <th scope="col"> Action </th>
-                                                <th scope="col"> Trigger </th>
-                                                <th scope="col"> Property Number </th>
+                                                <th scope="col"> Event No </th>
+                                                <th scope="col"> Property Name </th>
+                                                <th scope="col"> Property Description </th>
                                             </tr>
                                         </thead>
                                         <tbody id="event-properties-table-contents"></tbody>
