@@ -98,6 +98,10 @@ $(document).ready(function() {
 
 
             $("#drop-title").text(newTitle);
+            $(".calendar-table-view").find("div").each(function() {
+                $(this).hide();
+            });
+            $(".calendar-table-view").find("#main-event-table").show();
         });
     });
 
