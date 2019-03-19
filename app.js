@@ -30,7 +30,8 @@ const portNum = process.argv[2];
 let sharedLib = ffi.Library('./libcal.dylib', {
   'makeObj' : ['string', ['string']],
   'eventJSONWrapper' : ['string', ['string']],
-  'alarmJSONWrapper' : ['string', ['string']] 
+  'alarmJSONWrapper' : ['string', ['string']],
+  'eventPropWrapper' : ['string', ['string']]  
 });
 
 
@@ -111,6 +112,12 @@ app.get('/eventList/:name', function(req, res) {
 app.get('/alarmList/:name', function(req, res) {
   let fileName = req.params.name;
   let JSONString = sharedLib.alarmJSONWrapper(fileName);
+  res.send(JSONString);
+});
+
+app.get('/propList/:name', function(req, res) {
+  let fileName = req.params.name;
+  let JSONString = sharedLib.eventPropWrapper(fileName);
   res.send(JSONString);
 });
 

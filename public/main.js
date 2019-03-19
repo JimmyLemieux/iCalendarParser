@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
     //This is to make the logo increase
     var homeImage = $("#home-img");
@@ -71,9 +72,22 @@ $(document).ready(function() {
                 dataType: 'json',
                 async: false,
                 success: function(data) {
+                    //console.log(data);
+                }
+            });
+
+            console.log("calling props");
+            var propURL = "http://localhost:32629/propList/" + newTitle;
+            $.ajax({
+                url: propURL,
+                dataType: 'json',
+                async: false,
+                success: function(data) {
                     console.log(data);
                 }
             });
+
+
             $("#drop-title").text(newTitle);
         });
     });
