@@ -72,7 +72,11 @@ $(document).ready(function() {
                 dataType: 'json',
                 async: false,
                 success: function(data) {
-                    //console.log(data);
+                    $("#event-alarm-table-contents").empty();
+                    for(var i = 0;i<data.length;i++) {
+                        $("#event-alarm-table-contents").append("<tr><td>" + data[i]["event"] +"</th><td>" + data[i]["action"] + "</td><td>" + data[i]["trigger"] + "</td><td>" + data[i]["numProps"]+"</td></tr>");
+                    } 
+                    console.log(data);
                 }
             });
 
