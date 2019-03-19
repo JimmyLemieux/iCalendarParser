@@ -45,12 +45,10 @@ $(document).ready(function() {
         }
     });
 
-
     //For the drop down table here
     $(".dropdown-menu").find(".item").each(function() {
         $(this).on("click", function() {
             var newTitle = $(this).text();
-
             //We are going to parse the event list contents and then put them into the table
             // Make an ajax call to our parser and then do what you do
             let url = "http://localhost:32629/eventList/" + newTitle;
@@ -73,16 +71,15 @@ $(document).ready(function() {
                 dataType: 'json',
                 async: false,
                 success: function(data) {
-                    //console.log(data);
+                    console.log(data);
                 }
-
             });
             $("#drop-title").text(newTitle);
         });
     });
 
-    // Find all of the nav tabs and apply an action to them
 
+    // Find all of the nav tabs and apply an action to them
     $(".nav").find(".nav-item").each(function() {
         $(this).on("click", function() {
             //Find all of the tables in the calendar-view-div

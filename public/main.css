@@ -25,7 +25,6 @@
 }
 
 @keyframes pultate {
-    
     0% {
         transform: rotate(0deg);
     }
@@ -39,11 +38,9 @@
     }
 }
 
-
 .table {
     background-color: #fAfAfA;
 }
-
 
 .jumbotron {
     position: relative;

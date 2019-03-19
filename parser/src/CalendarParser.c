@@ -2517,6 +2517,7 @@ char *eventListToJSON(const List *eventList) {
     }
 
     strcat(tempListJSON, "]");
+    printf("%s\n", tempListJSON);
     return tempListJSON;
 }
 
@@ -2525,76 +2526,82 @@ char *propToJSON(const Property *prop) {
         return "{}";
     }
     char *tempProp = calloc(1, sizeof(char) * (strlen(prop->propDescr) + strlen(prop->propName) + 1000));
-    sprintf(tempProp, "{name:\"%s\",description:\"%s\"}", prop->propName, prop->propDescr);
+    sprintf(tempProp, "\"name\":\"%s\",\"description\":\"%s\"}", prop->propName, prop->propDescr);
     return tempProp;
 }
 
-char *propListToJSON(const List *propList) {
-    if(propList == NULL) {
+//Make a propety list to JSON function that will make the whole list into JSON 
+
+char *eventPropListToJSON(const List * eventList) {
+    if(eventList == NULL) {
         return "[]";
     }
-
-    int lengthList = getLength((List *)propList);
-    int count = 0;
     char *tempListJSON = calloc(1, sizeof(char) * 10);
-
     strcat(tempListJSON, "[");
 
-    ListIterator propIter = createIterator((List *)propList);
+    ListIterator eventIter = createIterator((List *)eventList);
+    void *event;
+    while((event = nextElement(&eventIter)) != NULL) {
 
-    void *prop;
 
-    while((prop = nextElement(&propIter)) != NULL) {
-        Property *listProp = (Property *)prop;
-        char *propJSON = propToJSON(listProp);
-        tempListJSON = realloc(tempListJSON, sizeof(char) * (strlen(propJSON)) + 1000);
-        if(count < lengthList - 1) strcat(propJSON, ",");
-        count++;
-        strcat(tempListJSON, propJSON);
+        
     }
-    strcat(tempListJSON, "]");
-    return tempListJSON;
+
+
+
+
 }
 
 
 char *alarmToJSON(const Alarm *alarm) {
-
     //Just show action trigger and num of props
     if(alarm == NULL || alarm->properties == NULL) {
         return "{}";
     }
     char *tempAlarmJSON = calloc(1, sizeof(char) * (strlen(alarm->trigger) + strlen(alarm->action)) + 1000);
     //Need to make a property to JSON function that will convert everything to JSON for the properties
-    sprintf(tempAlarmJSON, "{action:\"%s\",trigger:\"%s\",numProps:%d}", alarm->action, alarm->trigger, 2+getLength(alarm->properties));
+    sprintf(tempAlarmJSON, "{\"action\":\"%s\",\"trigger\":\"%s\",\"numProps\":%d}", alarm->action, alarm->trigger, 2+getLength(alarm->properties));
     return tempAlarmJSON;
 }
  
-
 //I have to re write this to take in just an object and loop over all events and alarms and put it into a JSON string
-char *alarmListToJSON(const List *alarmList) {
-    if(alarmList == NULL) {
+char *alarmListToJSON(const List *eventList) {
+    if(eventList == NULL) {
         return "[]";
     }
-    int listLength = getLength((List *)alarmList);
-    char *tempAlarmList = calloc(1, sizeof(char) * 10);
-    strcat(tempAlarmList, "[");
-    int count = 0;
-    void *alarm;
-    ListIterator eventIter = createIterator((List *) alarmList);
-    while((alarm = nextElement(&eventIter)) != NULL) {
-        Alarm *listAlarm = (Alarm *)alarm;
-        char *alarmJSON = alarmToJSON(listAlarm);
-        tempAlarmList = realloc(tempAlarmList, sizeof(char) * (strlen(listAlarm->action) + strlen(listAlarm->trigger) + 1000));
-        if(count < listLength - 1) strcat(alarmJSON, ",");
-        strcat(tempAlarmList, alarmJSON);
+
+    char *tempListJSON = calloc(1, sizeof(char) * 10);
+    //Loop through the events and find how many alarms there are in total
+    ListIterator eventIter = createIterator((List *)eventList);
+    void *event;
+    int alarmCount = 0;
+    strcat(tempListJSON, "[");
+    //Finding the total number of alarms in the calendar
+    while((event = nextElement(&eventIter)) != NULL) {
+        Event *listEvent = (Event *)event;
+        alarmCount += getLength(listEvent->alarms);
     }
-    strcat(tempAlarmList, "]");
-    printf("%s\n", tempAlarmList);
-    return tempAlarmList;
-
+    ListIterator eventAlarmIter = createIterator((List *)eventList);
+    void *tempEvent;
+    int count = 0;
+    while((tempEvent = nextElement(&eventAlarmIter)) != NULL) { //Looping through all of the events
+        Event *listEvent = (Event *)tempEvent;
+        ListIterator alarmIter = createIterator(listEvent->alarms);
+        void *alarm;
+        while((alarm = nextElement(&alarmIter)) != NULL) { //Looping through all of the alarms in the event
+            Alarm *listAlarm = (Alarm *)alarm;
+            char *alarmJSON = alarmToJSON(alarm); //This will parse the JSON and then put into a string
+            tempListJSON = realloc(tempListJSON, sizeof(char) * (strlen(listAlarm->action) + strlen(listAlarm->trigger) + strlen(alarmJSON) + 1000));
+            if(count < alarmCount - 1)strcat(alarmJSON, ","); //This is for adding commans for the array
+            strcat(tempListJSON, alarmJSON); 
+            deallocator(alarmJSON);
+            count++;
+        }
+    } 
+    strcat(tempListJSON, "]");
+    printf("%s\n", tempListJSON);
+    return tempListJSON;
 }
-
-
 
 /* This takes the calendar arguments and converts them into a json object, that is just for the top level of the calendar */
 char *calendarToJSON(const Calendar *cal) {
@@ -2716,14 +2723,14 @@ char *eventJSONWrapper(char * fileName) {
     return eventListToJSON(obj->events);
 }
 
-char *alarmJSONWrapper(char * fileName) {
+char *alarmJSONWrapper(char * fileName) { //Need to loop through all events here and them display
     char *fileDir = calloc(1, sizeof(char) * 1000);
     strcpy(fileDir, "uploads/"); 
     strcat(fileDir, fileName);
     Calendar * obj;
     ICalErrorCode e = createCalendar(fileDir, &obj);
     if(e != 0) return "{}";
-    return alarmListToJSON(obj);
+    return alarmListToJSON(obj->events);
 }
 
 char *getPropListJSON(char *fileName) {
