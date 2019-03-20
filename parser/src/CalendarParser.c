@@ -2665,6 +2665,8 @@ Event *JSONtoEvent(const char *str) {
     return event;
 }
 
+
+//This is giving me a signal 6 crash error this might be because the split
 Calendar* JSONtoCalendar(const char* str) {
     if((char *)str == NULL)return NULL;
 
