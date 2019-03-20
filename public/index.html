@@ -99,7 +99,7 @@
                         </div>
                         <!--Making a button that will be used to upload to the server-->
                         <!--This button will be for calling certain C functions-->
-                        <form ref="uploadForm" id="uploadForm" action="http://localhost:32629/upload" method="POST" enctype=multipart/form-data>
+                        <form ref="uploadForm" id="uploadForm" action="upload/" method="POST" enctype=multipart/form-data>
                             <input type="file" name="someUpload" id="upload-file-btn"/>
                             <input type="submit" value="upload"/>
                         </form>
@@ -172,7 +172,23 @@
             <input type="image" id="add-button" data-toggle="popover" data-placement="top" title="Add Section" data-content="Here is where you will add the content for the calendar" src="./add-icon.png" alt="Add Option"/>
             <div class="row">
                 <div class="col">
-                    <p class="lead">Create Calendar Section</p> 
+                    <div class="cal-forms">
+                        <p class="lead">Create Calendar Section</p>
+                        <form>
+                            <div class="form-group">
+                                <label for="fileInput"> File Name Form </label>
+                                <input type="text" class="form-control" id="fileInput" placeholder="Enter a valid file name (.ics)..">
+                            </div>
+                            <div class="form-group">
+                                <label for="versionInput"> Version Form </label>
+                                <input type="text" class="form-control" id="versionInput" placeholder="Enter Calendar Version Here..">
+                            </div>
+                            <div class="form-group">
+                                <label for="idInput"> Prodid Form </label>
+                                <input type="text" class="form-control" id="idInput" placeholder="Enter Calendar Prodid Here..">
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
