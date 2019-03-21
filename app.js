@@ -121,13 +121,15 @@ app.get('/propList/:name', function(req, res) {
   res.send(JSONString);
 });
 
+//Endpoint for the create calendar JSON
 
-//Sample endpoint
-app.get('/someendpoint', function(req , res){
-  res.send({
-    foo: "bar"
-  });
+app.post('/createCalendar', function(req,res) {
+  console.log(req.body);
+  console.log("Creating the calendar!");
 });
+
+
+
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);

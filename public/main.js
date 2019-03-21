@@ -116,4 +116,58 @@ $(document).ready(function () {
             });
         });
     });
+
+    $("#calendar-form").submit(function(event) {
+        //Get the contents of all of the input fields here
+        //Clear all of the input fields here
+        event.preventDefault();
+        var fileName = $(this).find("#fileNameInput").val();
+        var calVersion = $(this).find("#versionInput").val();
+        var prodIDString = $(this).find("#idInput").val();
+        var uidInput = $(this).find("#uidInput").val();
+
+        $(this).find("#fileNameInput").val("");
+        $(this).find("#versionInput").val("");
+        $(this).find("#idInput").val("");
+        $(this).find("#uidInput").val("");
+
+        //Make an ajax call to the server to add this to the event
+
+        if(!fileName || !calVersion || !prodIDString || !uidInput ) {
+            console.log("Invalid fields");
+            return;
+        }
+
+        //We need to validate the strings so that they are valid
+        if(!fileName.includes(".ics") ) {
+            console.log("This is an invalid File");
+        } else if(fileName.includes(".ics") && fileName.length > 4) {
+            //This is a good calendar so you want to make a JSON string and push
+            var calJSON = [];
+            var calJSONObj = {version: calVersion,prodID: prodIDString};
+            calJSON[0] = JSON.stringify(calJSONObj);
+
+            var calJSONEventObj = {UID:uidInput};
+            calJSON[1] = JSON.stringify(calJSONEventObj);
+            console.log(calJSON);
+
+            $.ajax({
+                url: "/createCalendar",
+                dataType: 'json',
+                data: calJSON,
+                success: function(data) {
+                    //Nothing
+                }
+            });
+
+        } 
+
+        console.log("The calendar form was submitted!");
+    });
+
+
+    $("#event-form").submit(function(event) {
+        event.preventDefault();
+        console.log("The event form was submitted!");
+    });
 });

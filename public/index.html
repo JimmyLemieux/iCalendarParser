@@ -174,7 +174,7 @@
                 <div class="col">
                     <div class="cal-forms">
                         <p class="lead">Create Calendar Section</p>
-                        <form>
+                        <form id="calendar-form">
                             <div class="row">
                                 <div class="col">
                                     <label for="fileNameInput"><p class="lead">File Name</p></label>
@@ -197,16 +197,6 @@
                                     <input type="text" class="form-control" id="uidInput" placeholder="Enter the uid here..">
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <label for="dtStartTimeInput"><p class="lead">Calendar Event Start-Time</p></label>
-                                    <input type="text" class="form-control" id="dtStartTimeInput" placeholder="HHMMSS">
-                                </div>
-                                <div class="col">
-                                    <label for="dtStartDateInput"><p class="lead">Calendar Event Start-Date</p></label>
-                                    <input type="text" class="form-control" id="dtStartDateInput" placeholder="YYYYMMDD">
-                                </div>
-                            </div>
                             <div class="row" id="create-cal-submit">
                                 <div class="col">
                                     <button type="submit" class="btn btn-primary" id="submit-calendar">Create Calendar</button>
@@ -215,7 +205,7 @@
                         </form>
                         <hr>
                         <p class="lead">Create Event Section</p>
-                        <form id="event-form-section">
+                        <form id="event-form">
                             <div class="row">
                                 <div class="col">
                                     <label for="UIDEventInput"> Event UID </label>
@@ -224,11 +214,11 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <label for="eventDateInput"><p class="lead">Start-Date</p></label>
+                                    <label for="eventDateInput">Start-Date</label>
                                     <input type="text" class="form-control" id="eventDateInput" placeholder="YYYYMMDD">
                                 </div>
                                 <div class="col">
-                                    <label for="eventTimeInput"><p class="lead">Start-Time</p></label>
+                                    <label for="eventTimeInput">Start-Time</label>
                                     <input type="text" class="form-control" id="eventTimeInput" placeholder="HHMMSS">
                                 </div>
                             </div>
