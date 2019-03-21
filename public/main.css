@@ -255,10 +255,25 @@
     text-align: center;
 }
 
+#create-cal-submit {
+    position: relative;
+    padding-top: 20px;
+}
+
 #cal-dropdown {
     position: relative;
     float: left;
     padding-bottom: 20px;
+}
+
+.cal-forms form{
+    position: relative;
+    padding-top: 20px;
+}
+
+#event-submit-btn {
+    position: relative;
+    padding-top: 20px;
 }
 
 

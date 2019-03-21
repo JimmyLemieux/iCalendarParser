@@ -175,19 +175,70 @@
                     <div class="cal-forms">
                         <p class="lead">Create Calendar Section</p>
                         <form>
-                            <div class="form-group">
-                                <label for="fileInput"> File Name Form </label>
-                                <input type="text" class="form-control" id="fileInput" placeholder="Enter a valid file name (.ics)..">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="fileNameInput"><p class="lead">File Name</p></label>
+                                    <input type="text" class="form-control" id="fileNameInput" placeholder="Enter the filename here..">
+                                </div>
+                                <div class="col">
+                                    <label for="versionInput"><p class="lead">Calendar Version</p></label>
+                                    <input type="text" class="form-control" id="versionInput" placeholder="Enter version here..">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="versionInput"> Version Form </label>
-                                <input type="text" class="form-control" id="versionInput" placeholder="Enter Calendar Version Here..">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="idInput"><p class="lead">Calendar Prodid</p></label>
+                                    <input type="text" class="form-control" id="idInput" placeholder="Enter the prodid here..">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="idInput"> Prodid Form </label>
-                                <input type="text" class="form-control" id="idInput" placeholder="Enter Calendar Prodid Here..">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="uidInput"><p class="lead">Calendar Event UID</p></label>
+                                    <input type="text" class="form-control" id="uidInput" placeholder="Enter the uid here..">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="dtStartTimeInput"><p class="lead">Calendar Event Start-Time</p></label>
+                                    <input type="text" class="form-control" id="dtStartTimeInput" placeholder="HHMMSS">
+                                </div>
+                                <div class="col">
+                                    <label for="dtStartDateInput"><p class="lead">Calendar Event Start-Date</p></label>
+                                    <input type="text" class="form-control" id="dtStartDateInput" placeholder="YYYYMMDD">
+                                </div>
+                            </div>
+                            <div class="row" id="create-cal-submit">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Create Calendar</button>
+                                </div>
                             </div>
                         </form>
+                        <hr>
+                        <p class="lead">Create Event Section</p>
+                        <form id="event-form-section">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="UIDEventInput"> Event UID </label>
+                                    <input type=text class="form-control" id="UIDEventInput" placeholder="Enter Event UID..">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="eventDateInput"><p class="lead">Start-Date</p></label>
+                                    <input type="text" class="form-control" id="eventDateInput" placeholder="YYYYMMDD">
+                                </div>
+                                <div class="col">
+                                    <label for="eventTimeInput"><p class="lead">Start-Time</p></label>
+                                    <input type="text" class="form-control" id="eventTimeInput" placeholder="HHMMSS">
+                                </div>
+                            </div>
+                            <div class="row" id="event-submit-btn">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary" >Add Event</button>
+                                </div>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
             </div>
