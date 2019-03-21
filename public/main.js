@@ -143,20 +143,19 @@ $(document).ready(function () {
             console.log("This is an invalid File");
         } else if(fileName.includes(".ics") && fileName.length > 4) {
             //This is a good calendar so you want to make a JSON string and push
+            var calJSONObj = {"version": calVersion,"prodID": prodIDString};
             var calJSON = [];
-            var calJSONObj = {version: calVersion,prodID: prodIDString};
-            calJSON[0] = JSON.stringify(calJSONObj);
-
+            calJSON.push(JSON.stringify(calJSONObj));
             var calJSONEventObj = {UID:uidInput};
-            calJSON[1] = JSON.stringify(calJSONEventObj);
-            console.log(calJSON);
-
+            calJSON.push(JSON.stringify(calJSONEventObj));
             $.ajax({
-                url: "/createCalendar",
+                type:'post',
                 dataType: 'json',
-                data: calJSON,
-                success: function(data) {
-                    //Nothing
+                contentType: "application/json",
+                data: calJSON[0],
+                url: "/createCalendar",
+                success: function(response) {
+                    console.log("Was good!");
                 }
             });
 

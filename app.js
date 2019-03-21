@@ -10,6 +10,7 @@ const path    = require("path");
 const fileUpload = require('express-fileupload');
 
 app.use(fileUpload());
+app.use(express.json());
 
 // Minimization
 const fs = require('fs');
@@ -124,11 +125,11 @@ app.get('/propList/:name', function(req, res) {
 //Endpoint for the create calendar JSON
 
 app.post('/createCalendar', function(req,res) {
+  //This is returning null
+  var jsonReq = req.body;
   console.log(req.body);
-  console.log("Creating the calendar!");
+  console.log(jsonReq.version);
 });
-
-
 
 
 app.listen(portNum);
