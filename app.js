@@ -32,7 +32,9 @@ let sharedLib = ffi.Library('./libcal.dylib', {
   'makeObj' : ['string', ['string']],
   'eventJSONWrapper' : ['string', ['string']],
   'alarmJSONWrapper' : ['string', ['string']],
-  'eventPropWrapper' : ['string', ['string']]  
+  'eventPropWrapper' : ['string', ['string']],
+  'createCalendarFromJSONWrapper' : ['string', ['string','int','string','string','string','string','string','string']],
+  'createEventFromJSONWrapper' : ['string', ['string','string','string','string','string','string']]
 });
 
 
@@ -127,7 +129,27 @@ app.get('/propList/:name', function(req, res) {
 app.post('/createCalendar', function(req,res) {
   //This is returning null
   var jsonReq = req.body;
+  var fileName = jsonReq[0].fileName;
+  var version = jsonReq[1].version;
+  var prodid = jsonReq[1].prodID;
+  var uid = jsonReq[2].uid;
+  var startDate = jsonReq[2].dateStartDate;
+  var startTime = jsonReq[2].dateStartTime;
+  var createDate = jsonReq[2].dateCreateDate;
+  var createTime = jsonReq[2].dateCreateTime;
+  console.log(fileName + " " + version + " " + prodid + " " + uid + " " + startDate + " " + startTime + " " + createDate + " " + createTime);
+  //Make a call to our c function that will make the call to the write calendar and everything
+  var r = sharedLib.createCalendarFromJSONWrapper(fileName, version, prodid, uid, startDate, startTime, createDate, createTime);
+  console.log(r);
+  var ret = {error: r};
+  res.send(JSON.stringify(ret));
+
+});
+
+app.post('/createEvent', function(req, res) {
+  var jsonReq = req.body;
   console.log(jsonReq);
+
 });
 
 app.listen(portNum);

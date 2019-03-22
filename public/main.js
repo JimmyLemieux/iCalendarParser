@@ -4,7 +4,8 @@ function checkDate(date) {
     if(date.length != 8){
         return false;
     }
-    if(!Number.isInteger(date)) {
+    if(isNaN(date)) {
+        console.log("This is not an integer");
         return false;
     }
     console.log(date);
@@ -16,7 +17,8 @@ function checkTime(time) {
     if(time.length != 6) {
         return false;
     }
-    if(!Number.isInteger(time)) {
+    if(isNaN(time)) {
+        console.log("This is not an integer");
         return false;
     }
     console.log(time);
@@ -187,29 +189,33 @@ $(document).ready(function () {
             //Make a function for check version and update the functions for the checkDate and checkTime
             var version = parseInt(calVersion, 10);
             if(!checkDate(eventDate) || !checkDate(createDate) || !checkTime(eventTime) || !checkTime(createTime)) {
-                console.log("Invalid date or time!");
                 return;
             }
 
 
-            //Validate the date strings
-            myBlah("testing");
-
-
+            var calJSON = [];
+            var fileJSON = {"fileName": fileName};
+            calJSON.push(fileJSON);
 
             var calJSONObj = {"version": version,"prodID": prodIDString};
-            var calJSON = [];
             calJSON.push(calJSONObj);
+
+
             var calJSONEventObj = {"uid":uidInput,"dateStartDate":eventDate,"dateStartTime":eventTime, "dateCreateDate":createDate, "dateCreateTime":createTime};
             calJSON.push(calJSONEventObj);
+            console.log(calJSON);
+
             $.ajax({
                 type:'post',
                 dataType: 'json',
                 contentType: "application/json",
                 data: JSON.stringify(calJSON),
                 url: "/createCalendar",
-                success: function(response) {
-                    console.log("Was good!");
+                success: function(msg) {
+                    console.log(msg.error);
+                },
+                fail: function(error) {
+                    console.log(error);
                 }
             });
 

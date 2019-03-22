@@ -2761,3 +2761,81 @@ char *eventPropWrapper(char *fileName) {
     if(e != 0) return "{}";
     return eventPropListToJSON(obj->events);
 }
+
+char *createCalendarFromJSONWrapper(char *fileName, int version, char *prodid, char *eventUID, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime) {
+    char *fileDir = calloc(1, sizeof(char) * 1000);
+    strcpy(fileDir,"uploads/");
+    strcat(fileDir, fileName);
+    Calendar *obj = calloc(1, sizeof(Calendar));
+    obj->events = initializeList(&printEvent,&deleteEvent,&compareProperties);
+    obj->properties = initializeList(&printProperty, &deleteProperty, &compareProperties);
+
+    obj->version  = version;
+    strcpy(obj->prodID, prodid);
+
+    Event *newEvent = calloc(1, sizeof(Event));
+
+    newEvent->alarms = initializeList(&printAlarm, &deleteAlarm,&compareAlarms);
+    newEvent->properties = initializeList(&printAlarm, &deleteAlarm, &compareProperties);
+
+    strcpy(newEvent->UID, eventUID);
+    strcpy(newEvent->startDateTime.date, eventStartDate);
+    strcpy(newEvent->startDateTime.time, eventStartTime);
+    newEvent->startDateTime.UTC = 0;
+    strcpy(newEvent->creationDateTime.date, eventCreateDate);
+    strcpy(newEvent->creationDateTime.time, eventCreateTime);
+    newEvent->creationDateTime.UTC = 0;
+    insertBack(obj->events, (Event *)newEvent);
+
+    ICalErrorCode e = validateCalendar(obj);
+    if(e != 0) {
+        deleteCalendar(obj);
+        return printError(e);
+    }
+    e = writeCalendar(fileDir, obj);
+    if(e != 0) {
+        deleteCalendar(obj);
+        return printError(e);
+    }
+    deleteCalendar(obj);
+    return printError(e);
+}
+
+char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime) {
+    char *fileDir = calloc(1, sizeof(char) * 1000); 
+    strcpy(fileDir, "uploads/");
+    strcat(fileDir, fileName);
+    Calendar *obj = calloc(1, sizeof(Calendar));
+
+    ICalErrorCode e = createCalendar(fileDir, obj);
+    if(e != 0) {
+        deleteCalendar(obj);
+        return printError(e);
+    }
+
+    Event *newEvent = calloc(1, sizeof(Event));
+    strcpy(newEvent->UID, uid);
+    strcpy(newEvent->startDateTime.date, eventStartDate);
+    strcpy(newEvent->startDateTime.time, eventStartTime);
+    newEvent->startDateTime.UTC = 0;
+    strcpy(newEvent->creationDateTime.date, eventCreateDate);
+    strcpy(newEvent->creationDateTime.time, eventCreateTime);
+    newEvent->creationDateTime.UTC = 1;
+    insertBack(obj->events, newEvent);
+
+    e = validateCalendar(obj);
+
+    if(e != 0) {
+        deleteCalendar(obj);
+        return printError(e);
+    }
+
+    e = writeCalendar(fileDir,obj);
+
+    if(e != 0) {
+        deleteCalendar(obj);
+        return printError(e);
+    }
+    deleteCalendar(e);
+    return printError(e);
+} 
