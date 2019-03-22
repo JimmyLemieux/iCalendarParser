@@ -163,8 +163,6 @@ $(document).ready(function () {
         var createDate = $(this).find("#createDate").val();
         var createTime = $(this).find("#createDateTime").val();
 
-
-
         $(this).find("#fileNameInput").val("");
         $(this).find("#versionInput").val("");
         $(this).find("#idInput").val("");
@@ -222,6 +220,62 @@ $(document).ready(function () {
         } 
 
         console.log("The calendar form was submitted!");
+    });
+
+
+    $("#event-form").submit(function(event) {
+        event.preventDefault();
+        console.log("The event was submitted");
+
+        var fileName = $(this).find("#fileNameInput").val();
+        var uid = $(this).find("#UIDEventInput").val();
+        var eventStartDate = $(this).find("#eventStartDateInput").val();
+        var eventStartTime = $(this).find("#eventStartTimeInput").val();
+        var eventCreateDate = $(this).find("#eventCreateDate").val();
+        var eventCreateTime = $(this).find("#eventCreateTime").val();
+
+
+        $(this).find("#fileNameInput").val("");
+        $(this).find("#UIDEventInput").val("");
+        $(this).find("#eventStartDateInput").val("");
+        $(this).find("#eventStartTimeInput").val("");
+        $(this).find("#eventCreateDate").val("");
+        $(this).find("#eventCreateTime").val("");
+        
+        if(!fileName || !uid || !eventStartDate || !eventStartTime || !eventCreateDate || !eventCreateTime) {
+            console.log("Invalid Event Fields!");
+            return;
+        }
+
+        if(!fileName.includes(".ics")) {
+            console.log("The file does not include the .ics");
+            return; 
+        } else if(fileName.includes(".ics") && fileName.length > 4) {
+
+            if(!checkDate(eventStartDate) || !checkTime(eventStartTime) || !checkDate(eventCreateDate) || !checkTime(eventCreateTime)) {
+                return;
+            }
+
+            eventJSON = [];
+
+            var fileJSON = {"fileName":fileName};
+            eventJSON.push(fileJSON);
+
+            var eJSON = {"uid":uid,"dateStartDate":eventStartDate,"dateStartTime":eventStartTime,"dateCreateDate":eventCreateDate,"dateCreateTime":eventCreateTime};
+            eventJSON.push(eJSON);
+
+            $.ajax({
+                type:'post',
+                dataType:'json',
+                contentType:'application/json',
+                data: JSON.stringify(eventJSON),
+                url: '/createEvent',
+                success: function(msg) {
+                    console.log(msg);
+                }
+            });
+        }
+
     });
 
 

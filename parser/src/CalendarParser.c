@@ -2807,7 +2807,7 @@ char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate
     strcat(fileDir, fileName);
     Calendar *obj = calloc(1, sizeof(Calendar));
 
-    ICalErrorCode e = createCalendar(fileDir, obj);
+    ICalErrorCode e = createCalendar(fileDir, &obj);
     if(e != 0) {
         deleteCalendar(obj);
         return printError(e);
@@ -2836,6 +2836,6 @@ char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate
         deleteCalendar(obj);
         return printError(e);
     }
-    deleteCalendar(e);
+    deleteCalendar(obj);
     return printError(e);
 } 

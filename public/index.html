@@ -228,18 +228,32 @@
                         <form id="event-form">
                             <div class="row">
                                 <div class="col">
+                                    <label for="fileNameInput">FileName</label>
+                                    <input type="text" class="form-control" id="fileNameInput" placeholder="Enter File to add event..">
+                                </div>
+                                <div class="col">
                                     <label for="UIDEventInput"> Event UID </label>
                                     <input type=text class="form-control" id="UIDEventInput" placeholder="Enter Event UID..">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <label for="eventDateInput">Start-Date</label>
-                                    <input type="text" class="form-control" id="eventDateInput" placeholder="YYYYMMDD">
+                                    <label for="eventStartDateInput">Start-Date</label>
+                                    <input type="text" class="form-control" id="eventStartDateInput" placeholder="YYYYMMDD">
                                 </div>
                                 <div class="col">
-                                    <label for="eventTimeInput">Start-Time</label>
-                                    <input type="text" class="form-control" id="eventTimeInput" placeholder="HHMMSS">
+                                    <label for="eventStartTimeInput">Start-Time</label>
+                                    <input type="text" class="form-control" id="eventStartTimeInput" placeholder="HHMMSS">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="eventCreateDate">Create-Date</label>
+                                    <input type="text" class="form-control" id="eventCreateDate" placeholder="YYYYMMDD">
+                                </div>
+                                <div class="col">
+                                    <label for="eventCreateTime">Create-Time</label>
+                                    <input type='text' class="form-control" id="eventCreateTime" placeholder="HHMMSS">
                                 </div>
                             </div>
                             <div class="row" id="event-submit-btn">
