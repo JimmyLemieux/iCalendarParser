@@ -143,13 +143,14 @@ app.post('/createCalendar', function(req,res) {
   console.log(r);
   var ret = {error: r};
   res.send(JSON.stringify(ret));
-
 });
 
 app.post('/createEvent', function(req, res) {
   var jsonReq = req.body;
   console.log(jsonReq);
-
+  var fileName = jsonReq[0].fileName;
+  console.log(fileName);
+  console.log();
 });
 
 app.listen(portNum);
