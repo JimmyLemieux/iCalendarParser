@@ -127,10 +127,8 @@ app.get('/propList/:name', function(req, res) {
 app.post('/createCalendar', function(req,res) {
   //This is returning null
   var jsonReq = req.body;
-  console.log(req.body);
-  console.log(jsonReq.version);
+  console.log(jsonReq);
 });
-
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);

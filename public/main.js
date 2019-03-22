@@ -1,5 +1,29 @@
 
+function checkDate(date) {
+    if(date.length != 8){
+        return false;
+    }
+
+    if(!Number.isInteger(date)) {
+        return false;
+    }
+    console.log(date);
+    return true;
+}
+
+function  checkTime(time) {
+    if(time.length != 6) {
+        return false;
+    }
+    if(!Number.isInteger(time)) {
+        return false;
+    }
+    console.log(time);
+    return true;
+}
 $(document).ready(function () {
+
+    //Declare a function here that will be called
     //This is to make the logo increase
     var homeImage = $("#home-img");
     var navObjs = [];
@@ -125,15 +149,25 @@ $(document).ready(function () {
         var calVersion = $(this).find("#versionInput").val();
         var prodIDString = $(this).find("#idInput").val();
         var uidInput = $(this).find("#uidInput").val();
+        var eventDate = $(this).find("#startDateInput").val();
+        var eventTime = $(this).find("#startDateTimeInput").val();
+        var createDate = $(this).find("#createDate").val();
+        var createTime = $(this).find("#createDateTime").val();
+
+
 
         $(this).find("#fileNameInput").val("");
         $(this).find("#versionInput").val("");
         $(this).find("#idInput").val("");
         $(this).find("#uidInput").val("");
+        $(this).find("#startDateInput").val("");
+        $(this).find("#startDateTimeInput").val("");
+        $(this).find("#createDate").val("");
+        $(this).find("#createDateTime").val("");
 
         //Make an ajax call to the server to add this to the event
 
-        if(!fileName || !calVersion || !prodIDString || !uidInput ) {
+        if(!fileName || !calVersion || !prodIDString || !uidInput || !eventDate || !eventTime || !createDate || !createTime) {
             console.log("Invalid fields");
             return;
         }
@@ -143,16 +177,28 @@ $(document).ready(function () {
             console.log("This is an invalid File");
         } else if(fileName.includes(".ics") && fileName.length > 4) {
             //This is a good calendar so you want to make a JSON string and push
-            var calJSONObj = {"version": calVersion,"prodID": prodIDString};
+            var version = parseInt(calVersion, 10);
+            if(!checkDate(eventDate) || !checkDate(createDate) || !checkTime(eventTime) || !checkTime(createTime)) {
+                console.log("Invalid date or time!");
+                return;
+            }
+
+
+            //Validate the date strings
+            myBlah("testing");
+
+
+
+            var calJSONObj = {"version": version,"prodID": prodIDString};
             var calJSON = [];
-            calJSON.push(JSON.stringify(calJSONObj));
-            var calJSONEventObj = {UID:uidInput};
-            calJSON.push(JSON.stringify(calJSONEventObj));
+            calJSON.push(calJSONObj);
+            var calJSONEventObj = {"uid":uidInput,"dateStartDate":eventDate,"dateStartTime":eventTime, "dateCreateDate":createDate, "dateCreateTime":createTime};
+            calJSON.push(calJSONEventObj);
             $.ajax({
                 type:'post',
                 dataType: 'json',
                 contentType: "application/json",
-                data: calJSON[0],
+                data: JSON.stringify(calJSON),
                 url: "/createCalendar",
                 success: function(response) {
                     console.log("Was good!");
