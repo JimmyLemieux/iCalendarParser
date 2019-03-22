@@ -186,10 +186,6 @@ $(document).ready(function () {
             //This is a good calendar so you want to make a JSON string and push
             //Make a function for check version and update the functions for the checkDate and checkTime
             var version = parseInt(calVersion, 10);
-            if(!checkDate(eventDate) || !checkDate(createDate) || !checkTime(eventTime) || !checkTime(createTime)) {
-                return;
-            }
-
 
             var calJSON = [];
             var fileJSON = {"fileName": fileName};
@@ -254,9 +250,9 @@ $(document).ready(function () {
             return; 
         } else if(fileName.includes(".ics") && fileName.length > 4) {
 
-            if(!checkDate(eventStartDate) || !checkTime(eventStartTime) || !checkDate(eventCreateDate) || !checkTime(eventCreateTime)) {
-                return;
-            }
+            // if(!checkDate(eventStartDate) || !checkTime(eventStartTime) || !checkDate(eventCreateDate) || !checkTime(eventCreateTime)) {
+            //     return;
+            // }
 
 
             //The json data

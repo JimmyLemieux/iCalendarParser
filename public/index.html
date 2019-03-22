@@ -65,14 +65,15 @@
             <div class="row">
                 <div class="col">
                     <div class="status-bar-container">
-                        <div class="status-bar">
-                            <div class="alert alert-success" role="alert">
-                                <h4 class="alert-heading">Temporary Status Bar</h4>
-                                <p>There will be information here about the status of the parser</p>
-                                <hr>
-                                <p class="mb-0">Information about the parser</p>
-                            </div>
-                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Error Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="status-contents">
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
