@@ -233,6 +233,7 @@ $(document).ready(function () {
         var eventStartTime = $(this).find("#eventStartTimeInput").val();
         var eventCreateDate = $(this).find("#eventCreateDate").val();
         var eventCreateTime = $(this).find("#eventCreateTime").val();
+        var summaryValue = $(this).find("#eventSummary").val();
 
 
         $(this).find("#fileNameInput").val("");
@@ -241,7 +242,8 @@ $(document).ready(function () {
         $(this).find("#eventStartTimeInput").val("");
         $(this).find("#eventCreateDate").val("");
         $(this).find("#eventCreateTime").val("");
-        
+        $(this).find("#eventSummary").val("");
+    
         if(!fileName || !uid || !eventStartDate || !eventStartTime || !eventCreateDate || !eventCreateTime) {
             console.log("Invalid Event Fields!");
             return;
@@ -256,14 +258,13 @@ $(document).ready(function () {
                 return;
             }
 
-            eventJSON = [];
 
+            //The json data
+            eventJSON = [];
             var fileJSON = {"fileName":fileName};
             eventJSON.push(fileJSON);
-
-            var eJSON = {"uid":uid,"dateStartDate":eventStartDate,"dateStartTime":eventStartTime,"dateCreateDate":eventCreateDate,"dateCreateTime":eventCreateTime};
+            var eJSON = {"uid":uid,"dateStartDate":eventStartDate,"dateStartTime":eventStartTime,"dateCreateDate":eventCreateDate,"dateCreateTime":eventCreateTime,"summary":summaryValue};
             eventJSON.push(eJSON);
-
             $.ajax({
                 type:'post',
                 dataType:'json',

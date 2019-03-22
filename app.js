@@ -34,7 +34,7 @@ let sharedLib = ffi.Library('./libcal.dylib', {
   'alarmJSONWrapper' : ['string', ['string']],
   'eventPropWrapper' : ['string', ['string']],
   'createCalendarFromJSONWrapper' : ['string', ['string','int','string','string','string','string','string','string']],
-  'createEventFromJSONWrapper' : ['string', ['string','string','string','string','string','string']]
+  'createEventFromJSONWrapper' : ['string', ['string','string','string','string','string','string','string']]
 });
 
 
@@ -149,8 +149,16 @@ app.post('/createEvent', function(req, res) {
   var jsonReq = req.body;
   console.log(jsonReq);
   var fileName = jsonReq[0].fileName;
-  console.log(fileName);
-  console.log();
+  var uid = jsonReq[1].uid;
+  var dateStartDate = jsonReq[1].dateStartDate;
+  var dateStartTime = jsonReq[1].dateStartTime;
+  var dateCreateDate = jsonReq[1].dateCreateDate;
+  var dateCreateTime = jsonReq[1].dateCreateTime;
+  var summaryValue = jsonReq[1].summary;
+
+  var r = sharedLib.createEventFromJSONWrapper(fileName, uid,dateStartDate,dateStartTime,dateCreateDate,dateCreateTime,summaryValue);
+  var ret = {error:r};
+  res.send(JSON.stringify(ret));
 });
 
 app.listen(portNum);

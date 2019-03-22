@@ -2801,7 +2801,7 @@ char *createCalendarFromJSONWrapper(char *fileName, int version, char *prodid, c
     return printError(e);
 }
 
-char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime) {
+char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime, char *summary) {
     char *fileDir = calloc(1, sizeof(char) * 1000); 
     strcpy(fileDir, "uploads/");
     strcat(fileDir, fileName);
@@ -2814,15 +2814,28 @@ char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate
     }
 
     Event *newEvent = calloc(1, sizeof(Event));
+
+    newEvent->alarms = initializeList(&printAlarm, &deleteAlarm, &compareAlarms);
+    newEvent->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
+
     strcpy(newEvent->UID, uid);
     strcpy(newEvent->startDateTime.date, eventStartDate);
     strcpy(newEvent->startDateTime.time, eventStartTime);
     newEvent->startDateTime.UTC = 0;
     strcpy(newEvent->creationDateTime.date, eventCreateDate);
     strcpy(newEvent->creationDateTime.time, eventCreateTime);
-    newEvent->creationDateTime.UTC = 1;
+    newEvent->creationDateTime.UTC = 0;
+
+
+    if(!isEmpty(summary)) {
+        Property *newProp = calloc(1, sizeof(Property) + strlen(summary) + 1000);
+        strcpy(newProp->propName, "SUMMARY");
+        strcpy(newProp->propDescr, summary);
+        insertBack(newEvent->properties, newProp);
+    }
     insertBack(obj->events, newEvent);
 
+    
     e = validateCalendar(obj);
 
     if(e != 0) {
