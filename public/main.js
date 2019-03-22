@@ -1,9 +1,9 @@
 
 function checkDate(date) {
+    console.log("Checking the date");
     if(date.length != 8){
         return false;
     }
-
     if(!Number.isInteger(date)) {
         return false;
     }
@@ -11,7 +11,8 @@ function checkDate(date) {
     return true;
 }
 
-function  checkTime(time) {
+function checkTime(time) {
+    console.log("Checking the time");
     if(time.length != 6) {
         return false;
     }
@@ -21,6 +22,12 @@ function  checkTime(time) {
     console.log(time);
     return true;
 }
+
+function checkVersion(version) {
+    console.log("Checking the version here");
+    return  Number.isInteger(version);
+}
+
 $(document).ready(function () {
 
     //Declare a function here that will be called
@@ -177,6 +184,7 @@ $(document).ready(function () {
             console.log("This is an invalid File");
         } else if(fileName.includes(".ics") && fileName.length > 4) {
             //This is a good calendar so you want to make a JSON string and push
+            //Make a function for check version and update the functions for the checkDate and checkTime
             var version = parseInt(calVersion, 10);
             if(!checkDate(eventDate) || !checkDate(createDate) || !checkTime(eventTime) || !checkTime(createTime)) {
                 console.log("Invalid date or time!");
