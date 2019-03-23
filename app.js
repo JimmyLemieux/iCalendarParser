@@ -28,7 +28,7 @@ const portNum = process.argv[2];
  app.use(express.static(path.join(__dirname, 'uploads')));
 
 
-let sharedLib = ffi.Library('./libcal.dylib', {
+let sharedLib = ffi.Library('./libcal.so', {
   'makeObj' : ['string', ['string']],
   'eventJSONWrapper' : ['string', ['string']],
   'alarmJSONWrapper' : ['string', ['string']],

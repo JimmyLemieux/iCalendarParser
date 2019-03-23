@@ -76,8 +76,8 @@ $(document).ready(function () {
                 var retData = JSON.parse(data[i]);
                 if (!retData["isValid"]) continue;
                 $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>" + retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" + retData['numProps'] + "</td><td>" + retData['numEvents'] + "</td></tr>");
-                $(".dropdown-menu").append("<p class=\"item\">" + retData["fileName"] + "</p>");
-                $(".dropdown-menu2").append("<p class=\"item\">" + retData["fileName"] + "</p>"); 
+                $("#file-list").append("<p class=\"item\">" + retData["fileName"] + "</p>");
+                $("#event-files").append("<p class=\"event-drop-item\">" + retData["fileName"] + "</p>");
             }
         }
     });
@@ -156,6 +156,21 @@ $(document).ready(function () {
                 }
             });
         });
+    });
+
+
+    //The dropdown part for the createEvent Section
+
+    $("#event-files").find(".event-drop-item").each(function() {
+        $(this).on("click", function() {
+            var eventTitle = $(this).text();
+            console.log(eventTitle);
+            //Place this in the ent title form field
+            $(this).val(eventTitle);
+            $("#event-form").find("#fileNameInput").val(eventTitle);
+
+        }); 
+
     });
 
     $("#calendar-form").submit(function(event) {
