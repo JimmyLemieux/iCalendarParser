@@ -2762,7 +2762,7 @@ char *eventPropWrapper(char *fileName) {
     return eventPropListToJSON(obj->events);
 }
 
-char *createCalendarFromJSONWrapper(char *fileName, int version, char *prodid, char *eventUID, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime) {
+char *createCalendarFromJSONWrapper(char *fileName, int version, char *prodid, char *eventUID, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime, int isStartUTC, int isCreateUTC) {
     char *fileDir = calloc(1, sizeof(char) * 1000);
     strcpy(fileDir,"uploads/");
     strcat(fileDir, fileName);
@@ -2781,10 +2781,10 @@ char *createCalendarFromJSONWrapper(char *fileName, int version, char *prodid, c
     strcpy(newEvent->UID, eventUID);
     strcpy(newEvent->startDateTime.date, eventStartDate);
     strcpy(newEvent->startDateTime.time, eventStartTime);
-    newEvent->startDateTime.UTC = 0;
+    newEvent->startDateTime.UTC = isStartUTC;
     strcpy(newEvent->creationDateTime.date, eventCreateDate);
     strcpy(newEvent->creationDateTime.time, eventCreateTime);
-    newEvent->creationDateTime.UTC = 0;
+    newEvent->creationDateTime.UTC = isCreateUTC;
     insertBack(obj->events, (Event *)newEvent);
 
     ICalErrorCode e = validateCalendar(obj);
@@ -2801,7 +2801,7 @@ char *createCalendarFromJSONWrapper(char *fileName, int version, char *prodid, c
     return printError(e);
 }
 
-char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime, char *summary) {
+char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime, char *summary, int utcStart, int utcCreate) {
     char *fileDir = calloc(1, sizeof(char) * 1000); 
     strcpy(fileDir, "uploads/");
     strcat(fileDir, fileName);
@@ -2821,11 +2821,10 @@ char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate
     strcpy(newEvent->UID, uid);
     strcpy(newEvent->startDateTime.date, eventStartDate);
     strcpy(newEvent->startDateTime.time, eventStartTime);
-    newEvent->startDateTime.UTC = 0;
+    newEvent->startDateTime.UTC = utcStart;
     strcpy(newEvent->creationDateTime.date, eventCreateDate);
     strcpy(newEvent->creationDateTime.time, eventCreateTime);
-    newEvent->creationDateTime.UTC = 0;
-
+    newEvent->creationDateTime.UTC = utcCreate;
 
     if(!isEmpty(summary)) {
         Property *newProp = calloc(1, sizeof(Property) + strlen(summary) + 1000);

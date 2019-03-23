@@ -68,7 +68,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Error Status</th>
+                                    <th scope="col">Status Panel</th>
                                 </tr>
                             </thead>
                             <tbody id="status-contents">
@@ -122,6 +122,7 @@
                             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#event-alarm-table">Event Alarms</a></li>
                             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#event-property-table">Event Properties</a></li>
                         </ul>
+                        <p class="lead">When selecting a file, click around on tabs to view tables</p>
                         <div class="calendar-table-section">
                             <div class ="calendar-table-view">
                                 <div id="main-event-table" class="tab-pane fade active">
@@ -210,12 +211,28 @@
                             </div>
                             <div class="row">
                                 <div class="col">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="utcStart">
+                                        <label class="form-check-label" for="utcStart">isUTC</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
                                     <label for="createDate">Creation Event Date</label>
                                     <input type="text" class="form-control" id="createDate" placeholder="YYYYMMDD">
                                 </div>
                                 <div class="col">
                                     <label for="createDateTime">Creation Event Time</label>
                                     <input type="text" class="form-control" id="createDateTime" placeholder="HHMMSS">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="utcCreate">
+                                        <label class="form-check-label" for="utcCreate">isUTC</label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row" id="create-cal-submit">
@@ -226,7 +243,7 @@
                         </form>
                         <hr>
                         <p class="lead">Create Event Section</p>
-                        <form id="event-form">
+                        <form id="event-form"> 
                             <div class="row">
                                 <div class="col">
                                     <label for="fileNameInput">FileName</label>
@@ -249,12 +266,28 @@
                             </div>
                             <div class="row">
                                 <div class="col">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="utcStartEvent">
+                                        <label class="form-check-label" for="utcStartEvent">isUTC</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
                                     <label for="eventCreateDate">Create-Date</label>
                                     <input type="text" class="form-control" id="eventCreateDate" placeholder="YYYYMMDD">
                                 </div>
                                 <div class="col">
                                     <label for="eventCreateTime">Create-Time</label>
                                     <input type='text' class="form-control" id="eventCreateTime" placeholder="HHMMSS">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="utcCreateEvent">
+                                        <label class="form-check-label" for="utcCreateEvent">isUTC</label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -275,7 +308,6 @@
         </div>
     </div>
 </body>
-
 <!--Don't really need this here to be honest, This will be for a particle simulator-->
 <!--Need to add the C functionality here-->
 </html>

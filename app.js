@@ -33,8 +33,8 @@ let sharedLib = ffi.Library('./libcal.dylib', {
   'eventJSONWrapper' : ['string', ['string']],
   'alarmJSONWrapper' : ['string', ['string']],
   'eventPropWrapper' : ['string', ['string']],
-  'createCalendarFromJSONWrapper' : ['string', ['string','int','string','string','string','string','string','string']],
-  'createEventFromJSONWrapper' : ['string', ['string','string','string','string','string','string','string']]
+  'createCalendarFromJSONWrapper' : ['string', ['string','int','string','string','string','string','string','string','int','int']],
+  'createEventFromJSONWrapper' : ['string', ['string','string','string','string','string','string','string', 'int', 'int']]
 });
 
 
@@ -128,6 +128,12 @@ app.get('/propList/:name', function(req, res) {
 
 app.post('/createCalendar', function(req,res) {
   //This is returning null
+
+  //Check if the fileName already exists
+
+
+
+
   var jsonReq = req.body;
   var fileName = jsonReq[0].fileName;
   var version = jsonReq[1].version;
@@ -137,9 +143,21 @@ app.post('/createCalendar', function(req,res) {
   var startTime = jsonReq[2].dateStartTime;
   var createDate = jsonReq[2].dateCreateDate;
   var createTime = jsonReq[2].dateCreateTime;
-  console.log(fileName + " " + version + " " + prodid + " " + uid + " " + startDate + " " + startTime + " " + createDate + " " + createTime);
+  var utcStart = jsonReq[2].dateStartUTC;
+  var utcCreate = jsonReq[2].dateCreateUTC;
+
+
+  let files = fs.readdirSync('./uploads/');
+
+  for(var i = 0;i<files.length;i++) {
+    if(files[i] == fileName) {
+      var ret = {error:"File Already Exists!"}; 
+      res.send(JSON.stringify(ret));
+    }
+  }
+
   //Make a call to our c function that will make the call to the write calendar and everything
-  var r = sharedLib.createCalendarFromJSONWrapper(fileName, version, prodid, uid, startDate, startTime, createDate, createTime);
+  var r = sharedLib.createCalendarFromJSONWrapper(fileName, version, prodid, uid, startDate, startTime, createDate, createTime,utcStart,utcCreate);
   console.log(r);
   var ret = {error: r};
   res.send(JSON.stringify(ret));
@@ -155,8 +173,12 @@ app.post('/createEvent', function(req, res) {
   var dateCreateDate = jsonReq[1].dateCreateDate;
   var dateCreateTime = jsonReq[1].dateCreateTime;
   var summaryValue = jsonReq[1].summary;
+  var utcStart = jsonReq[1].dateStartUTC;
+  var utcCreate = jsonReq[1].dateCreateUTC;
 
-  var r = sharedLib.createEventFromJSONWrapper(fileName, uid,dateStartDate,dateStartTime,dateCreateDate,dateCreateTime,summaryValue);
+  console.log(utcStart);
+
+  var r = sharedLib.createEventFromJSONWrapper(fileName, uid,dateStartDate,dateStartTime,dateCreateDate,dateCreateTime,summaryValue,utcStart,utcCreate);
   var ret = {error:r};
   res.send(JSON.stringify(ret));
 });

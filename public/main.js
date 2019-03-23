@@ -67,15 +67,17 @@ $(document).ready(function () {
     });
 
     $.ajax({
-        url: "obj",
+        url: "obj/",
         dataType: 'json',
         async: false,
         success: function (data) {
+            $("file-table-contents").empty();
             for (var i = 0; i < data.length; i++) {
                 var retData = JSON.parse(data[i]);
                 if (!retData["isValid"]) continue;
                 $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>" + retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" + retData['numProps'] + "</td><td>" + retData['numEvents'] + "</td></tr>");
                 $(".dropdown-menu").append("<p class=\"item\">" + retData["fileName"] + "</p>");
+                $(".dropdown-menu2").append("<p class=\"item\">" + retData["fileName"] + "</p>"); 
             }
         }
     });
@@ -130,7 +132,13 @@ $(document).ready(function () {
             $("#drop-title").text(newTitle, function () {
                 $(".calendar-table-view").find("#main-event-table").show();
             });
-        });
+        }); 
+    });
+
+    $("#uploadForm").submit(function(event) {
+        event.preventDefault();
+        console.log("This was called!");
+        var n = $("input[type=file]")[0].files[0].name;
     });
 
     // Find all of the nav tabs and apply an action to them
@@ -163,6 +171,10 @@ $(document).ready(function () {
         var createDate = $(this).find("#createDate").val();
         var createTime = $(this).find("#createDateTime").val();
 
+        var isUTCStart = $(this).find("#utcStart").is(":checked");
+        var isUTCCreate = $(this).find("#utcCreate").is(":checked");
+
+
         $(this).find("#fileNameInput").val("");
         $(this).find("#versionInput").val("");
         $(this).find("#idInput").val("");
@@ -174,14 +186,10 @@ $(document).ready(function () {
 
         //Make an ajax call to the server to add this to the event
 
-        if(!fileName || !calVersion || !prodIDString || !uidInput || !eventDate || !eventTime || !createDate || !createTime) {
-            console.log("Invalid fields");
-            return;
-        }
-
         //We need to validate the strings so that they are valid
         if(!fileName.includes(".ics") ) {
             console.log("This is an invalid File");
+            $("#status-contents").append("<tr><td>The file name"+ fileName +" is invalid!</td></tr>");
         } else if(fileName.includes(".ics") && fileName.length > 4) {
             //This is a good calendar so you want to make a JSON string and push
             //Make a function for check version and update the functions for the checkDate and checkTime
@@ -195,7 +203,7 @@ $(document).ready(function () {
             calJSON.push(calJSONObj);
 
 
-            var calJSONEventObj = {"uid":uidInput,"dateStartDate":eventDate,"dateStartTime":eventTime, "dateCreateDate":createDate, "dateCreateTime":createTime};
+            var calJSONEventObj = {"uid":uidInput,"dateStartDate":eventDate,"dateStartTime":eventTime,"dateStartUTC":isUTCStart, "dateCreateDate":createDate, "dateCreateTime":createTime,"dateCreateUTC":isUTCCreate};
             calJSON.push(calJSONEventObj);
             console.log(calJSON);
 
@@ -206,15 +214,30 @@ $(document).ready(function () {
                 data: JSON.stringify(calJSON),
                 url: "/createCalendar",
                 success: function(msg) {
-                    console.log(msg.error);
+                    $("#status-contents").append("<tr><td>The server returned " + msg.error + " on Create Calendar of fileName " + fileName +"</td></tr>");
+                    $.ajax({
+                        url: "obj/",
+                        dataType: 'json',
+                        async: false,
+                        success: function (data) {
+                            $("file-table-contents").empty();
+                            for (var i = 0; i < data.length; i++) {
+                                var retData = JSON.parse(data[i]);
+                                if (!retData["isValid"]) continue;
+                                $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>" + retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" + retData['numProps'] + "</td><td>" + retData['numEvents'] + "</td></tr>");
+                                $(".dropdown-menu").append("<p class=\"item\">" + retData["fileName"] + "</p>");
+                            }
+                        }
+                    });
                 },
                 fail: function(error) {
                     console.log(error);
+                    $("#status-contents").append("<tr><td>The server returned an error</td></tr>");
+
                 }
             });
 
         } 
-
         console.log("The calendar form was submitted!");
     });
 
@@ -230,7 +253,8 @@ $(document).ready(function () {
         var eventCreateDate = $(this).find("#eventCreateDate").val();
         var eventCreateTime = $(this).find("#eventCreateTime").val();
         var summaryValue = $(this).find("#eventSummary").val();
-
+        var utcStart = $(this).find("#utcStartEvent").is(":checked");
+        var utcCreate = $(this).find("#utcCreateEvent").is(":checked");
 
         $(this).find("#fileNameInput").val("");
         $(this).find("#UIDEventInput").val("");
@@ -242,24 +266,21 @@ $(document).ready(function () {
     
         if(!fileName || !uid || !eventStartDate || !eventStartTime || !eventCreateDate || !eventCreateTime) {
             console.log("Invalid Event Fields!");
+            $("#status-contents").append("<tr><td>There is invalid event fields!</td></tr>");
+
             return;
         }
-
         if(!fileName.includes(".ics")) {
             console.log("The file does not include the .ics");
+            $("#status-contents").append("<tr><td>The file name"+ fileName +" is invalid!</td></tr>");
             return; 
         } else if(fileName.includes(".ics") && fileName.length > 4) {
-
-            // if(!checkDate(eventStartDate) || !checkTime(eventStartTime) || !checkDate(eventCreateDate) || !checkTime(eventCreateTime)) {
-            //     return;
-            // }
-
 
             //The json data
             eventJSON = [];
             var fileJSON = {"fileName":fileName};
             eventJSON.push(fileJSON);
-            var eJSON = {"uid":uid,"dateStartDate":eventStartDate,"dateStartTime":eventStartTime,"dateCreateDate":eventCreateDate,"dateCreateTime":eventCreateTime,"summary":summaryValue};
+            var eJSON = {"uid":uid,"dateStartDate":eventStartDate,"dateStartTime":eventStartTime,"dateStartUTC":utcStart,"dateCreateDate":eventCreateDate,"dateCreateTime":eventCreateTime,"dateCreateUTC":utcCreate,"summary":summaryValue};
             eventJSON.push(eJSON);
             $.ajax({
                 type:'post',
@@ -269,6 +290,10 @@ $(document).ready(function () {
                 url: '/createEvent',
                 success: function(msg) {
                     console.log(msg);
+                },
+                fail: function(error) {
+                    console.log(error);
+                    $("#status-contents").append("<tr><td>The server returned an error</td></tr>");
                 }
             });
         }

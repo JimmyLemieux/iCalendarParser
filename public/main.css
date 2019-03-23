@@ -175,6 +175,14 @@
 
 .status-bar-container {
     position: relative;
+    max-width: 95%;
+    width: 95%;
+    max-height: 500px;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    padding-bottom: 50px;
+    margin: 0 auto;
+    font-weight: bolder;
     text-align: center;
 
 }
@@ -224,6 +232,8 @@
     margin: 0 auto;
 }
 
+
+
 .create-calendar-container {
     position: relative;
     margin: 0 auto;
@@ -244,6 +254,16 @@
 }
 
 .dropdown-menu badge {
+    width: 100%;
+}
+
+.dropdown-menu2 {
+    max-height: 500px;
+    max-width: 300px;
+    overflow: scroll;
+}
+
+.dropdown-menu2 badge {
     width: 100%;
 }
 
