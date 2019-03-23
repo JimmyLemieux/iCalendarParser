@@ -72,6 +72,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <button type="submit" class="btn btn-primary" id="clear-status-panel">Clear</button>
                 </div>
             </div>
             <hr class="my-6">
@@ -97,7 +98,7 @@
                         </div>
                         <!--Making a button that will be used to upload to the server-->
                         <!--This button will be for calling certain C functions-->
-                        <form ref="uploadForm" id="uploadForm" action="upload/" method="POST" enctype=multipart/form-data>
+                        <form ref="uploadForm" id="uploadForm" enctype=multipart/form-data>
                             <input type="file" name="someUpload" id="upload-file-btn"/>
                             <input type="submit" value="upload"/>
                         </form>
@@ -109,7 +110,7 @@
                 <div class="col">
                     <div class="calendar-view-container">
                         <p class="lead"><i> Calendar Viewer</i></p>
-                        <p>When selecting a file, click around on tabs to view tables</p>
+                        <p>When selecting a file, click around on tabs to start viewing tables</p>
                         <div class="btn-group" id="cal-dropdown">
                             <button class="btn btn-secondary btn-sm dropdown-toggle" id= "drop-title" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select an .ics</button>
                             <div class="dropdown-menu" id="file-list">

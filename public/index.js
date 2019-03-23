@@ -82,6 +82,32 @@ $(document).ready(function () {
         }
     });
 
+    $("#clear-status-panel").on("click", function(event) {
+        event.preventDefault();
+        $("#status-contents").empty();
+        $("#status-contents").append("<tr><td>CLEARED</td></tr>");
+        
+    });
+
+
+    //The upload for the client to the server
+
+    $("#uploadForm").submit(function(event) {
+        event.preventDefault();
+        var uploadForm = $("#uploadForm")[0];
+        var formData = new FormData(uploadForm);
+        $.ajax({
+            url: "/upload",
+            type: 'post',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function(msg) {
+                console.log(msg.error);
+                $("#status-contents").append("<tr><td>" + msg.error +"</td></tr>");
+            }
+        });
+    });
     //For the drop down table here
     $(".dropdown-menu").find(".item").each(function () {
         $(this).on("click", function () {

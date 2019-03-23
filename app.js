@@ -28,7 +28,7 @@ const portNum = process.argv[2];
  app.use(express.static(path.join(__dirname, 'uploads')));
 
 
-let sharedLib = ffi.Library('./libcal.so', {
+let sharedLib = ffi.Library('./libcal.dylib', {
   'makeObj' : ['string', ['string']],
   'eventJSONWrapper' : ['string', ['string']],
   'alarmJSONWrapper' : ['string', ['string']],
@@ -60,7 +60,8 @@ app.get('/index.js',function(req,res){
 //Respond to POST requests that upload files to uploads/ directory
 app.post('/upload', function(req, res) {
   if(!req.files) {
-    return res.status(400).send('No files were uploaded.');
+    var ret = {error: "No Files Sent"};
+    res.send(ret);
   }
  
   let uploadFile = req.files.someUpload;
@@ -68,9 +69,11 @@ app.post('/upload', function(req, res) {
   // Use the mv() method to place the file somewhere on your server
   uploadFile.mv('uploads/' + uploadFile.name, function(err) {
     if(err) {
-      return res.status(500).send(err);
+      var ret = {error:"Some error uploading"};
+      res.send(ret);
     }
-    res.redirect('/');
+    var ret = {error:"Success on Upload of file " + uploadFile.name};
+    res.send(ret);
   });
 });
 
