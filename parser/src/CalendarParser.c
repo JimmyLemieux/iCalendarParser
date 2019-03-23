@@ -2723,23 +2723,32 @@ char *makeObj(char *fileName) {
 	strcat(fileDir, fileName);
 	Calendar *obj;
 	ICalErrorCode e = createCalendar(fileDir, &obj);
-	if(e != 0) return "{}";
-	return calendarToJSON(obj);
+	if(e != 0)  {
+        deleteCalendar(obj);
+        return "{}";
+    }
+    char *calJSON = calendarToJSON(obj);
+    deleteCalendar(obj);
+	return calJSON;
 }
 
-char *validateObj(char *fileName) {
-    return NULL;
-}
 char *eventJSONWrapper(char * fileName) {
     char *fileDir = calloc(1, sizeof(char) * 1000);
     strcpy(fileDir, "uploads/");
     strcat(fileDir, fileName);
     Calendar *obj;
     ICalErrorCode e = createCalendar(fileDir, &obj);
-    if(e != 0) return "{}";
+    if(e != 0)  {
+        deleteCalendar(obj);
+        return "{}";
+    }
     e = validateCalendar(obj);
-    if(e != 0) return "{}";
-    return eventListToJSON(obj->events);
+    if(e != 0) {
+        deleteCalendar(obj);
+        return "{}";
+    }
+    char *eventList = eventListToJSON(obj->events);
+    return eventList;
 }
 
 char *alarmJSONWrapper(char * fileName) { //Need to loop through all events here and them display
@@ -2749,7 +2758,9 @@ char *alarmJSONWrapper(char * fileName) { //Need to loop through all events here
     Calendar * obj;
     ICalErrorCode e = createCalendar(fileDir, &obj);
     if(e != 0) return "{}";
-    return alarmListToJSON(obj->events);
+    char *alarmList = alarmListToJSON(obj->events);
+    deleteCalendar(obj);
+    return alarmList;
 }
 
 char *eventPropWrapper(char *fileName) {
@@ -2759,7 +2770,9 @@ char *eventPropWrapper(char *fileName) {
     Calendar *obj;
     ICalErrorCode e = createCalendar(fileDir, &obj); 
     if(e != 0) return "{}";
-    return eventPropListToJSON(obj->events);
+    char *eventList = eventPropListToJSON(obj->events);
+    deleteCalendar(obj);
+    return eventList;
 }
 
 char *createCalendarFromJSONWrapper(char *fileName, int version, char *prodid, char *eventUID, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime, int isStartUTC, int isCreateUTC) {

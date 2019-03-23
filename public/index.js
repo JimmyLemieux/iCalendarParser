@@ -75,7 +75,7 @@ $(document).ready(function () {
             for (var i = 0; i < data.length; i++) {
                 var retData = JSON.parse(data[i]);
                 if (!retData["isValid"]) continue;
-                $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>" + retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" + retData['numProps'] + "</td><td>" + retData['numEvents'] + "</td></tr>");
+                $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>" + retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" + retData['numEvents'] + "</td><td>" + retData['numProps'] + "</td></tr>");
                 $("#file-list").append("<p class=\"item\">" + retData["fileName"] + "</p>");
                 $("#event-files").append("<p class=\"event-drop-item\">" + retData["fileName"] + "</p>");
             }
