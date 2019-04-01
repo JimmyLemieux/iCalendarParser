@@ -71,7 +71,7 @@ $(document).ready(function () {
         dataType: 'json',
         async: false,
         success: function (data) {
-            $("file-table-contents").empty();
+            $("#file-table-contents").empty();
             for (var i = 0; i < data.length; i++) {
                 var retData = JSON.parse(data[i]);
                 if (!retData["isValid"]) continue;
@@ -105,6 +105,76 @@ $(document).ready(function () {
             success: function(msg) {
                 console.log(msg.error);
                 $("#status-contents").append("<tr><td>" + msg.error +"</td></tr>");
+                $.ajax({
+                    url: "obj/",
+                    dataType: 'json',
+                    async: false,
+                    success: function (data) {
+                        $("#file-table-contents").empty();
+                        $("#file-list").empty();
+                        $("#event-files").empty();
+                        for (var i = 0; i < data.length; i++) {
+                            var retData = JSON.parse(data[i]);
+                            if (!retData["isValid"]) continue;
+                            $("#file-table-contents").append("<tr><th scope=\"row\"><a href=\"uploads/" + retData["fileName"] + "\">" + retData["fileName"] + "</a></th><td>" + retData["version"] + "</td><td>" + retData['prodID'] + "</td><td>" + retData['numEvents'] + "</td><td>" + retData['numProps'] + "</td></tr>");
+                            $("#file-list").append("<p class=\"item\">" + retData["fileName"] + "</p>");
+                            $("#event-files").append("<p class=\"event-drop-item\">" + retData["fileName"] + "</p>");
+                        }
+
+                                                //For the drop down table here
+                        $(".dropdown-menu").find(".item").each(function () {
+                            $(this).on("click", function () {
+                                var newTitle = $(this).text();
+                                //We are going to parse the event list contents and then put them into the table
+                                // Make an ajax call to our parser and then do what you do
+                                let url = "eventList/" + newTitle;
+                                $.ajax({
+                                    url: url,
+                                    dataType: 'json',
+                                    async: false,
+                                    success: function (data) {
+                                        $("#calendar-table-contents").empty(); // Clear the table of its contents
+                                        for (var i = 0; i < data.length; i++) {
+                                            $("#calendar-table-contents").append("<tr><td>" + (i + 1) + "</th><td>" + data[i]["startDT"]["date"] + "</td><td>" + data[i]["startDT"]["time"] + "</td><td>" + data[i]["summary"] + "</td><td>" + data[i]["numProps"] + "</td><td>" + data[i]["numAlarms"] + "</td></tr>"); // Add the content we will get from the server and parsing
+                                        }
+                                    }
+                                });
+
+                                var alarmURL = "alarmList/" + newTitle;
+                                $.ajax({
+                                    url: alarmURL,
+                                    dataType: 'json',
+                                    async: false,
+                                    success: function (data) {
+                                        $("#event-alarm-table-contents").empty();
+                                        for (var i = 0; i < data.length; i++) {
+                                            $("#event-alarm-table-contents").append("<tr><td>" + data[i]["event"] + "</th><td>" + data[i]["action"] + "</td><td>" + data[i]["trigger"] + "</td><td>" + data[i]["numProps"] + "</td></tr>");
+                                        }
+                                        console.log(data);
+                                    }
+                                });
+
+                                var propURL = "propList/" + newTitle;
+                                $.ajax({
+                                    url: propURL,
+                                    dataType: 'json',
+                                    async: false,
+                                    success: function (data) {
+                                        $("#event-properties-table-contents").empty();
+                                        for (var i = 0; i < data.length; i++) {
+                                            $("#event-properties-table-contents").append("<tr><td>" + data[i]["event"] + "</th><td>" + data[i]["name"] + "</td><td>" + data[i]["description"] + "</td></tr>");
+                                        }
+                                        console.log(data);
+                                    }
+                                });
+
+                                $("#drop-title").text(newTitle, function () {
+                                    $(".calendar-table-view").find("#main-event-table").show();
+                                });
+                            }); 
+                        });
+                    }
+                });
             }
         });
     });
@@ -214,6 +284,17 @@ $(document).ready(function () {
 
         var isUTCStart = $(this).find("#utcStart").is(":checked");
         var isUTCCreate = $(this).find("#utcCreate").is(":checked");
+        var dateReg = /-/g;
+        var timeReg = /:/g; 
+
+        eventDate = eventDate.replace(dateReg, '');
+        eventTime = eventTime.replace(timeReg, '');
+        createDate = createDate.replace(dateReg, '');
+        createTime = createTime.replace(timeReg,'');
+        eventTime += "00";
+        createTime += "00";
+        console.log(eventDate);
+        console.log(eventTime);
 
 
         $(this).find("#fileNameInput").val("");
@@ -296,6 +377,16 @@ $(document).ready(function () {
         var summaryValue = $(this).find("#eventSummary").val();
         var utcStart = $(this).find("#utcStartEvent").is(":checked");
         var utcCreate = $(this).find("#utcCreateEvent").is(":checked");
+
+        var dateReg = /-/g;
+        var timeReg = /:/g;
+
+        eventStartDate = eventStartDate.replace(dateReg, ''); 
+        eventCreateDate = eventCreateDate.replace(dateReg, '');
+        eventStartTime = eventStartTime.replace(timeReg,'');
+        eventStartTime += "00";
+        eventCreateTime = eventCreateTime.replace(dateReg, '');
+        eventCreateTime += "00";
 
         $(this).find("#fileNameInput").val("");
         $(this).find("#UIDEventInput").val("");

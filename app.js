@@ -134,9 +134,6 @@ app.post('/createCalendar', function(req,res) {
 
   //Check if the fileName already exists
 
-
-
-
   var jsonReq = req.body;
   var fileName = jsonReq[0].fileName;
   var version = jsonReq[1].version;
@@ -148,6 +145,8 @@ app.post('/createCalendar', function(req,res) {
   var createTime = jsonReq[2].dateCreateTime;
   var utcStart = jsonReq[2].dateStartUTC;
   var utcCreate = jsonReq[2].dateCreateUTC;
+
+  console.log(fileName + " " + version + " " + prodid + " " + uid + " " + startDate + " " + startTime + " " + createDate + " " + createTime + " " + utcStart  + " " + utcCreate);
 
 
   let files = fs.readdirSync('./uploads/');
