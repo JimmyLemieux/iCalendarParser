@@ -173,6 +173,18 @@ $(document).ready(function () {
                                 });
                             }); 
                         });
+
+                        $("#event-files").find(".event-drop-item").each(function() {
+                            $(this).on("click", function() {
+                                var eventTitle = $(this).text();
+                                console.log(eventTitle);
+                                //Place this in the ent title form field
+                                $(this).val(eventTitle);
+                                $("#event-form").find("#fileNameInput").val(eventTitle);
+                    
+                            }); 
+                    
+                        });
                     }
                 });
             }
@@ -458,6 +470,8 @@ $(document).ready(function () {
             dbName: databaseName
         }
 
+        $(".console-output").append("<medium style=\"color:black;\"> Attempting login as " + data.user + " one moment..</medium></br>");
+
         $.ajax({
             type: 'get',
             dataType: 'json',
@@ -477,7 +491,30 @@ $(document).ready(function () {
     });
 
 
-    
+    //The button that will submit all of the forms
+    $(".main-functions").find("#store-files-btn").on('click', function(e) {
+        e.preventDefault();
+        alert("Button pressed!");
+        $.ajax({
+            type: 'get',
+            url: '/dbSaveFiles',
+            success: function(data) {
+                console.log("Saved!");
+            }
+        });
+    });
+
+
+    $(".main-functions").find("#clear-all-files").on('click', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'get',
+            url: '/dbClearFiles',
+            success: function(data) {
+                console.log("cleared");
+            }
+        });
+    });
 
 
 

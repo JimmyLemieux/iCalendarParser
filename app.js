@@ -13,6 +13,7 @@ const fileUpload = require('express-fileupload');
 const Promise = require('promise');
 
 var connection; 
+var fileListObj = [];
 
 const mysql = require('mysql');
 
@@ -75,37 +76,6 @@ app.use(express.static(path.join(__dirname, 'uploads')));
 //     console.log("Table ALARM Created");
 //   });
 // });
-
-
-
-
-app.get('/loginDatabase', function(req, res) {
-  var isErr = 0;
-  console.log(req.body);
-  var jsonData = req.query;
-  var userName = jsonData.user;
-  var passWord = jsonData.pass;
-  var dbName = jsonData.dbName;
-  console.log(userName);
-  console.log(passWord);
-  console.log(dbName);
-  connection = mysql.createConnection({
-    host: "dursley.socs.uoguelph.ca",
-    user: userName,
-    password: passWord,
-    database: dbName
-  });
-
-  connection.connect(function(err) {
-    if(err) {
-      res.send({error: "FAIL"});
-    } else {
-      res.send({error: "SUCCESS"});
-    }
-  });
-});
-
-
 
 
 let sharedLib = ffi.Library('./libcal.so', {
@@ -184,6 +154,9 @@ app.get('/obj', function(req,res) {
      if (JSONString == "{}" ? JSONObject["isValid"] = 0 : JSONObject["isValid"] = 1);
      JSONObject["fileName"] = files[i];
      arr[i] = JSON.stringify(JSONObject);
+     if(JSONObject["isValid"]) {
+       fileListObj.push(JSON.stringify(JSONObject));
+     }
    }
    //Sending the json from server to client side of the application
    res.send(arr);
@@ -264,6 +237,103 @@ app.post('/createEvent', function(req, res) {
   var ret = {error:r};
   res.send(JSON.stringify(ret));
 });
+
+//Some database helper functions
+
+function fileLogToSQL(data) {
+  var heading = "(file_name, version, prod_id)";
+  var values = "('"+ data.fileName + "', '"
+              + data.version + "', '"
+              + data.prodID +"')";
+
+  var tableToBeInserted = "INSERT INTO FILE " + heading + " VALUES " + values + ";";
+  console.log(tableToBeInserted);
+  return tableToBeInserted;
+}
+
+
+
+//Make a connection to the data base
+app.get('/loginDatabase', function(req, res) {
+  var isErr = 0;
+  console.log(req.body);
+  var jsonData = req.query;
+  var userName = jsonData.user;
+  var passWord = jsonData.pass;
+  var dbName = jsonData.dbName;
+  console.log(userName);
+  console.log(passWord);
+  console.log(dbName);
+  connection = mysql.createConnection({
+    host: "dursley.socs.uoguelph.ca",
+    user: userName,
+    password: passWord,
+    database: dbName
+  });
+
+  connection.connect(function(err) {
+    if(err) {
+      res.send({error: "FAIL"});
+    } else {
+      res.send({error: "SUCCESS"});
+    }
+  });
+});
+
+
+app.get('/dbSaveFiles', function(req, res) {
+
+  console.log("Starting to save files to the db");
+
+  for(var i = 0;i<fileListObj.length;i++) {
+    console.log("Before the SQL " + fileListObj[i]);
+    var jObj = JSON.parse(fileListObj[i]);
+    var stringSQLQuery = fileLogToSQL(jObj);
+    connection.query(stringSQLQuery, function(err, rows, fields) {
+      if(err) {
+        console.log("Something went wrong!");
+      }else {
+        console.log("The table was made successfully");
+      }
+    })
+  }
+  //res.send(fileListObj);
+});
+
+
+app.get('/dbClearFiles', function(req, res) {
+  var deleteFileTable = "DELETE FROM FILE";
+
+  var tableSize = "SELECT COUNT(*) FROM FILE";
+
+  connection.query(tableSize, function(err,result, fields) {
+    if(err) {
+      console.log("something went wrong");
+    } else {
+      console.log(result);
+    }
+  });
+
+
+  connection.query(deleteFileTable, function(err, rows, fields) {
+    if(err) {
+      console.log("Something went wrong!");
+    } else {
+      console.log("Tabled cleared on success");
+    }
+  });
+
+
+  connection.query(tableSize, function(err,result, fields) {
+    if(err) {
+      console.log("something went wrong");
+    } else {
+      console.log(result);
+    }
+  });
+  
+});
+
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);
