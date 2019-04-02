@@ -246,6 +246,7 @@ function fileLogToSQL(data) {
               + data.version + "', '"
               + data.prodID +"')";
 
+
   var tableToBeInserted = "INSERT INTO FILE " + heading + " VALUES " + values + ";";
   console.log(tableToBeInserted);
   return tableToBeInserted;
@@ -288,7 +289,21 @@ app.get('/dbSaveFiles', function(req, res) {
   for(var i = 0;i<fileListObj.length;i++) {
     console.log("Before the SQL " + fileListObj[i]);
     var jObj = JSON.parse(fileListObj[i]);
+    var fileName = jObj.fileName;
     var stringSQLQuery = fileLogToSQL(jObj);
+
+    var checkDupe = "SELECT * FROM FILE WHERE file_name='" + fileName + "'";
+    connection.query(checkDupe, function(err,result, fields) {
+      if(err) {
+        console.log("Something went wrong! on dupe");
+      } else {
+        if(result.length == 0) {
+          console.log("The record was not found");
+        }
+      }
+    });
+
+
     connection.query(stringSQLQuery, function(err, rows, fields) {
       if(err) {
         console.log("Something went wrong!");
@@ -297,6 +312,8 @@ app.get('/dbSaveFiles', function(req, res) {
       }
     })
   }
+
+
   //res.send(fileListObj);
 });
 
@@ -331,7 +348,7 @@ app.get('/dbClearFiles', function(req, res) {
       console.log(result);
     }
   });
-  
+
 });
 
 
