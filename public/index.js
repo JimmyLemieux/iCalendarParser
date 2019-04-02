@@ -437,4 +437,50 @@ $(document).ready(function () {
         event.preventDefault();
         console.log("The event form was submitted!");
     });
+
+    //****Starting the database section
+    //Hide the query section initially
+    $('.database-functions').hide();
+
+    //Handle the login form to make the database credentials
+
+    $('.login-form').submit(function(e) {
+        e.preventDefault();
+        var userName = $(this).find('#userNameInput').val();
+        var passWord = $(this).find("#passWordInput").val();
+        var databaseName = $(this).find("#databaseName").val();
+        $(this).find("#userNameInput").val("");
+        $(this).find("#passWordInput").val("");
+        $(this).find("#databaseName").val("");
+        var data = {
+            user: userName,
+            pass: passWord,
+            dbName: databaseName
+        }
+
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            url: '/loginDatabase',
+            data: data,
+            async: false,
+            success: function(resp) {
+                console.log(resp); //json
+                if(resp.error == "SUCCESS") {
+                    $(".console-output").append("<medium style=\"color:green;\"> Successful login as " + data.user + " you can now interact with DB..</medium></br>");
+                    $('.database-functions').fadeIn();
+                } else {
+                    $(".console-output").append("<medium style=\"color:red;\"> Unsuccessful login as " + data.user + " you need to enter correct DB information..</medium></br>");
+                }
+            }
+        })
+    });
+
+
+    
+
+
+
+
+    //***Ending the database section
 });

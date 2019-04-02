@@ -267,9 +267,9 @@
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="utcStartEvent">
                                         <label class="form-check-label" for="utcStartEvent">isUTC</label>
-                                    </div>
-                                </div>
-                            </div>
+                                    </div>  
+                                </div>   
+                            </div>           
                             <div class="row">
                                 <div class="col">
                                     <label for="eventCreateDate">Create-Date</label>
@@ -303,9 +303,69 @@
                     </div>
                 </div>
             </div>
+            <hr class="my-6">
+            <div class="row">
+                <div class="col">
+                    <div class="DataBase-Section">
+                        <p class="lead"> Database Section </p>
+
+                        <p class="lead">Console Output</p>
+                        <div class="console-output"> <!--This will obvi be in jquery-->
+                            <medium style="color:green;"> Please login to the DB below..</medium></br>
+                        </div>
+
+                        <div class="login-section">
+                            <p class="lead"> Database Login </p>
+                            <form class="login-form">
+                                <div class="form-group">
+                                    <label for="userNameInput">Username</label>
+                                    <input type="text" class="form-control" id="userNameInput" aria-describedby="userNameHelp" placeholder="Database login Username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="passWordInput">Password</label>
+                                    <input type="password" class="form-control" id="passWordInput" aria-describedby="passWordHelp" placeholder="Database password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="databaseName"> Database Name </label>
+                                    <input type="text" class="form-control" id="databaseName" placeholder="Database Name..">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                        <hr class="my-6">
+                        <div class="database-functions">
+                            <div class="main-functions">
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-light"> Store All Files </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-light"> Clear All Data </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-light"> Display DB Status </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#display-all-events">Display All Events</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#display-specific-event">Display Specific Event</a></li>
+                                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#display-conflict-events">Display Conflict Events</a></li>
+                            </ul>
+                            <div id="display-all-events" class="tab-pane fade active">
+                                <p class="lead"> Display all events table</p>
+                            </div>
+                            <div id="display-specific-event" class="tab-pane fade">
+                                <p> hello there </p> 
+                            </div>
+                            <div id="display-conflict-events" class="tab-pane fade">
+                                <p> Some other text </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
-<!--Don't really need this here to be honest, This will be for a particle simulator-->
-<!--Need to add the C functionality here-->
 </html>

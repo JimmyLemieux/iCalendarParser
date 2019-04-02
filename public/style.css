@@ -315,3 +315,65 @@
     font-style: italic;
     font-size: 15px;
 }
+
+.DataBase-Section {
+    position: relative;
+    margin: 0 auto;
+    text-align: center;
+    justify-content: center;
+    width: 65%;
+}
+
+.login-section {
+    position: relative;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.login-section p {
+    padding-top: 20px;
+}
+
+.login-section button{
+    position: relative;
+    margin: 0 auto;
+    text-align: left;
+    margin-left: 20px;
+}
+
+.login-section label{
+    padding-left: 15px;
+    font-weight: 500;
+    font-style: italic;
+}
+
+#userNameHelp {
+    float: left;
+    font-weight: bolder;
+    padding-left: 20px;
+}
+
+
+.database-functions {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.console-output {
+    position: relative;
+    text-align: left;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 80px;
+    margin: 0 auto;
+    width: 70%;
+    max-height: 500px;
+    overflow: scroll;
+    border: 2px 1px black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.main-functions {
+    padding-bottom: 50px;
+}

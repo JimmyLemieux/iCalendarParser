@@ -1,5 +1,6 @@
 'use strict'
 
+
 // C library API
 const ffi = require('ffi');
 
@@ -8,6 +9,12 @@ const express = require("express");
 const app     = express();
 const path    = require("path");
 const fileUpload = require('express-fileupload');
+
+const Promise = require('promise');
+
+var connection; 
+
+const mysql = require('mysql');
 
 app.use(fileUpload());
 app.use(express.json());
@@ -21,11 +28,84 @@ const portNum = process.argv[2];
 
 // Send HTML at root, do not change
 
- app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
- app.use(express.static(path.join(__dirname, 'assets')));
+app.use(express.static(path.join(__dirname, 'assets')));
 
- app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, 'uploads')));
+
+
+//Setting up some sql things
+
+
+
+//This part will have to be apart of the login form endpoint, on success we will have to send an endpoint
+
+
+// connection = mysql.createConnection({
+//   host: "dursley.socs.uoguelph.ca",
+//   user: "jlemie03",
+//   password: "1014181",
+//   database: "jlemie03"
+// });
+
+// connection.connect(function(err, result) {
+
+//   if(err){ 
+//     return;
+//   }
+//   console.log("Connected to DB");
+
+//   //Making a table in the new database
+//   var sql = "CREATE TABLE FILE (cal_id INT AUTO_INCREMENT PRIMARY KEY, file_name VARCHAR(60) NOT NULL, version INT NOT NULL, prod_id VARCHAR(256) NOT NULL)";
+//   var sql2 = "CREATE TABLE EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL)";
+//   var sql3 = "CREATE TABLE ALARM (alarm_id INT AUTO_INCREMENT PRIMARY KEY, action VARCHAR(256) NOT NULL, trigger VARCHAR(256) NOT NULL, event INT NOT NULL FOREIGN KEY(event) REFERENCES EVENT(event_id) ON DELETE CASCADE)";
+//   con.query(sql, function(err, result) {
+//     if(err){ console.log("FILE TABLE ALREADY EXISTS!"); return;}
+//     console.log("Table FILE Created");
+//   });
+
+//   con.query(sql2, function(err, result) {
+//     if(err){ console.log("FILE EVENT ALREADY EXISTS!"); return;}
+//     console.log("Table EVENT Created");
+//   });
+
+//   con.query(sql3, function(err, result) {
+//     if(err){ console.log("FILE ALARM ALREADY EXISTS!"); return;}
+//     console.log("Table ALARM Created");
+//   });
+// });
+
+
+
+
+app.get('/loginDatabase', function(req, res) {
+  var isErr = 0;
+  console.log(req.body);
+  var jsonData = req.query;
+  var userName = jsonData.user;
+  var passWord = jsonData.pass;
+  var dbName = jsonData.dbName;
+  console.log(userName);
+  console.log(passWord);
+  console.log(dbName);
+  connection = mysql.createConnection({
+    host: "dursley.socs.uoguelph.ca",
+    user: userName,
+    password: passWord,
+    database: dbName
+  });
+
+  connection.connect(function(err) {
+    if(err) {
+      res.send({error: "FAIL"});
+    } else {
+      res.send({error: "SUCCESS"});
+    }
+  });
+});
+
+
 
 
 let sharedLib = ffi.Library('./libcal.so', {
