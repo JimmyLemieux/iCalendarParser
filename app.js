@@ -229,6 +229,18 @@ function eventToSQL(data, summary,startTime,organizer, location, cal_file_id) {
   return tableToBeInserted;
 }
 
+function alarmToSQL(data, eventFieldID) {
+  var heading = "(action, trigger, event)";
+
+  var values = "('"+ data.action + "', '"
+                    + data.trigger + "', '"
+                    + eventFieldID + "')";
+
+  var tableToBeInserted = "INSERT INTO ALARM " + heading + " VALUES " + values + ";";
+  console.log(tableToBeInserted);
+  return tableToBeInserted;
+}
+
 
 
 //Make a connection to the data base
@@ -389,9 +401,32 @@ app.get('/dbSaveFiles', function(req, res) {
 
           console.log("------------------------------------------");
         }
+
+
       }
     }
   });
+
+
+  //Make a query to from the event table 
+  connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+    if(err) {
+      console.log("Something went from when parsing the EVENT row");
+    } else {
+
+
+
+
+
+
+
+
+
+    }
+  });
+
+  
+
 
   //res.send(fileListObj);
 });
