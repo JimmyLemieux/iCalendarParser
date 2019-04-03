@@ -377,7 +377,7 @@ app.get('/dbSaveFiles', function(req, res) {
           var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID);
 
           //Adding the event to the database 
-          connection.query(eventToSQLQuery, function(err, rows,) {
+          connection.query(eventToSQLQuery, function(err, rows) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
@@ -407,11 +407,20 @@ app.get('/dbSaveFiles', function(req, res) {
             }
           });
 
-          connection.query("SELECT * FROM EVENT", function(err, rows) {
+          connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
             if(err) {
               console.log("There was an error");
             } else {
               console.log("OK");
+              //Clear the alarm tables
+              var alarmList = sharedLib.alarmJSONWrapper(row.fileName);
+              var alarmListObj = JSON.parse(alarmList);
+              console.log(alarmListObj);
+              // for(var r of rows) {
+              //   var current_event_id = r.event_id;
+              //   //r is the current event in the sql table
+
+              // }
             }
           });
         }
