@@ -6,7 +6,7 @@ gitAdd:
 	git add .
 
 gitCommit:
-	git commit -m "$m"
+	git commit -m "some push"
 
 gitPush:
 	git push -u origin master
