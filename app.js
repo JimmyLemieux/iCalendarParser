@@ -407,10 +407,16 @@ app.get('/dbSaveFiles', function(req, res) {
             }
           });
 
+          console.log("Current on " + row.file_Name);
           connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
             if(err) {
               console.log("Something went wrong on the event fetch");
             } else {
+              for(let row of rows) {
+                if(row.cal_file == (i+1)) {
+                  console.log(row.cal_file);
+                }
+              }
               console.log("Here is the event");
             }
           });
