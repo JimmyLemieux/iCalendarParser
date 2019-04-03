@@ -385,13 +385,13 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("There was an error with the event table");
             } else {
               console.log("fileName: " + row.file_Name);
-              var alarmList = sharedLib.alarmJSONWrapper(fileName);
-              console.log(alarmList);
+              var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
               var alarmListObj = JSON.parse(alarmList);
               //You want to push the alar table here
               console.log("The event table was appended to");
+
+
               console.log("------------------------------");
-              console.log("SIZE OF THE ALARM LIST "+ alarmListObj.length);
               for(var x = 0;x<alarmListObj.length;x++) {
                 var jsonText = JSON.stringify(alarmListObj[x]);
                 if(alarmListObj[x]["event"] == (i+1)) {
