@@ -413,9 +413,11 @@ app.get('/dbSaveFiles', function(req, res) {
             } else {
               console.log("OK");
               //Clear the alarm tables
+              console.log(row.fileName);
               var alarmList = sharedLib.alarmJSONWrapper(row.fileName);
               var alarmListObj = JSON.parse(alarmList);
-              console.log(alarmListObj);
+              var jsonText = JSON.stringify(alarmListObj);
+              console.log(jsonText);
               // for(var r of rows) {
               //   var current_event_id = r.event_id;
               //   //r is the current event in the sql table
