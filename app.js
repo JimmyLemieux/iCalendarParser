@@ -319,8 +319,6 @@ app.get('/loginDatabase', function(req, res) {
 app.get('/dbSaveFiles', function(req, res) {
 
   console.log("Starting to save files to the db");
-  var fileNames = [];
-
   for(var i = 0;i<fileListObj.length;i++) {
     var jObj = JSON.parse(fileListObj[i]);
     var fileName = jObj.fileName;
@@ -345,8 +343,12 @@ app.get('/dbSaveFiles', function(req, res) {
       console.log("Something went wrong");
     } else {
       //Go through all of the rows in the query
+      var fileNames = [];
+
       for(let row of rows) {
         var fileName = row.file_Name;
+        fileNames.push(fileName);
+
         var calID = row.cal_id;
         var eventList = sharedLib.eventJSONWrapper(fileName);
         var propList = sharedLib.eventPropWrapper(fileName);
@@ -391,17 +393,23 @@ app.get('/dbSaveFiles', function(req, res) {
         }
       }
 
-      console.log("Starting to pull from the event table");
-      connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-        if(err) {
-          console.log("Something went from when parsing the EVENT row");
-        } else {
-          for(let row of rows) {
-            var eventID = row.event_id;
-            console.log(eventID);
-          }
-        }
-      });
+
+
+      console.log(fileNames);
+
+
+      // //The alarm that will be pulled
+      // console.log("Starting to pull from the event table");
+      // connection.query("SELECT (cal_file) FROM EVENT", function(err, rows, fields) { // The cal_file represents the primary key in the FILE table 
+      //   if(err) {
+      //     console.log("Something went from when parsing the EVENT row");
+      //   } else {
+      //     for(let row of rows) {
+      //       var eventID = row.event_id;
+      //       console.log(eventID);
+      //     }
+      //   }
+      // });
     }
   });
 
