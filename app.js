@@ -215,12 +215,13 @@ function fileLogToSQL(data) {
   return tableToBeInserted;
 }
 
-function eventToSQL(data, summary,startTime,organizer, location, cal_file_id) {
-  var heading = "(summary, start_time, location, organizer, cal_file)";
+function eventToSQL(data, summary,startTime,organizer, location, cal_file_id, fileName) {
+  var heading = "(summary, start_time, location, organizer, file_Name, cal_file)";
   var values = "('"+ summary + "', '"
                     + startTime + "', '"
                     + location + "', '"
                     + organizer + "', '"
+                    + fileName + "', '"
                     + cal_file_id + "')";
 
   var tableToBeInserted = "INSERT INTO EVENT " + heading + " VALUES " + values + ";";
@@ -236,6 +237,20 @@ function alarmToSQL(data, eventFieldID) {
   console.log(values);
   var tableToBeInserted = "INSERT INTO ALARM " + heading + " VALUES " + values + ";";
   return tableToBeInserted;
+}
+
+
+function getAlarmsForEvent(eventJSON, fileName) {
+  var eventNumber = eventJSON["event"];
+  var alarmJSON = sharedLib.alarmJSONWrapper(fileName);
+  var alarmJSONObject = JSON.parse(alarmJSON);
+  var eventAlarms = [];
+  for(var x = 0;x<alarmJSONObject.length;x++) {
+    if(alarmJSONObject["event"] == eventNumber) {
+      eventAlarms.push(alarmJSONObject[x]);
+    }
+  }
+  return eventAlarms;
 }
 
 
@@ -267,7 +282,7 @@ app.get('/loginDatabase', function(req, res) {
   });
 
   var sql = "CREATE TABLE IF NOT EXISTS FILE (cal_id INT AUTO_INCREMENT PRIMARY KEY, file_Name VARCHAR(60) NOT NULL, version INT NOT NULL, prod_id VARCHAR(256) NOT NULL)";
-  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
+  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, file_Name VARCHAR(60) NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
   var sql3 = "CREATE TABLE IF NOT EXISTS ALARM (alarm_id INT AUTO_INCREMENT PRIMARY KEY, action VARCHAR(256) NOT NULL, `trigger` VARCHAR(256) NOT NULL, event INT NOT NULL, FOREIGN KEY(event) REFERENCES EVENT(event_id) ON DELETE CASCADE)";
 
 
@@ -342,6 +357,7 @@ app.get('/dbSaveFiles', function(req, res) {
     } else {
       //Go through all of the rows in the query
 
+
       for(let row of rows) {
 
         var calID = row.cal_id;
@@ -374,7 +390,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
           var summary = null;
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
-          var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID);
+          var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,row.file_Name,calID);
 
           //Adding the event to the database 
           connection.query(eventToSQLQuery, function(err, rows) {
@@ -415,8 +431,9 @@ app.get('/dbSaveFiles', function(req, res) {
           console.log("There was an error");
         } else {
           console.log("OK");
-          for(let row of rows) {
+          for(let row of rows) { // Each of these rows is an event
             console.log(row); 
+            
           }
         }
       });
