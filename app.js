@@ -216,9 +216,17 @@ function fileLogToSQL(data) {
   return tableToBeInserted;
 }
 
-function eventToSQL(data, organizer, location, cal_file) {
-  var heading = "(event_id, summary, start_time, location, organizer, cal_file)";
+function eventToSQL(data, startTime,organizer, location, cal_file_id) {
+  var heading = "(summary, start_time, location, organizer, cal_file)";
+  var values = "('"+ data.summary + "', '"
+                    + startTime + "', '"
+                    + location + "', '"
+                    + organizer + "', '"
+                    + cal_file_id + "')";
 
+  var tableToBeInserted = "INSERT INTO EVENT " + heading + " VALUES " + values + ";";
+  console.log(tableToBeInserted);
+  return tableToBeInserted;
 }
 
 
@@ -356,7 +364,13 @@ app.get('/dbSaveFiles', function(req, res) {
             }
           }
 
+
+          //Here is where we will push to the table
+
+
           console.log("current Event Index " + (i+1) + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
+          //console.log("Start time " + eventListObj[i]["start"])
+          console.log(eventListObj[i]);
           // var currentEventPropObj = propListObj[i];
           // var jsonText = JSON.stringify(currentEventPropObj);
           // console.log( fileName + " " +jsonText);
