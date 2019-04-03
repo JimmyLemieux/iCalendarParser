@@ -241,19 +241,6 @@ function alarmToSQL(data, eventFieldID) {
 }
 
 
-function getAlarmsForEvent(eventJSONObj, fileName, event_no) {
-  var alarmJSON = sharedLib.alarmJSONWrapper(fileName);
-  var alarmJSONObj = JSON.parse(alarmJSON);
-  var alarmList = []; 
-  console.log(alarmJSONObj.length);
-
-  for(var x = 0;x<alarmJSONObj;x++) {
-    console.log(alarmJSONObj[x]["event"]);
-  }
-  return alarmList;
-}
-
-
 
 //Make a connection to the data base
 app.get('/loginDatabase', function(req, res) {
@@ -411,9 +398,23 @@ app.get('/dbSaveFiles', function(req, res) {
           console.log("OK");
           for(let row of rows) { // Each of these rows is an event
             //console.log(row);
-            var wantedEventNo = row.event_no;
+            var eID = row.event_ID;
             var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
+            var alarmJSONObj = JSON.parse(alarmJSON);
             console.log( row.file_Name + " " + " "+ row.event_no + " " + alarmJSON);
+            for(var x = 0;x<alarmJSONObj.length;x++) {
+              if(alarmJSONObj["event"] == row.event_no) {
+                //These are the alarms for the current event
+                var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+                connection(alarmSQLQuery, function(err) {
+                  if(err) {
+                    console.log("There was a problem with alarm TABLE"); 
+                  } else{
+                    console.log("The alarm was pushed!");
+                  }
+                });
+              }
+            }
           }
         }
       });
