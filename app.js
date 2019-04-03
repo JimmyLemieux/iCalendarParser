@@ -340,21 +340,22 @@ app.get('/dbSaveFiles', function(req, res) {
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
-          console.log(fileName + " " + eventListObj[i]);
-          var currentEventPropObj = JSON.stringify(propListObj[i]);
+          var testEvent = JSON.stringify(eventListObj[i]);
+          console.log(fileName + " " + testEvent);
+          var currentEventPropObj = propListObj[i];
           var jsonText = JSON.stringify(currentEventPropObj);
           if(jsonText != undefined && jsonText != '[]') {
             //If the json is here
             var eventOrganizer = null;
             var eventLocation = null;
-            // if(currentEventPropObj["name"].toUpperCase() == "LOCATION") {
-            //   //console.log(fileName + " " + currentEventPropObj["name"]);
-            //   eventLocation = currentEventPropObj["description"];
-            // }
-            // if(currentEventPropObj["name"].toUpperCase() == "ORGANIZER") {
-            //   //onsole.log(fileName + " " + currentEventPropObj["name"]);
-            //   eventOrganizer = currentEventPropObj["description"];
-            // }
+            if(currentEventPropObj["name"].toUpperCase() == "LOCATION") {
+              //console.log(fileName + " " + currentEventPropObj["name"]);
+              eventLocation = currentEventPropObj["description"];
+            }
+            if(currentEventPropObj["name"].toUpperCase() == "ORGANIZER") {
+              //onsole.log(fileName + " " + currentEventPropObj["name"]);
+              eventOrganizer = currentEventPropObj["description"];
+            }
 
             //console.log( fileName + " " + jsonText + " Organizer " + eventOrganizer + " Location " + eventLocation);
 
