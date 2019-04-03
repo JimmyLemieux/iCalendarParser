@@ -348,7 +348,6 @@ app.get('/dbSaveFiles', function(req, res) {
       console.log("Something went wrong");
     } else {
       //Go through all of the rows in the query
-      console.log("The Rows " + rows);
       for(let row of rows) {
         var fileName = row.file_Name;
         var calID = row.cal_id;
@@ -361,7 +360,6 @@ app.get('/dbSaveFiles', function(req, res) {
         var eventListObj = JSON.parse(eventList);
         var propListObj = JSON.parse(propList);
 
-        console.log(fileName + " has " + eventListObj.length);
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
 
@@ -377,7 +375,6 @@ app.get('/dbSaveFiles', function(req, res) {
               // Here we need to make a query and add these into the event table
             }
           }
-          console.log("current Event Index " + (i+1) + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
           //console.log("Start time " + eventListObj[i]["start"])
           console.log(eventListObj[i]["startDT"]["time"]);
           var startTimeDate  = eventListObj[i]["startDT"]["date"];
