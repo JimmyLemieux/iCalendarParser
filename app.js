@@ -332,6 +332,8 @@ app.get('/dbSaveFiles', function(req, res) {
         var calID = row.cal_id;
         var eventList = sharedLib.eventJSONWrapper(fileName);
         var propList = sharedLib.eventPropWrapper(fileName);
+        var eventLocation = null;
+        var eventOrganizer = null;
         //Go through all of the indi events and put them into the table with reference to the cal_id
 
         var eventListObj = JSON.parse(eventList);
@@ -344,8 +346,6 @@ app.get('/dbSaveFiles', function(req, res) {
           for(var x = 0;x<propListObj.length;x++) {
             var  jsonText  = JSON.stringify(propListObj[x]);
             if(propListObj[x]["event"] == (i+1)) {
-              var eventLocation = null;
-              var eventOrganizer = null;
               if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
                 eventLocation = propListObj[x]["description"];
               }
