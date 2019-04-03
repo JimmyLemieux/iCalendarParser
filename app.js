@@ -415,6 +415,7 @@ app.get('/dbSaveFiles', function(req, res) {
           console.log("There was an error");
         } else {
           console.log("OK");
+          console.log(row.file_Name);
         }
       });
     }
