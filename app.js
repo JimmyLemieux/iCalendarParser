@@ -243,11 +243,11 @@ function alarmToSQL(data, eventFieldID) {
 
 function getAlarmsForEvent(eventJSON, fileName, event_no) {
   var eventJSONObj = JSON.parse(eventJSON);
+  console.log(fileName);
   var alarmJSON = sharedLib.alarmJSONWrapper(fileName);
   var alarmJSONObj = JSON.parse(alarmJSON);
-
-  var alarmList = [];
-  console.log(event_no);
+  var alarmList = []; 
+  console.log(alarmJSONObj.length);
   for(var x = 0;x<alarmJSONObj;x++) {
     console.log(alarmJSONObj[x]["event"]);
   }
