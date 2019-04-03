@@ -381,32 +381,39 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
-              console.log(result);
-              console.log("THE CURRENT: " + row.file_Name);
-              var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
-              var alarmListObj = JSON.parse(alarmList);
-              //You want to push the alar table here
-              console.log("The event table was appended to");
-              console.log("------------------------------");
-              console.log("THE CURRENT EVENT IS " + (i));
-              for(var x = 0;x<alarmListObj.length;x++) {
-                if(alarmListObj[x]["event"] == (i)) {
-                  //console.log("File: " + row.file_Name + " with alarm number: " + (x+1) + " has " + jsonText);
-                  var alarmToSQLQuery = alarmToSQL(alarmListObj[x], result.insertId);
-                  connection.query(alarmToSQLQuery, function(err) {
-                    if(err) {
-                      console.log("Something went wrong");
-                    } else {
-                      console.log("Alarm table was appended");
-                    }
-                  });
-                }
-              }
-              console.log("-------------------------------");
+              console.log("NICE");
+              // console.log(result);
+              // console.log("THE CURRENT: " + row.file_Name);
+              // var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
+              // var alarmListObj = JSON.parse(alarmList);
+              // //You want to push the alar table here
+              // console.log("The event table was appended to");
+              // console.log("------------------------------");
+              // console.log("THE CURRENT EVENT IS " + (i));
+              // for(var x = 0;x<alarmListObj.length;x++) {
+              //   if(alarmListObj[x]["event"] == (i)) {
+              //     //console.log("File: " + row.file_Name + " with alarm number: " + (x+1) + " has " + jsonText);
+              //     var alarmToSQLQuery = alarmToSQL(alarmListObj[x], result.insertId);
+              //     connection.query(alarmToSQLQuery, function(err) {
+              //       if(err) {
+              //         console.log("Something went wrong");
+              //       } else {
+              //         console.log("Alarm table was appended");
+              //       }
+              //     });
+              //   }
+              // }
+              // console.log("-------------------------------");
             }
           });
 
-          
+          connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+            if(err) {
+              console.log("Something went wrong on the event fetch");
+            } else {
+              console.log("Here is the event");
+            }
+          });
         }
       }
     }
