@@ -412,8 +412,6 @@ app.get('/dbSaveFiles', function(req, res) {
     }
   });
 
-  connection.query("SELECT * FROM ")
-
   //Make a query to from the event table 
 
   //res.send(fileListObj);
