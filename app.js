@@ -344,6 +344,7 @@ app.get('/dbSaveFiles', function(req, res) {
           for(var x = 0;x<propListObj.length;x++) {
             var  jsonText  = JSON.stringify(propListObj[x]);
             if(jsonText != undefined && jsonText != "[]") {
+              console.log("Current Event Index " + (i+1));
               console.log(fileName + " " + propListObj[x]["event"]);
             }
           }
