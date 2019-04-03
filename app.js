@@ -384,6 +384,7 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
+              console.log("fileName: " + fileName);
               var alarmList = sharedLib.alarmJSONWrapper(fileName);
               var alarmListObj = JSON.parse(alarmList);
               //You want to push the alar table here
