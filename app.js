@@ -413,7 +413,7 @@ app.get('/dbSaveFiles', function(req, res) {
             //console.log(row);
             var wantedEventNo = row.event_no;
             var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
-            console.log(alarmJSON);
+            console.log( row.file_Name + " " + alarmJSON);
           }
         }
       });
