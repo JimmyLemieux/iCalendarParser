@@ -322,12 +322,13 @@ app.get('/loginDatabase', function(req, res) {
 app.get('/dbSaveFiles', function(req, res) {
 
   console.log("Starting to save files to the db");
+  var fileNames = [];
 
   for(var i = 0;i<fileListObj.length;i++) {
     var jObj = JSON.parse(fileListObj[i]);
     var fileName = jObj.fileName;
+    fileNames.push(fileName);
     var stringSQLQuery = fileLogToSQL(jObj);
-
 
     //This is pushing things to the table
     connection.query(stringSQLQuery, function(err, rows, fields) {
@@ -376,11 +377,6 @@ app.get('/dbSaveFiles', function(req, res) {
               // Here we need to make a query and add these into the event table
             }
           }
-
-
-          //Here is where we will push to the table
-
-
           console.log("current Event Index " + (i+1) + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
           //console.log("Start time " + eventListObj[i]["start"])
           console.log(eventListObj[i]["startDT"]["time"]);
@@ -390,9 +386,6 @@ app.get('/dbSaveFiles', function(req, res) {
           var summary = null;
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
           var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID);
-          // var currentEventPropObj = propListObj[i];
-          // var jsonText = JSON.stringify(currentEventPropObj);
-          // console.log( fileName + " " +jsonText);
 
           connection.query(eventToSQLQuery, function(err) {
             if(err) {
@@ -416,15 +409,10 @@ app.get('/dbSaveFiles', function(req, res) {
     if(err) {
       console.log("Something went from when parsing the EVENT row");
     } else {
-
-
-
-
-
-
-
-
-
+      for(let row of rows) {
+        var eventID = row.event_id;
+        console.log(eventID);
+      }
     }
   });
 
