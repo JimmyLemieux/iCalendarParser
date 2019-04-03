@@ -233,7 +233,7 @@ function alarmToSQL(data, eventFieldID) {
   var values = "('"+ data.action + "', '"
                     + data.trigger + "', '"
                     + eventFieldID + "')";
-
+  console.log(values);
   var tableToBeInserted = "INSERT INTO ALARM " + heading + " VALUES " + values + ";";
   return tableToBeInserted;
 }
