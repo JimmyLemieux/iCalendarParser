@@ -381,7 +381,7 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
-              console.log(fields);
+              console.log(rows);
               console.log("NICE");              
               // console.log(result);
               // console.log("THE CURRENT: " + row.file_Name);
