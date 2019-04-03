@@ -361,7 +361,7 @@ app.get('/dbSaveFiles', function(req, res) {
           var currentEventPropObj = propListObj[i];
           var jsonText = JSON.stringify(currentEventPropObj);
           if(jsonText != undefined && jsonText != '[]') {
-            console.log(jsonText);
+            console.log( fileName + " " + jsonText);
           }
         }
       }
