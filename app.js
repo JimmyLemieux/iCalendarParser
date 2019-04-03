@@ -436,8 +436,8 @@ app.get('/dbSaveFiles', function(req, res) {
           console.log("OK");
           for(let row of rows) { // Each of these rows is an event
             //console.log(row);
-            var eventJSON = sharedLib.eventJSONWrapper(row.file_Name);
-            //console.log(getAlarmsForEvent(eventJSON, row.file_Name, row.event_no));
+            //var eventJSON = sharedLib.eventJSONWrapper(row.file_Name);
+            console.log(getAlarmsForEvent(eventJSON, row.file_Name, row.event_no));
 
           }
         }
