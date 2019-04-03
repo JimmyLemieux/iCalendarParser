@@ -350,7 +350,6 @@ app.get('/dbSaveFiles', function(req, res) {
         var calID = row.cal_id;
         var eventList = sharedLib.eventJSONWrapper(fileName);
         var propList = sharedLib.eventPropWrapper(fileName);
-        var alarmList = sharedLib.alarmJSONWrapper(fileName);
         var eventLocation = null;
         var eventOrganizer = null;
         //Go through all of the indi events and put them into the table with reference to the cal_id
@@ -385,6 +384,7 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
+              var alarmList = sharedLib.alarmJSONWrapper(fileName);
               var alarmListObj = JSON.parse(alarmList);
               //You want to push the alar table here
               console.log("The event table was appended to");
