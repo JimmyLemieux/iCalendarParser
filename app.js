@@ -388,45 +388,58 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
+
+              //You want to push the alar table here
               console.log("The event table was appended to");
-            }
-          });
-
-          //Now I am going to have to get a list of fileEvents
-          connection.query("SELECT * FROM FILE;", function(err, rows, fields) {
-            if(err) {
-              console.log("Something went wrong");
-            } else {
-              //Go through all of the rows in the query
-              var fileNames = [];
-
-              for(let row of rows) {
-                var fileName = row.file_Name;
-                fileNames.push(fileName);
-
-                var alarmList = sharedLib.alarmJSONWrapper(fileName);
-                var eventList = sharedLib.eventJSONWrapper(fileName);
-                //Go through all of the indi events and put them into the table with reference to the cal_id
-
-                var alarmListObj = JSON.parse(alarmList);
-                var eventListObj = JSON.parse(eventList);
-
-                for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
-                  //Each event will have a specific list of props
-                  for(var x = 0;x<alarmListObj.length;x++) {
-                    var jsonText = JSON.stringify(alarmListObj[x]);
-                    if(alarmListObj[x]["event"] == (i+1)) {
-                      console.log("FileName: " + fileName + " alarmJSON " + jsonText);
-                    }
-                  }
+              console.log("------------------------------");
+              for(var x = 0;x<alarmListObj.length;x++) {
+                var jsonText = JSON.stringify(alarmListObj[x]);
+                if(alarmListObj[x]["event"] == (i+1)) {
+                  console.log("File: " + fileName + " with event number: " + (i+1) + " has " + jsonText);
                 }
               }
+              console.log("-------------------------------");
             }
           });
+
+          
         }
       }
     }
   });
+
+  //Now I am going to have to get a list of fileEvents
+  connection.query("SELECT * FROM FILE;", function(err, rows, fields) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      //Go through all of the rows in the query
+      var fileNames = [];
+
+      for(let row of rows) {
+        var fileName = row.file_Name;
+        fileNames.push(fileName);
+
+        var alarmList = sharedLib.alarmJSONWrapper(fileName);
+        var eventList = sharedLib.eventJSONWrapper(fileName);
+        //Go through all of the indi events and put them into the table with reference to the cal_id
+
+        var alarmListObj = JSON.parse(alarmList);
+        var eventListObj = JSON.parse(eventList);
+
+        for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
+          //Each event will have a specific list of props
+          for(var x = 0;x<alarmListObj.length;x++) {
+            var jsonText = JSON.stringify(alarmListObj[x]);
+            if(alarmListObj[x]["event"] == (i+1)) {
+              console.log("FileName: " + fileName + " alarmJSON " + jsonText);
+            }
+          }
+        }
+      }
+    }
+  });
+
 
 
   //Make a query to from the event table 
