@@ -401,7 +401,6 @@ app.get('/dbSaveFiles', function(req, res) {
             var eID = row.event_ID;
             var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
             var alarmJSONObj = JSON.parse(alarmJSON);
-            console.log( row.file_Name + " " + " "+ row.event_no + " " + alarmJSON);
             for(var x = 0;x<alarmJSONObj.length;x++) {
               if(alarmJSONObj["event"] == row.event_no) {
                 //These are the alarms for the current event
