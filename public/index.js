@@ -518,6 +518,7 @@ $(document).ready(function () {
 
     $(".main-functions").find("#get-db-status").on('click', function(e) {
         e.preventDefault();
+        console.log("Clicked!");
         $.ajax({
             type: 'get',
             url: '/getDBStatus',
