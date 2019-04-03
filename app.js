@@ -341,7 +341,7 @@ app.get('/dbSaveFiles', function(req, res) {
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
           console.log(fileName + " " + eventListObj[i]);
-          var currentEventPropObj = propListObj[i];
+          var currentEventPropObj = JSON.stringify(propListObj[i]);
           var jsonText = JSON.stringify(currentEventPropObj);
           if(jsonText != undefined && jsonText != '[]') {
             //If the json is here
