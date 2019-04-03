@@ -358,7 +358,6 @@ app.get('/dbSaveFiles', function(req, res) {
 
         var eventListObj = JSON.parse(eventList);
         var propListObj = JSON.parse(propList);
-        var alarmListObj = JSON.parse(alarmList);
         console.log("THE LENGTH IS " + alarmListObj.length);
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
@@ -377,7 +376,6 @@ app.get('/dbSaveFiles', function(req, res) {
             }
           }
           //console.log("Start time " + eventListObj[i]["start"])
-          console.log(eventListObj[i]["startDT"]["time"]);
           var startTimeDate  = eventListObj[i]["startDT"]["date"];
           var starTime = eventListObj[i]["startDT"]["time"];
 
@@ -389,7 +387,7 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
-
+              var alarmListObj = JSON.parse(alarmList);
               //You want to push the alar table here
               console.log("The event table was appended to");
               console.log("------------------------------");
