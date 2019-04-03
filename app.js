@@ -398,28 +398,6 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log(err);
             } else {
               console.log("NICE");              
-              // console.log(result);
-              // console.log("THE CURRENT: " + row.file_Name);
-              // var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
-              // var alarmListObj = JSON.parse(alarmList);
-              // //You want to push the alar table here
-              // console.log("The event table was appended to");
-              // console.log("------------------------------");
-              // console.log("THE CURRENT EVENT IS " + (i));
-              // for(var x = 0;x<alarmListObj.length;x++) {
-              //   if(alarmListObj[x]["event"] == (i)) {
-              //     //console.log("File: " + row.file_Name + " with alarm number: " + (x+1) + " has " + jsonText);
-              //     var alarmToSQLQuery = alarmToSQL(alarmListObj[x], result.insertId);
-              //     connection.query(alarmToSQLQuery, function(err) {
-              //       if(err) {
-              //         console.log("Something went wrong");
-              //       } else {
-              //         console.log("Alarm table was appended");
-              //       }
-              //     });
-              //   }
-              // }
-              // console.log("-------------------------------");
             }
           });
 
@@ -433,13 +411,9 @@ app.get('/dbSaveFiles', function(req, res) {
           console.log("OK");
           for(let row of rows) { // Each of these rows is an event
             //console.log(row);
-            var eventJSON = sharedLib.eventJSONWrapper(row.file_Name);
-            var eventJSONObj = JSON.parse(eventJSON);
-
-            var index = row.event_no;
-            index = index - 1;
-            console.log(eventListObj[index]);
-            //console.log(getAlarmsForEvent(eventJSONObj[index], row.file_Name, row.event_no));
+            var wantedEventNo = row.event_no;
+            var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
+            console.log(alarmJSON);
           }
         }
       });
