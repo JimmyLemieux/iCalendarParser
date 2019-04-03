@@ -467,9 +467,9 @@ app.get('/dbClearFiles', function(req, res) {
 
 app.get('/getDBStatus', function(req,res) {
 
-  var fileSize = "SELECT COUNT(*) FROM FILE";
-  var eventSize = "SELECT COUNT(*) FROM EVENT";
-  var alarmSize = "SELECT COUNT(*) FROM ALARM";
+  var fileSize = "SELECT * FROM FILE";
+  var eventSize = "SELECT * FROM EVENT";
+  var alarmSize = "SELECT * FROM ALARM";
 
   connection.query(fileSize, function(err, result) {
     if(err) {
@@ -494,7 +494,7 @@ app.get('/getDBStatus', function(req,res) {
       console.log(result);
     }
   });
-  
+
 
 });
 
