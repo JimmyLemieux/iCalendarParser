@@ -343,8 +343,8 @@ app.get('/dbSaveFiles', function(req, res) {
 
           for(var x = 0;x<propListObj.length;x++) {
             var  jsonText  = JSON.stringify(propListObj[x]);
-            if(jsonText != undefined && jsonText != "[]" && propListObj["event"] == i+1) {
-              console.log(fileName + " " + jsonText);
+            if(jsonText != undefined && jsonText != "[]") {
+              console.log(fileName + " " + propListObj[x]["event"]);
             }
           }
           // var currentEventPropObj = propListObj[i];
