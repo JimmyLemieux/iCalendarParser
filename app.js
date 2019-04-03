@@ -382,6 +382,7 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("There was an error with the event table");
             } else {
               console.log("NICE");
+              console.log(calID);
               // console.log(result);
               // console.log("THE CURRENT: " + row.file_Name);
               // var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
@@ -406,22 +407,12 @@ app.get('/dbSaveFiles', function(req, res) {
               // console.log("-------------------------------");
             }
           });
-
-          console.log("Current on " + row.file_Name);
-          connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-            if(err) {
-              console.log("Something went wrong on the event fetch");
-            } else {
-              for(let row of rows) {
-                console.log(row.cal_file);
-              }
-              console.log("Here is the event");
-            }
-          });
         }
       }
     }
   });
+
+  connection.query("SELECT * FROM ")
 
   //Make a query to from the event table 
 
