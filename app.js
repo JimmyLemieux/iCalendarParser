@@ -12,7 +12,7 @@ const fileUpload = require('express-fileupload');
 
 const Promise = require('promise');
 
-var connection; 
+var connection;
 var fileListObj = [];
 
 const mysql = require('mysql');
@@ -41,41 +41,6 @@ app.use(express.static(path.join(__dirname, 'uploads')));
 
 
 //This part will have to be apart of the login form endpoint, on success we will have to send an endpoint
-
-
-// connection = mysql.createConnection({
-//   host: "dursley.socs.uoguelph.ca",
-//   user: "jlemie03",
-//   password: "1014181",
-//   database: "jlemie03"
-// });
-
-// connection.connect(function(err, result) {
-
-//   if(err){ 
-//     return;
-//   }
-//   console.log("Connected to DB");
-
-//   //Making a table in the new database
-//   var sql = "CREATE TABLE FILE (cal_id INT AUTO_INCREMENT PRIMARY KEY, file_name VARCHAR(60) NOT NULL, version INT NOT NULL, prod_id VARCHAR(256) NOT NULL)";
-//   var sql2 = "CREATE TABLE EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL)";
-//   var sql3 = "CREATE TABLE ALARM (alarm_id INT AUTO_INCREMENT PRIMARY KEY, action VARCHAR(256) NOT NULL, trigger VARCHAR(256) NOT NULL, event INT NOT NULL FOREIGN KEY(event) REFERENCES EVENT(event_id) ON DELETE CASCADE)";
-//   con.query(sql, function(err, result) {
-//     if(err){ console.log("FILE TABLE ALREADY EXISTS!"); return;}
-//     console.log("Table FILE Created");
-//   });
-
-//   con.query(sql2, function(err, result) {
-//     if(err){ console.log("FILE EVENT ALREADY EXISTS!"); return;}
-//     console.log("Table EVENT Created");
-//   });
-
-//   con.query(sql3, function(err, result) {
-//     if(err){ console.log("FILE ALARM ALREADY EXISTS!"); return;}
-//     console.log("Table ALARM Created");
-//   });
-// });
 
 
 let sharedLib = ffi.Library('./libcal.so', {
@@ -113,9 +78,9 @@ app.post('/upload', function(req, res) {
     var ret = {error: "No Files Sent"};
     res.send(ret);
   }
- 
+
   let uploadFile = req.files.someUpload;
- 
+
   // Use the mv() method to place the file somewhere on your server
   uploadFile.mv('uploads/' + uploadFile.name, function(err) {
     if(err) {
@@ -206,7 +171,7 @@ app.post('/createCalendar', function(req,res) {
 
   for(var i = 0;i<files.length;i++) {
     if(files[i] == fileName) {
-      var ret = {error:"File Already Exists!"}; 
+      var ret = {error:"File Already Exists!"};
       res.send(JSON.stringify(ret));
     }
   }
@@ -279,6 +244,51 @@ app.get('/loginDatabase', function(req, res) {
       res.send({error: "SUCCESS"});
     }
   });
+
+  var sql = "CREATE TABLE IF NOT EXISTS FILE (cal_id INT AUTO_INCREMENT PRIMARY KEY, file_Name VARCHAR(60) NOT NULL, version INT NOT NULL, prod_id VARCHAR(256) NOT NULL)";
+  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
+  var sql3 = "CREATE TABLE IF NOT EXISTS ALARM (alarm_id INT AUTO_INCREMENT PRIMARY KEY, action VARCHAR(256) NOT NULL, `trigger` VARCHAR(256) NOT NULL, event INT NOT NULL, FOREIGN KEY(event) REFERENCES EVENT(event_id) ON DELETE CASCADE)";
+
+
+  connection.query(sql, function(err, result) {
+    if(err){ console.log("FILE TABLE ALREADY EXISTS!"); return;}
+    console.log("Table FILE Created");
+  });
+
+  connection.query(sql2, function(err, result) {
+    if(err){ console.log("FILE EVENT ALREADY EXISTS!"); return;}
+    console.log("Table EVENT Created");
+  });
+
+  connection.query(sql3, function(err, result) {
+    if(err){ console.log("FILE ALARM ALREADY EXISTS!"); return;}
+    console.log("Table ALARM Created");
+  });
+
+
+  connection.query("DELETE FROM FILE", function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
+    }
+  });
+
+  connection.query("DELETE FROM EVENT" , function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
+    }
+  });
+
+  connection.query("DELETE FROM ALARM", function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
+    }
+  });
 });
 
 
@@ -292,25 +302,15 @@ app.get('/dbSaveFiles', function(req, res) {
     var fileName = jObj.fileName;
     var stringSQLQuery = fileLogToSQL(jObj);
 
-    var checkDupe = "SELECT * FROM FILE WHERE file_name='" + fileName + "'";
-    connection.query(checkDupe, function(err,result, fields) {
-      if(err) {
-        console.log("Something went wrong! on dupe");
-      } else {
-        if(result.length == 0) {
-          console.log("The record was not found");
-        }
-      }
-    });
 
-
+    //This is pushing things to the table
     connection.query(stringSQLQuery, function(err, rows, fields) {
       if(err) {
         console.log("Something went wrong!");
       }else {
         console.log("The table was made successfully");
       }
-    })
+    });
   }
 
 
@@ -323,31 +323,62 @@ app.get('/dbClearFiles', function(req, res) {
 
   var tableSize = "SELECT COUNT(*) FROM FILE";
 
-  connection.query(tableSize, function(err,result, fields) {
+
+  connection.query("DELETE FROM FILE", function(err) {
     if(err) {
-      console.log("something went wrong");
+      console.log("Something went wrong");
     } else {
-      console.log(result);
+      console.log("Table deleted");
     }
   });
 
-
-  connection.query(deleteFileTable, function(err, rows, fields) {
+  connection.query("DELETE FROM EVENT" , function(err) {
     if(err) {
-      console.log("Something went wrong!");
+      console.log("Something went wrong");
     } else {
-      console.log("Tabled cleared on success");
+      console.log("Table deleted");
     }
   });
 
-
-  connection.query(tableSize, function(err,result, fields) {
+  connection.query("DELETE FROM ALARM", function(err) {
     if(err) {
-      console.log("something went wrong");
+      console.log("Something went wrong");
     } else {
-      console.log(result);
+      console.log("Table deleted");
     }
   });
+
+  // connection.query(tableSize, function(err,result, fields) {
+  //   if(err) {
+  //     console.log("something went wrong");
+  //   } else {
+  //     console.log(result);
+  //   }
+  // });
+
+  // connection.query(deleteFileTable, function(err, rows, fields) {
+  //   if(err) {
+  //     console.log("Something went wrong!");
+  //   } else {
+  //     console.log("Tabled cleared on success");
+  //   }
+  // });
+  //
+  // connection.query(tableSize, function(err,result, fields) {
+  //   if(err) {
+  //     console.log("something went wrong");
+  //   } else {
+  //     console.log(result);
+  //   }
+  // });
+
+});
+
+app.get('/getDBStatus', function(req,res) {
+  var fileSize = "SELECT COUNT(*) FROM FILE";
+  var eventSize = "SELECT COUNT(*) FROM EVENT";
+  var alarmSize = "SELECT COUNT(*) FROM ALARM";
+
 
 });
 
