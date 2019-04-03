@@ -241,17 +241,20 @@ function alarmToSQL(data, eventFieldID) {
 }
 
 
-function getAlarmsForEvent(eventJSON, fileName) {
-  var eventNumber = eventJSON["event"];
+function getAlarmsForEvent(eventJSON, fileName, event_no) {
+  var eventJSONObj = JSON.parse(eventJSON);
   var alarmJSON = sharedLib.alarmJSONWrapper(fileName);
-  var alarmJSONObject = JSON.parse(alarmJSON);
-  var eventAlarms = [];
-  for(var x = 0;x<alarmJSONObject.length;x++) {
-    if(alarmJSONObject["event"] == eventNumber) {
-      eventAlarms.push(alarmJSONObject[x]);
+  var alarmJSONObj = JSON.parse(alarmJSON);
+
+  var alarmList = [];
+  for(var i = 0;i<eventJSONObj.length;i++) {
+    for(var x = 0;x<alarmJSONObj.length;x++) {
+      if(event_no == (i+1)) {
+        alarmList.push(alarmJSONObj[x]);
+      }
     }
   }
-  return eventAlarms;
+  return alarmList;
 }
 
 
@@ -435,7 +438,7 @@ app.get('/dbSaveFiles', function(req, res) {
           for(let row of rows) { // Each of these rows is an event
             console.log(row);
             var eventJSON = sharedLib.eventJSONWrapper(row.file_Name);
-            //console.log(getAlarmsForEvent(eventJSON, row.file_Name));
+            console.log(getAlarmsForEvent(eventJSON, row.file_Name, row.event_no));
 
           }
         }
