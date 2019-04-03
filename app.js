@@ -217,7 +217,6 @@ function fileLogToSQL(data) {
 
 function eventToSQL(data, summary,startTime,organizer, location, cal_file_id) {
   var heading = "(summary, start_time, location, organizer, cal_file)";
-  console.log(startTime);
   var values = "('"+ summary + "', '"
                     + startTime + "', '"
                     + location + "', '"
@@ -390,6 +389,7 @@ app.get('/dbSaveFiles', function(req, res) {
               //You want to push the alar table here
               console.log("The event table was appended to");
               console.log("------------------------------");
+              console.log("SIZE OF THE ALARM LIST "+ alarmListObj.length);
               for(var x = 0;x<alarmListObj.length;x++) {
                 var jsonText = JSON.stringify(alarmListObj[x]);
                 if(alarmListObj[x]["event"] == (i+1)) {
