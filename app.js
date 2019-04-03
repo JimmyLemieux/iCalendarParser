@@ -356,7 +356,6 @@ app.get('/dbSaveFiles', function(req, res) {
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
-
           for(var x = 0;x<propListObj.length;x++) {
             var  jsonText  = JSON.stringify(propListObj[x]);
             if(propListObj[x]["event"] == (i+1)) {
@@ -377,12 +376,13 @@ app.get('/dbSaveFiles', function(req, res) {
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
           var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID);
 
-          connection.query(eventToSQLQuery, function(err, result) {
+          //Adding the event to the database 
+          connection.query(eventToSQLQuery, function(err, rows,fields) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
-              console.log("NICE");
-              console.log(row.cal_id);
+              console.log(fields);
+              console.log("NICE");              
               // console.log(result);
               // console.log("THE CURRENT: " + row.file_Name);
               // var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
@@ -411,10 +411,13 @@ app.get('/dbSaveFiles', function(req, res) {
       }
     }
   });
-
   //Make a query to from the event table 
 
   //res.send(fileListObj);
+});
+
+app.get('/dbSaveFilesAlarms', function(req, res) {
+
 });
 
 //This will clear all of the files from the database 
