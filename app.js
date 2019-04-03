@@ -215,13 +215,14 @@ function fileLogToSQL(data) {
   return tableToBeInserted;
 }
 
-function eventToSQL(data, summary,startTime,organizer, location, cal_file_id, fileName) {
-  var heading = "(summary, start_time, location, organizer, file_Name, cal_file)";
+function eventToSQL(data, summary,startTime,organizer, location, cal_file_id, fileName, eventNumber) {
+  var heading = "(summary, start_time, location, organizer, file_Name, event_no, cal_file)";
   var values = "('"+ summary + "', '"
                     + startTime + "', '"
                     + location + "', '"
                     + organizer + "', '"
                     + fileName + "', '"
+                    + eventNumber + "', '"
                     + cal_file_id + "')";
 
   var tableToBeInserted = "INSERT INTO EVENT " + heading + " VALUES " + values + ";";
@@ -282,7 +283,7 @@ app.get('/loginDatabase', function(req, res) {
   });
 
   var sql = "CREATE TABLE IF NOT EXISTS FILE (cal_id INT AUTO_INCREMENT PRIMARY KEY, file_Name VARCHAR(60) NOT NULL, version INT NOT NULL, prod_id VARCHAR(256) NOT NULL)";
-  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, file_Name VARCHAR(60) NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
+  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, file_Name VARCHAR(60) NOT NULL, event_no INT NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
   var sql3 = "CREATE TABLE IF NOT EXISTS ALARM (alarm_id INT AUTO_INCREMENT PRIMARY KEY, action VARCHAR(256) NOT NULL, `trigger` VARCHAR(256) NOT NULL, event INT NOT NULL, FOREIGN KEY(event) REFERENCES EVENT(event_id) ON DELETE CASCADE)";
 
 
@@ -390,8 +391,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
           var summary = null;
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
-          var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID, row.file_Name);
-
+          var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID, row.file_Name,eventListObj[i]["event"]);
           //Adding the event to the database 
           connection.query(eventToSQLQuery, function(err, rows) {
             if(err) {
@@ -433,7 +433,7 @@ app.get('/dbSaveFiles', function(req, res) {
         } else {
           console.log("OK");
           for(let row of rows) { // Each of these rows is an event
-            console.log(row); 
+            console.log(row.file_Name);
             var eventJSON = sharedLib.eventJSONWrapper(row.file_Name);
             console.log(getAlarmsForEvent(eventJSON, row.file_Name));
 
