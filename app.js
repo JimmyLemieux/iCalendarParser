@@ -1,6 +1,5 @@
 'use strict'
 
-
 // C library API
 const ffi = require('ffi');
 
@@ -297,6 +296,8 @@ app.get('/loginDatabase', function(req, res) {
 });
 
 
+//This is for adding things to the database
+// All of the tables are populated and added here
 app.get('/dbSaveFiles', function(req, res) {
 
   console.log("Starting to save files to the db");
@@ -340,36 +341,37 @@ app.get('/dbSaveFiles', function(req, res) {
         var propListObj = JSON.parse(propList);
 
 
-        for(var i = 0;i<eventListObj.length;i++) {
-          for(var x = 0;x<propListObj.length;x++) {
-            var curProp = propListObj[x];
-            var jsonText = JSON.stringify(curProp);
-            if(jsonText != undefined && jsonText != "[]") {
-                if(curProp["name"].toUpperCase() == 'LOCATION') {
-                  eventLocation = curProp['description'];
-                }
+        for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
+          // for(var x = 0;x<propListObj.length;x++) {
+          //   var curProp = propListObj[x];
+          //   var jsonText = JSON.stringify(curProp);
+          //   if(jsonText != undefined && jsonText != "[]") {
+          //       if(curProp["name"].toUpperCase() == 'LOCATION') {
+          //         eventLocation = curProp['description'];
+          //       }
 
-                if(curProp["name"].toUpperCase() == "ORGANIZER") {
-                  eventOrganizer = curProp["description"];
-                }
-                console.log("The location of event " + (i+1) + " " + eventLocation);
-               // These are properties of the current event
-            }
+          //       if(curProp["name"].toUpperCase() == "ORGANIZER") {
+          //         eventOrganizer = curProp["description"];
+          //       }
+          //       console.log("The location of event " + (i+1) + " " + eventLocation);
+          //      // These are properties of the current event
+          //   }
+          // }
+          //Each event will have a specific list of props
+          var currentEventPropObj = propListObj[i];
+          var jsonText = JSON.stringify(currentEventPropObj);
+          if(jsonText != undefined && jsonText != '[]') {
+            console.log(jsonText);
           }
-
-          //Here
-          console.log("Finished reading file " + fileName);
         }
       }
     }
   });
 
-
-
   //res.send(fileListObj);
 });
 
-
+//This will clear all of the files from the database 
 app.get('/dbClearFiles', function(req, res) {
   var deleteFileTable = "DELETE FROM FILE";
 
