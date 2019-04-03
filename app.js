@@ -391,34 +391,39 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("The event table was appended to");
             }
           });
+        }
+      }
+    }
+  });
 
+  //Now I am going to have to get a list of fileEvents
+  connection.query("SELECT * FROM FILE;", function(err, rows, fields) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      //Go through all of the rows in the query
+      var fileNames = [];
 
-          console.log("Starting to traverse the alarms");
-          //Go through the alarms of the current event
+      for(let row of rows) {
+        var fileName = row.file_Name;
+        fileNames.push(fileName);
+
+        var alarmList = sharedLib.alarmJSONWrapper(fileName);
+        //Go through all of the indi events and put them into the table with reference to the cal_id
+
+        var eventListObj = JSON.parse(eventList);
+        var alarmListObj = JSON.parse(alarmList);
+
+        for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
+          //Each event will have a specific list of props
           for(var x = 0;x<alarmListObj.length;x++) {
             var jsonText = JSON.stringify(alarmListObj[x]);
-            if(alarmListObj[x]["event"] == (i+1)) { //For the current event
-              console.log("For the file " + fileName + " " + " for event " + (i+1) + " " + jsonText);
+            if(alarmListObj[x]["event"] == (i+1)) {
+              console.log("FileName: " + fileName + " alarmJSON " + jsonText);
             }
           }
         }
       }
-
-      // //The alarm that will be pulled
-      // console.log("Starting to pull from the event table");
-      // connection.query("SELECT * FROM EVENT", function(err, rows, fields) { // The cal_file represents the primary key in the FILE table 
-      //   if(err) {
-      //     console.log("Something went from when parsing the EVENT row");
-      //   } else {
-
-      //     for(var x = 0;x<fileNames.length;x++) {
-      //       for(let row of rows) {
-      //         var eventID = row.event_id;
-      //         console.log(eventID);
-      //       }
-      //     }
-      //   }
-      // });
     }
   });
 
