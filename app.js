@@ -390,10 +390,16 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("------------------------------");
               console.log("THE CURRENT EVENT IS " + (i));
               for(var x = 0;x<alarmListObj.length;x++) {
-                var jsonText = JSON.stringify(alarmListObj[x]);
                 if(alarmListObj[x]["event"] == (i)) {
-                  console.log("File: " + row.file_Name + " with alarm number: " + (x+1) + " has " + jsonText);
-                  //var alarmToSQLQuery = alarmToSQL();
+                  //console.log("File: " + row.file_Name + " with alarm number: " + (x+1) + " has " + jsonText);
+                  var alarmToSQLQuery = alarmToSQL(alarmListObj[x], result.insertId);
+                  connection.query(alarmToSQLQuery, function(err) {
+                    if(err) {
+                      console.log("Something went wrong");
+                    } else {
+                      console.log("Alarm table was appended");
+                    }
+                  });
                 }
               }
               console.log("-------------------------------");
