@@ -322,7 +322,6 @@ app.get('/dbSaveFiles', function(req, res) {
   for(var i = 0;i<fileListObj.length;i++) {
     var jObj = JSON.parse(fileListObj[i]);
     var fileName = jObj.fileName;
-    fileNames.push(fileName);
     var stringSQLQuery = fileLogToSQL(jObj);
 
     //This is pushing things to the table
