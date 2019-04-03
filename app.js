@@ -212,7 +212,6 @@ function fileLogToSQL(data) {
 
 
   var tableToBeInserted = "INSERT INTO FILE " + heading + " VALUES " + values + ";";
-  console.log(tableToBeInserted);
   return tableToBeInserted;
 }
 
@@ -226,7 +225,6 @@ function eventToSQL(data, summary,startTime,organizer, location, cal_file_id) {
                     + cal_file_id + "')";
 
   var tableToBeInserted = "INSERT INTO EVENT " + heading + " VALUES " + values + ";";
-  console.log(tableToBeInserted);
   return tableToBeInserted;
 }
 
@@ -238,7 +236,6 @@ function alarmToSQL(data, eventFieldID) {
                     + eventFieldID + "')";
 
   var tableToBeInserted = "INSERT INTO ALARM " + heading + " VALUES " + values + ";";
-  console.log(tableToBeInserted);
   return tableToBeInserted;
 }
 
