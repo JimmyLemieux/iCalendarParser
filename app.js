@@ -217,7 +217,7 @@ function fileLogToSQL(data) {
   return tableToBeInserted;
 }
 
-function eventToSQL(data, cal_file) {
+function eventToSQL(data, organizer, location, cal_file) {
   var heading = "(event_id, summary, start_time, location, organizer, cal_file)";
 
 }
@@ -331,6 +331,8 @@ app.get('/dbSaveFiles', function(req, res) {
         var calID = row.cal_id;
         var eventList = sharedLib.eventJSONWrapper(fileName);
         var propList = sharedLib.eventPropWrapper(fileName);
+        var eventLocation = null;
+        var eventOrganizer = null;
         //console.log(eventList);
         //Go through all of the indi events and put them into the table with reference to the cal_id
 
@@ -343,11 +345,19 @@ app.get('/dbSaveFiles', function(req, res) {
             var curProp = propListObj[x];
             var jsonText = JSON.stringify(curProp);
             if(jsonText != undefined && jsonText != "[]") {
-              if(curProp["event"] == i+1){
-                console.log(jsonText);
-              } // These are properties of the current event
+                if(curProp["name"].toUpperCase() == 'LOCATION') {
+                  eventLocation = curProp['description'];
+                }
+
+                if(curProp["name"].toUpperCase() == "ORGANIZER") {
+                  eventOrganizer = curProp["description"];
+                }
+                console.log("The location of event " + (i+1) + " " + eventLocation);
+               // These are properties of the current event
             }
           }
+
+          //Here
           console.log("Finished reading file " + fileName);
         }
       }
