@@ -395,17 +395,18 @@ app.get('/dbSaveFiles', function(req, res) {
         if(err) {
           console.log("There was an error");
         } else {
-          console.log("OK");
+          //console.log("OK");
           for(let row of rows) { // Each of these rows is an event
-            console.log(row);
             var eID = row.event_ID;
             var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
             var alarmJSONObj = JSON.parse(alarmJSON);
+            console.log(alarmJSONObj.length); 
             for(var x = 0;x<alarmJSONObj.length;x++) {
               if(alarmJSONObj["event"] == row.event_no) {
                 console.log("Called");
                 //These are the alarms for the current event
                 var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+                console.log(alarmSQLQuery);
                 connection.query(alarmSQLQuery, function(err) {
                   if(err) {
                     console.log("There was a problem with alarm TABLE"); 
