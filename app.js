@@ -404,16 +404,17 @@ app.get('/dbSaveFiles', function(req, res) {
             for(var x = 0;x<alarmJSONObj.length;x++) {
               if(alarmJSONObj[x]["event"] == row.event_no) {
                 //These are the alarms for the current event
-                var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
-                console.log(alarmSQLQuery);
-                connection.query(alarmSQLQuery, function(err) {
-                  if(err) {
-                    console.log("There was a problem with alarm TABLE"); 
-                    console.log(err);
-                  } else{
-                    console.log("The alarm was pushed!");
-                  }
-                });
+                console.log(alarmJSONObj[x].trigger);
+                //var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+                //console.log(alarmSQLQuery);
+                // connection.query(alarmSQLQuery, function(err) {
+                //   if(err) {
+                //     console.log("There was a problem with alarm TABLE"); 
+                //     console.log(err);
+                //   } else{
+                //     console.log("The alarm was pushed!");
+                //   }
+                // });
               }
             }
           }
