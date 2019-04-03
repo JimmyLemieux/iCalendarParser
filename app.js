@@ -410,13 +410,13 @@ app.get('/dbSaveFiles', function(req, res) {
         }
       }
 
-      connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+      connection.query("SELECT (summary) FROM EVENT", function(err, rows, fields) {
         if(err) {
           console.log("There was an error");
         } else {
           console.log("OK");
-          for(let row in rows) {
-            console.log(row.start_time);
+          for(let row of rows) {
+            console.log(row); 
           }
         }
       });
