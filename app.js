@@ -341,15 +341,12 @@ app.get('/dbSaveFiles', function(req, res) {
       console.log("Something went wrong");
     } else {
       //Go through all of the rows in the query
-      var fileNames = [];
 
       for(let row of rows) {
-        var fileName = row.file_Name;
-        fileNames.push(fileName);
 
         var calID = row.cal_id;
-        var eventList = sharedLib.eventJSONWrapper(fileName);
-        var propList = sharedLib.eventPropWrapper(fileName);
+        var eventList = sharedLib.eventJSONWrapper(row.file_Name);
+        var propList = sharedLib.eventPropWrapper(row.file_Name);
         var eventLocation = null;
         var eventOrganizer = null;
         //Go through all of the indi events and put them into the table with reference to the cal_id
@@ -384,7 +381,7 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
-              console.log("fileName: " + row.file_Name);
+              console.log("THE CURRENT: " + row.file_Name);
               var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
               var alarmListObj = JSON.parse(alarmList);
               //You want to push the alar table here
@@ -393,9 +390,10 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("------------------------------");
               for(var x = 0;x<alarmListObj.length;x++) {
                 var jsonText = JSON.stringify(alarmListObj[x]);
-                if(alarmListObj[x]["event"] == (i+1)) {
-                  console.log("File: " + fileName + " with alarm number: " + (x+1) + " has " + jsonText);
-                }
+                console.log(jsonText);
+                // if(alarmListObj[x]["event"] == (i+1)) {
+                //   console.log("File: " + fileName + " with alarm number: " + (x+1) + " has " + jsonText);
+                // }
               }
               console.log("-------------------------------");
             }
