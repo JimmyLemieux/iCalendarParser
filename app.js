@@ -370,7 +370,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
           console.log("current Event Index " + (i+1) + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
           //console.log("Start time " + eventListObj[i]["start"])
-          console.log(eventListObj[i]);
+          console.log(eventListObj[i]["startDT"]["time"]);
           // var currentEventPropObj = propListObj[i];
           // var jsonText = JSON.stringify(currentEventPropObj);
           // console.log( fileName + " " +jsonText);
