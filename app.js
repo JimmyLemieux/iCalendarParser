@@ -396,6 +396,7 @@ app.get('/dbSaveFiles', function(req, res) {
           connection.query(eventToSQLQuery, function(err, rows) {
             if(err) {
               console.log("There was an error with the event table");
+              console.log(err);
             } else {
               console.log("NICE");              
               // console.log(result);
