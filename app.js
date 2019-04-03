@@ -386,14 +386,13 @@ app.get('/dbSaveFiles', function(req, res) {
               var alarmListObj = JSON.parse(alarmList);
               //You want to push the alar table here
               console.log("The event table was appended to");
-              console.log("THE CURRENT EVENT IS " + (i+1));
+              console.log("THE CURRENT EVENT IS " + (i));
               console.log("------------------------------");
               for(var x = 0;x<alarmListObj.length;x++) {
                 var jsonText = JSON.stringify(alarmListObj[x]);
-                console.log(jsonText);
-                // if(alarmListObj[x]["event"] == (i+1)) {
-                //   console.log("File: " + fileName + " with alarm number: " + (x+1) + " has " + jsonText);
-                // }
+                if(alarmListObj[x]["event"] == (i)) {
+                  console.log("File: " + fileName + " with alarm number: " + (x+1) + " has " + jsonText);
+                }
               }
               console.log("-------------------------------");
             }
