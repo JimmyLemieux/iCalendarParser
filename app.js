@@ -407,14 +407,14 @@ app.get('/dbSaveFiles', function(req, res) {
                 var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
                 console.log(alarmSQLQuery);
                 //console.log(alarmSQLQuery);
-                // connection.query(alarmSQLQuery, function(err) {
-                //   if(err) {
-                //     console.log("There was a problem with alarm TABLE"); 
-                //     console.log(err);
-                //   } else{
-                //     console.log("The alarm was pushed!");
-                //   }
-                // });
+                connection.query(alarmSQLQuery, function(err) {
+                  if(err) {
+                    console.log("There was a problem with alarm TABLE"); 
+                    console.log(err);
+                  } else{
+                    console.log("The alarm was pushed!");
+                  }
+                });
               }
             }
           }
