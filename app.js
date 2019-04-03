@@ -340,6 +340,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
+          console.log(fileName + " " + eventListObj[i]);
           var currentEventPropObj = propListObj[i];
           var jsonText = JSON.stringify(currentEventPropObj);
           if(jsonText != undefined && jsonText != '[]') {
@@ -348,15 +349,15 @@ app.get('/dbSaveFiles', function(req, res) {
             var eventLocation = null;
 
             if(currentEventPropObj["name"].toUpperCase() == "LOCATION") {
-              console.log(fileName + " " + currentEventPropObj["name"]);
+              //console.log(fileName + " " + currentEventPropObj["name"]);
               eventLocation = currentEventPropObj["description"];
             }
             if(currentEventPropObj["name"].toUpperCase() == "ORGANIZER") {
-              console.log(fileName + " " + currentEventPropObj["name"]);
+              //onsole.log(fileName + " " + currentEventPropObj["name"]);
               eventOrganizer = currentEventPropObj["description"];
             }
 
-            console.log( fileName + " " + jsonText + " Organizer " + eventOrganizer + " Location " + eventLocation);
+            //console.log( fileName + " " + jsonText + " Organizer " + eventOrganizer + " Location " + eventLocation);
 
           }
         }
