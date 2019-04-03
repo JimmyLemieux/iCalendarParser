@@ -344,7 +344,17 @@ app.get('/dbSaveFiles', function(req, res) {
           for(var x = 0;x<propListObj.length;x++) {
             var  jsonText  = JSON.stringify(propListObj[x]);
             if(propListObj[x]["event"] == (i+1)) {
-              console.log("current Event Index " + (i+1) + " " + jsonText);
+              var eventLocation = null;
+              var eventOrganizer = null;
+              if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
+                eventLocation = propListObj[x]["description"];
+              }
+              if(propListObj[x]["name"].toUpperCase() == "ORGANIZER") {
+                eventOrganizer = propListObj[x]["description"];
+              }
+              // Here we need to make a query and add these into the event table
+
+              console.log("current Event Index " + (i+1) + " " + jsonText + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation);
             }
           }
           // var currentEventPropObj = propListObj[i];
