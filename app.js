@@ -230,7 +230,7 @@ function eventToSQL(data, summary,startTime,organizer, location, cal_file_id, fi
 }
 
 function alarmToSQL(data, eventFieldID) {
-  var heading = "(action, trigger, event)";
+  var heading = "(action, `trigger`, event)";
 //Adding
   var values = "('"+ data.action + "', '"
                     + data.trigger + "', '"
