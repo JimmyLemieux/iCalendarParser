@@ -374,10 +374,19 @@ app.get('/dbSaveFiles', function(req, res) {
           var startTime  = eventListObj[i]["startDT"]["time"];
           var summary = null;
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
-          console.log(eventToSQL(eventListObj[i], summary, startTime, eventOrganizer, eventLocation,calID));
+          var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTime, eventOrganizer, eventLocation,calID);
           // var currentEventPropObj = propListObj[i];
           // var jsonText = JSON.stringify(currentEventPropObj);
           // console.log( fileName + " " +jsonText);
+
+          connection.query(eventToSQLQuery, function(err) {
+            if(err) {
+              console.log("There was an error with the event table");
+            } else {
+              console.log("The event table was appended to");
+            }
+          });
+
           console.log("------------------------------------------");
         }
       }
