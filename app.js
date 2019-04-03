@@ -397,7 +397,7 @@ app.get('/dbSaveFiles', function(req, res) {
         } else {
           console.log("OK");
           for(let row of rows) { // Each of these rows is an event
-            //console.log(row);
+            console.log(row);
             var eID = row.event_ID;
             var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
             var alarmJSONObj = JSON.parse(alarmJSON);
