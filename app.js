@@ -382,7 +382,7 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("There was an error with the event table");
             } else {
               console.log("NICE");
-              console.log(row.calID);
+              console.log(row.cal_id);
               // console.log(result);
               // console.log("THE CURRENT: " + row.file_Name);
               // var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
