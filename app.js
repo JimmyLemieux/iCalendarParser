@@ -403,7 +403,6 @@ app.get('/dbSaveFiles', function(req, res) {
             console.log(alarmJSONObj.length); 
             for(var x = 0;x<alarmJSONObj.length;x++) {
               if(alarmJSONObj["event"] == row.event_no) {
-                console.log("Called");
                 //These are the alarms for the current event
                 var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
                 console.log(alarmSQLQuery);
@@ -415,6 +414,7 @@ app.get('/dbSaveFiles', function(req, res) {
                   }
                 });
               }
+              console.log("Called");
             }
           }
         }
