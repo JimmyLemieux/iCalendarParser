@@ -249,9 +249,7 @@ function getAlarmsForEvent(eventJSON, fileName, event_no) {
   var alarmList = [];
   console.log(event_no);
   for(var x = 0;x<alarmJSONObj;x++) {
-    if(alarmJSONObj["event"] == event_no) {
-      alarmList.push(alarmJSONObj[x]);
-    }
+    console.log(alarmJSONObj[x]["event"]);
   }
   return alarmList;
 }
@@ -438,7 +436,6 @@ app.get('/dbSaveFiles', function(req, res) {
             //console.log(row);
             var eventJSON = sharedLib.eventJSONWrapper(row.file_Name);
             console.log(getAlarmsForEvent(eventJSON, row.file_Name, row.event_no));
-
           }
         }
       });
