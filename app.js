@@ -235,8 +235,8 @@ function alarmToSQL(data, eventFieldID) {
   var values = "('"+ data.action + "', '"
                     + data.trigger + "', '"
                     + eventFieldID + "')";
-  console.log(values);
   var tableToBeInserted = "INSERT INTO ALARM " + heading + " VALUES " + values + ";";
+  console.log(tableToBeInserted);
   return tableToBeInserted;
 }
 
@@ -403,6 +403,7 @@ app.get('/dbSaveFiles', function(req, res) {
             var alarmJSONObj = JSON.parse(alarmJSON);
             for(var x = 0;x<alarmJSONObj.length;x++) {
               if(alarmJSONObj["event"] == row.event_no) {
+                console.log("Called");
                 //These are the alarms for the current event
                 var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
                 connection.query(alarmSQLQuery, function(err) {
