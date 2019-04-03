@@ -394,16 +394,15 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("The event table was appended to");
             }
           });
-
-          console.log("------------------------------------------");
         }
-
-
       }
     }
   });
 
 
+
+
+  console.log("Starting to pull from the EVENT");
   //Make a query to from the event table 
   connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
     if(err) {
