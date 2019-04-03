@@ -407,26 +407,16 @@ app.get('/dbSaveFiles', function(req, res) {
             }
           });
 
-          connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-            if(err) {
-              console.log("There was an error");
-            } else {
-              console.log("OK");
-              //Clear the alarm tables
-              console.log(row.fileName);
-              var alarmList = sharedLib.alarmJSONWrapper(row.fileName);
-              var alarmListObj = JSON.parse(alarmList);
-              var jsonText = JSON.stringify(alarmListObj);
-              console.log(jsonText);
-              // for(var r of rows) {
-              //   var current_event_id = r.event_id;
-              //   //r is the current event in the sql table
-
-              // }
-            }
-          });
         }
       }
+
+      connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+        if(err) {
+          console.log("There was an error");
+        } else {
+          console.log("OK");
+        }
+      });
     }
   });
   //Make a query to from the event table 
