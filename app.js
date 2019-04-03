@@ -411,7 +411,6 @@ app.get('/dbSaveFiles', function(req, res) {
         var alarmList = sharedLib.alarmJSONWrapper(fileName);
         //Go through all of the indi events and put them into the table with reference to the cal_id
 
-        var eventListObj = JSON.parse(eventList);
         var alarmListObj = JSON.parse(alarmList);
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
