@@ -390,7 +390,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
           var summary = null;
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
-          var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,row.file_Name,calID);
+          var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID, row.file_Name);
 
           //Adding the event to the database 
           connection.query(eventToSQLQuery, function(err, rows) {
