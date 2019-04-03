@@ -218,6 +218,7 @@ function fileLogToSQL(data) {
 
 function eventToSQL(data, summary,startTime,organizer, location, cal_file_id) {
   var heading = "(summary, start_time, location, organizer, cal_file)";
+  console.log(startTime);
   var values = "('"+ summary + "', '"
                     + startTime + "', '"
                     + location + "', '"
