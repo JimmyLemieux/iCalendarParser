@@ -377,13 +377,10 @@ app.get('/dbSaveFiles', function(req, res) {
           var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID);
 
           //Adding the event to the database 
-          connection.query(eventToSQLQuery, function(err, rows,fields) {
+          connection.query(eventToSQLQuery, function(err, rows,) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
-              for(let r in rows) {
-                console.log(r);
-              }
               console.log("NICE");              
               // console.log(result);
               // console.log("THE CURRENT: " + row.file_Name);
@@ -407,6 +404,14 @@ app.get('/dbSaveFiles', function(req, res) {
               //   }
               // }
               // console.log("-------------------------------");
+            }
+          });
+
+          connection.query("SELECT * FROM EVENT", function(err, rows) {
+            if(err) {
+              console.log("There was an error");
+            } else {
+              console.log("OK");
             }
           });
         }
