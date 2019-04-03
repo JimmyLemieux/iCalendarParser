@@ -353,10 +353,10 @@ app.get('/dbSaveFiles', function(req, res) {
                 eventOrganizer = propListObj[x]["description"];
               }
               // Here we need to make a query and add these into the event table
-
-              console.log("current Event Index " + (i+1) + " " + jsonText + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation);
             }
           }
+
+          console.log("current Event Index " + (i+1) + " " + jsonText + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
           // var currentEventPropObj = propListObj[i];
           // var jsonText = JSON.stringify(currentEventPropObj);
           // console.log( fileName + " " +jsonText);
