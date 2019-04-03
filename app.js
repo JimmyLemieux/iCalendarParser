@@ -377,10 +377,11 @@ app.get('/dbSaveFiles', function(req, res) {
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
           var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID);
 
-          connection.query(eventToSQLQuery, function(err) {
+          connection.query(eventToSQLQuery, function(err, result) {
             if(err) {
               console.log("There was an error with the event table");
             } else {
+              console.log(result);
               console.log("THE CURRENT: " + row.file_Name);
               var alarmList = sharedLib.alarmJSONWrapper(row.file_Name);
               var alarmListObj = JSON.parse(alarmList);
@@ -392,6 +393,7 @@ app.get('/dbSaveFiles', function(req, res) {
                 var jsonText = JSON.stringify(alarmListObj[x]);
                 if(alarmListObj[x]["event"] == (i)) {
                   console.log("File: " + row.file_Name + " with alarm number: " + (x+1) + " has " + jsonText);
+                  //var alarmToSQLQuery = alarmToSQL();
                 }
               }
               console.log("-------------------------------");
