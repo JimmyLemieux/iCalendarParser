@@ -410,7 +410,7 @@ app.get('/dbSaveFiles', function(req, res) {
         }
       }
 
-      connection.query("SELECT (summary) FROM EVENT", function(err, rows, fields) {
+      connection.query("SELECT (*) FROM EVENT", function(err, rows, fields) {
         if(err) {
           console.log("There was an error");
         } else {
