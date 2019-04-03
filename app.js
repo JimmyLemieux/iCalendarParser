@@ -384,7 +384,7 @@ app.get('/dbSaveFiles', function(req, res) {
           console.log("current Event Index " + (i+1) + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
           //console.log("Start time " + eventListObj[i]["start"])
           console.log(eventListObj[i]["startDT"]["time"]);
-          var startTime  = eventListObj[i]["startDT"]["time"];
+          var startTime  = eventListObj[i]["startDT"];
           var summary = null;
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
           var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTime, eventOrganizer, eventLocation,calID);
