@@ -359,6 +359,7 @@ app.get('/dbSaveFiles', function(req, res) {
         var eventListObj = JSON.parse(eventList);
         var propListObj = JSON.parse(propList);
         var alarmListObj = JSON.parse(alarmList);
+        console.log("THE LENGTH IS " + alarmListObj.length);
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
