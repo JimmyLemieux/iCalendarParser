@@ -361,7 +361,17 @@ app.get('/dbSaveFiles', function(req, res) {
           var currentEventPropObj = propListObj[i];
           var jsonText = JSON.stringify(currentEventPropObj);
           if(jsonText != undefined && jsonText != '[]') {
+            //If the json is here
+            if(currentEventPropObj["name"].toUpperCase() == "LOCATION") {
+              console.log(fileName + " " + currentEventPropObj["name"]);
+            }
+            if(currentEventPropObj["name"].toUpperCase() == "ORGANIZER") {
+              console.log(fileName + " " + currentEventPropObj["name"]);
+            }
+
+            
             console.log( fileName + " " + jsonText);
+
           }
         }
       }
