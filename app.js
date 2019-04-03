@@ -332,9 +332,6 @@ app.get('/dbSaveFiles', function(req, res) {
         var calID = row.cal_id;
         var eventList = sharedLib.eventJSONWrapper(fileName);
         var propList = sharedLib.eventPropWrapper(fileName);
-        var eventLocation = null;
-        var eventOrganizer = null;
-        //console.log(eventList);
         //Go through all of the indi events and put them into the table with reference to the cal_id
 
         var eventListObj = JSON.parse(eventList);
@@ -342,35 +339,24 @@ app.get('/dbSaveFiles', function(req, res) {
 
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
-          // for(var x = 0;x<propListObj.length;x++) {
-          //   var curProp = propListObj[x];
-          //   var jsonText = JSON.stringify(curProp);
-          //   if(jsonText != undefined && jsonText != "[]") {
-          //       if(curProp["name"].toUpperCase() == 'LOCATION') {
-          //         eventLocation = curProp['description'];
-          //       }
-
-          //       if(curProp["name"].toUpperCase() == "ORGANIZER") {
-          //         eventOrganizer = curProp["description"];
-          //       }
-          //       console.log("The location of event " + (i+1) + " " + eventLocation);
-          //      // These are properties of the current event
-          //   }
-          // }
           //Each event will have a specific list of props
           var currentEventPropObj = propListObj[i];
           var jsonText = JSON.stringify(currentEventPropObj);
           if(jsonText != undefined && jsonText != '[]') {
             //If the json is here
+            var eventOrganizer = null;
+            var eventLocation = null;
+
             if(currentEventPropObj["name"].toUpperCase() == "LOCATION") {
               console.log(fileName + " " + currentEventPropObj["name"]);
+              eventLocation = currentEventPropObj["description"];
             }
             if(currentEventPropObj["name"].toUpperCase() == "ORGANIZER") {
               console.log(fileName + " " + currentEventPropObj["name"]);
+              eventOrganizer = currentEventPropObj["description"];
             }
 
-            
-            console.log( fileName + " " + jsonText);
+            console.log( fileName + " " + jsonText + " Organizer " + eventOrganizer + " Location " + eventLocation);
 
           }
         }
