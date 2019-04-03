@@ -371,6 +371,8 @@ app.get('/dbSaveFiles', function(req, res) {
           console.log("current Event Index " + (i+1) + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
           //console.log("Start time " + eventListObj[i]["start"])
           console.log(eventListObj[i]["startDT"]["time"]);
+          var startTime  = eventListObj[i]["startDT"]["time"];
+          console.log(eventToSQL(eventListObj[i], startTime, eventOrganizer, eventLocation,calID));
           // var currentEventPropObj = propListObj[i];
           // var jsonText = JSON.stringify(currentEventPropObj);
           // console.log( fileName + " " +jsonText);
