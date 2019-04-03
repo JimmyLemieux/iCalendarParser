@@ -356,7 +356,7 @@ app.get('/dbSaveFiles', function(req, res) {
             }
           }
 
-          console.log("current Event Index " + (i+1) + " " + jsonText + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
+          console.log("current Event Index " + (i+1) + " ORGANIZER== " + eventOrganizer + " LOCATION== " + eventLocation); 
           // var currentEventPropObj = propListObj[i];
           // var jsonText = JSON.stringify(currentEventPropObj);
           // console.log( fileName + " " +jsonText);
