@@ -337,12 +337,12 @@ app.get('/dbSaveFiles', function(req, res) {
         var eventListObj = JSON.parse(eventList);
         var propListObj = JSON.parse(propList);
 
-
+        console.log(fileName + " has " + eventListObj.length);
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
           var currentEventPropObj = propListObj[i];
           var jsonText = JSON.stringify(currentEventPropObj);
-          console.log(jsonText);
+          console.log( fileName + " " +jsonText);
         }
       }
     }
