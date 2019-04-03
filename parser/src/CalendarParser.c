@@ -2513,7 +2513,7 @@ char *eventListToJSON(const List *eventList) {
         if(count < listLength - 1)strcat(eventJSON, ",");
         strcat(tempListJSON, eventJSON);
         deallocator(eventJSON);
-        count++;    
+        count++;
     }
 
     strcat(tempListJSON, "]");
@@ -2529,7 +2529,7 @@ char *propToJSON(const Property *prop, int eventNumber) {
     return tempProp;
 }
 
-//Make a propety list to JSON function that will make the whole list into JSON 
+//Make a propety list to JSON function that will make the whole list into JSON
 
 char *eventPropListToJSON(const List * eventList) {
     if(eventList == NULL) {
@@ -2565,7 +2565,6 @@ char *eventPropListToJSON(const List * eventList) {
         eventNumber++;
     }
     strcat(tempListJSON, "]");
-    printf("%s\n", tempListJSON);
     return tempListJSON;
 }
 
@@ -2580,7 +2579,7 @@ char *alarmToJSON(const Alarm *alarm, int eventNumber) {
     sprintf(tempAlarmJSON, "{\"event\":%d,\"action\":\"%s\",\"trigger\":\"%s\",\"numProps\":%d}", eventNumber ,alarm->action, alarm->trigger, 2+getLength(alarm->properties));
     return tempAlarmJSON;
 }
- 
+
 //I have to re write this to take in just an object and loop over all events and alarms and put it into a JSON string
 char *alarmListToJSON(const List *eventList) {
     if(eventList == NULL) {
@@ -2611,12 +2610,12 @@ char *alarmListToJSON(const List *eventList) {
             char *alarmJSON = alarmToJSON(alarm, currentEvent); //This will parse the JSON and then put into a string
             tempListJSON = realloc(tempListJSON, sizeof(char) * (strlen(listAlarm->action) + strlen(listAlarm->trigger) + strlen(alarmJSON) + 1000));
             if(count < alarmCount - 1)strcat(alarmJSON, ","); //This is for adding commans for the array
-            strcat(tempListJSON, alarmJSON); 
+            strcat(tempListJSON, alarmJSON);
             deallocator(alarmJSON);
             count++;
         }
         currentEvent++;
-    } 
+    }
     strcat(tempListJSON, "]");
     return tempListJSON;
 }
@@ -2753,7 +2752,7 @@ char *eventJSONWrapper(char * fileName) {
 
 char *alarmJSONWrapper(char * fileName) { //Need to loop through all events here and them display
     char *fileDir = calloc(1, sizeof(char) * 1000);
-    strcpy(fileDir, "uploads/"); 
+    strcpy(fileDir, "uploads/");
     strcat(fileDir, fileName);
     Calendar * obj;
     ICalErrorCode e = createCalendar(fileDir, &obj);
@@ -2768,7 +2767,7 @@ char *eventPropWrapper(char *fileName) {
     strcpy(fileDir, "uploads/");
     strcat(fileDir, fileName);
     Calendar *obj;
-    ICalErrorCode e = createCalendar(fileDir, &obj); 
+    ICalErrorCode e = createCalendar(fileDir, &obj);
     if(e != 0) return "{}";
     char *eventList = eventPropListToJSON(obj->events);
     deleteCalendar(obj);
@@ -2815,7 +2814,7 @@ char *createCalendarFromJSONWrapper(char *fileName, int version, char *prodid, c
 }
 
 char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate, char *eventStartTime, char *eventCreateDate, char *eventCreateTime, char *summary, int utcStart, int utcCreate) {
-    char *fileDir = calloc(1, sizeof(char) * 1000); 
+    char *fileDir = calloc(1, sizeof(char) * 1000);
     strcpy(fileDir, "uploads/");
     strcat(fileDir, fileName);
     Calendar *obj = calloc(1, sizeof(Calendar));
@@ -2847,7 +2846,7 @@ char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate
     }
     insertBack(obj->events, newEvent);
 
-    
+
     e = validateCalendar(obj);
 
     if(e != 0) {
@@ -2863,4 +2862,4 @@ char *createEventFromJSONWrapper(char *fileName, char *uid, char *eventStartDate
     }
     deleteCalendar(obj);
     return printError(e);
-} 
+}

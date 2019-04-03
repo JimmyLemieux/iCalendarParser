@@ -217,6 +217,11 @@ function fileLogToSQL(data) {
   return tableToBeInserted;
 }
 
+function eventToSQL(data, cal_file) {
+  var heading = "(event_id, summary, start_time, location, organizer, cal_file)";
+
+}
+
 
 
 //Make a connection to the data base
@@ -297,7 +302,6 @@ app.get('/dbSaveFiles', function(req, res) {
   console.log("Starting to save files to the db");
 
   for(var i = 0;i<fileListObj.length;i++) {
-    console.log("Before the SQL " + fileListObj[i]);
     var jObj = JSON.parse(fileListObj[i]);
     var fileName = jObj.fileName;
     var stringSQLQuery = fileLogToSQL(jObj);
@@ -312,6 +316,44 @@ app.get('/dbSaveFiles', function(req, res) {
       }
     });
   }
+
+
+
+  //Now I am going to have to get a list of fileEvents
+  connection.query("SELECT * FROM FILE;", function(err, rows, fields) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      //Go through all of the rows in the query
+      console.log("The Rows " + rows);
+      for(let row of rows) {
+        var fileName = row.file_Name;
+        var calID = row.cal_id;
+        var eventList = sharedLib.eventJSONWrapper(fileName);
+        var propList = sharedLib.eventPropWrapper(fileName);
+        //console.log(eventList);
+        //Go through all of the indi events and put them into the table with reference to the cal_id
+
+        var eventListObj = JSON.parse(eventList);
+        var propListObj = JSON.parse(propList);
+
+
+        for(var i = 0;i<eventListObj.length;i++) {
+          for(var x = 0;x<propListObj.length;x++) {
+            var curProp = propListObj[x];
+            var jsonText = JSON.stringify(curProp);
+            if(jsonText != undefined && jsonText != "[]") {
+              if(curProp["event"] == i+1){
+                console.log(jsonText);
+              } // These are properties of the current event
+            }
+          }
+          console.log("Finished reading file " + fileName);
+        }
+      }
+    }
+  });
+
 
 
   //res.send(fileListObj);
@@ -348,29 +390,6 @@ app.get('/dbClearFiles', function(req, res) {
     }
   });
 
-  // connection.query(tableSize, function(err,result, fields) {
-  //   if(err) {
-  //     console.log("something went wrong");
-  //   } else {
-  //     console.log(result);
-  //   }
-  // });
-
-  // connection.query(deleteFileTable, function(err, rows, fields) {
-  //   if(err) {
-  //     console.log("Something went wrong!");
-  //   } else {
-  //     console.log("Tabled cleared on success");
-  //   }
-  // });
-  //
-  // connection.query(tableSize, function(err,result, fields) {
-  //   if(err) {
-  //     console.log("something went wrong");
-  //   } else {
-  //     console.log(result);
-  //   }
-  // });
 
 });
 
@@ -378,8 +397,6 @@ app.get('/getDBStatus', function(req,res) {
   var fileSize = "SELECT COUNT(*) FROM FILE";
   var eventSize = "SELECT COUNT(*) FROM EVENT";
   var alarmSize = "SELECT COUNT(*) FROM ALARM";
-
-
 });
 
 
