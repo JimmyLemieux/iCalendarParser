@@ -247,11 +247,9 @@ function getAlarmsForEvent(eventJSON, fileName, event_no) {
   var alarmJSONObj = JSON.parse(alarmJSON);
 
   var alarmList = [];
-  for(var i = 0;i<eventJSONObj.length;i++) {
-    for(var x = 0;x<alarmJSONObj.length;x++) {
-      if(event_no == (i+1)) {
-        alarmList.push(alarmJSONObj[x]);
-      }
+  for(var x = 0;x<alarmJSONObj;x++) {
+    if(alarmJSONObj["event"] == event_no) {
+      alarmList.push(alarmJSONObj[x]);
     }
   }
   return alarmList;
