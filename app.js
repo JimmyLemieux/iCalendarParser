@@ -466,9 +466,34 @@ app.get('/dbClearFiles', function(req, res) {
 });
 
 app.get('/getDBStatus', function(req,res) {
+
   var fileSize = "SELECT COUNT(*) FROM FILE";
   var eventSize = "SELECT COUNT(*) FROM EVENT";
   var alarmSize = "SELECT COUNT(*) FROM ALARM";
+
+  connection.query(fileSize, function(err, result) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log(result);
+      connection.query(eventSize, function(err, result) {
+        if(err) {
+          console.log("Something went wrong with the query");
+        } else {
+          console.log(result);
+          connection.query(alarmSize, function(err, result) {
+            if(err) {
+              console.log("Something went wrong");
+            } else {
+              console.log(result);
+            }
+          });
+        }
+      });
+
+    }
+  }); 
+
 });
 
 

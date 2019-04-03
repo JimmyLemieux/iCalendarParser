@@ -516,6 +516,17 @@ $(document).ready(function () {
         });
     });
 
+    $(".main-functions").find("#get-db-status").on('click', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'get',
+            url: '/getDBStatus',
+            success: function(data) {
+                console.log("Got the status");
+            }
+        });
+    });
+
 
 
 
