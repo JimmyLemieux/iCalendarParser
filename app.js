@@ -386,6 +386,7 @@ app.get('/dbSaveFiles', function(req, res) {
             } else {
               console.log("fileName: " + fileName);
               var alarmList = sharedLib.alarmJSONWrapper(fileName);
+              console.log(alarmList);
               var alarmListObj = JSON.parse(alarmList);
               //You want to push the alar table here
               console.log("The event table was appended to");
