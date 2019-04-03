@@ -247,6 +247,7 @@ function getAlarmsForEvent(eventJSON, fileName, event_no) {
   var alarmJSONObj = JSON.parse(alarmJSON);
 
   var alarmList = [];
+  console.log(event_no);
   for(var x = 0;x<alarmJSONObj;x++) {
     if(alarmJSONObj["event"] == event_no) {
       alarmList.push(alarmJSONObj[x]);
@@ -434,9 +435,9 @@ app.get('/dbSaveFiles', function(req, res) {
         } else {
           console.log("OK");
           for(let row of rows) { // Each of these rows is an event
-            console.log(row);
+            //console.log(row);
             var eventJSON = sharedLib.eventJSONWrapper(row.file_Name);
-            console.log(getAlarmsForEvent(eventJSON, row.file_Name, row.event_no));
+            //console.log(getAlarmsForEvent(eventJSON, row.file_Name, row.event_no));
 
           }
         }
