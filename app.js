@@ -476,23 +476,25 @@ app.get('/getDBStatus', function(req,res) {
       console.log("Something went wrong");
     } else {
       console.log(result);
-      connection.query(eventSize, function(err, result) {
-        if(err) {
-          console.log("Something went wrong with the query");
-        } else {
-          console.log(result);
-          connection.query(alarmSize, function(err, result) {
-            if(err) {
-              console.log("Something went wrong");
-            } else {
-              console.log(result);
-            }
-          });
-        }
-      });
-
     }
   }); 
+
+  connection.query(eventSize, function(err, result) {
+    if(err) {
+      console.log("Something went wrong with the query");
+    } else {
+      console.log(result);
+    }
+  });
+
+  connection.query(alarmSize, function(err, result) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log(result);
+    }
+  });
+  
 
 });
 
