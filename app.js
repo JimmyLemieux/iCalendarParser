@@ -382,7 +382,7 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("There was an error with the event table");
             } else {
               for(let r in rows) {
-                console.log(r.summary);
+                console.log(r);
               }
               console.log("NICE");              
               // console.log(result);
