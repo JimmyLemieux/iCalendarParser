@@ -405,7 +405,7 @@ app.get('/dbSaveFiles', function(req, res) {
               if(alarmJSONObj["event"] == row.event_no) {
                 //These are the alarms for the current event
                 var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
-                connection(alarmSQLQuery, function(err) {
+                connection.query(alarmSQLQuery, function(err) {
                   if(err) {
                     console.log("There was a problem with alarm TABLE"); 
                   } else{
