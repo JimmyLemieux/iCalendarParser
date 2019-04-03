@@ -416,7 +416,7 @@ app.get('/dbSaveFiles', function(req, res) {
         } else {
           console.log("OK");
           for(let row in rows) {
-            console.log(row.summary);
+            console.log(row.start_time);
           }
         }
       });
