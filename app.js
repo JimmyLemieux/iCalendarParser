@@ -400,12 +400,12 @@ app.get('/dbSaveFiles', function(req, res) {
             var eID = row.event_id;
             var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
             var alarmJSONObj = JSON.parse(alarmJSON);
-            console.log(alarmJSONObj.length); 
             for(var x = 0;x<alarmJSONObj.length;x++) {
               if(alarmJSONObj[x]["event"] == row.event_no) {
                 //These are the alarms for the current event
-                console.log(alarmJSONObj[x].trigger);
-                //var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+                //console.log(alarmJSONObj[x].trigger);
+                var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+                console.log(alarmSQLQuery);
                 //console.log(alarmSQLQuery);
                 // connection.query(alarmSQLQuery, function(err) {
                 //   if(err) {
