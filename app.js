@@ -390,27 +390,24 @@ app.get('/dbSaveFiles', function(req, res) {
           });
         }
       }
+
+      console.log("Starting to pull from the event table");
+      connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+        if(err) {
+          console.log("Something went from when parsing the EVENT row");
+        } else {
+          for(let row of rows) {
+            var eventID = row.event_id;
+            console.log(eventID);
+          }
+        }
+      });
     }
   });
 
 
 
-
-  console.log("Starting to pull from the EVENT");
   //Make a query to from the event table 
-  connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-    if(err) {
-      console.log("Something went from when parsing the EVENT row");
-    } else {
-      for(let row of rows) {
-        var eventID = row.event_id;
-        console.log(eventID);
-      }
-    }
-  });
-
-  
-
 
   //res.send(fileListObj);
 });
