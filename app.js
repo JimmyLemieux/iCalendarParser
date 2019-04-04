@@ -319,6 +319,31 @@ app.get('/loginDatabase', function(req, res) {
 // All of the tables are populated and added here
 app.get('/dbSaveFiles', function(req, res) {
 
+
+  connection.query("DELETE FROM FILE", function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
+    }
+  });
+
+  connection.query("DELETE FROM EVENT" , function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
+    }
+  });
+
+  connection.query("DELETE FROM ALARM", function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
+    }
+  });
+
   console.log("Starting to save files to the db");
   for(var i = 0;i<fileListObj.length;i++) {
     var jObj = JSON.parse(fileListObj[i]);
@@ -427,7 +452,6 @@ app.get('/dbSaveFiles', function(req, res) {
     }
   });
   //Make a query to from the event table 
-
   //res.send(fileListObj);
 });
 
