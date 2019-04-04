@@ -262,8 +262,10 @@ app.get('/loginDatabase', function(req, res) {
 
   connection.connect(function(err) {
     if(err) {
+      console.log("The connection failed");
       res.send({error: "FAIL"});
     } else {
+      console.log("The connection was successful"); 
       res.send({error: "SUCCESS"});
     }
   });
