@@ -498,9 +498,8 @@ $(document).ready(function () {
         $.ajax({
             type: 'get',
             url: '/dbSaveFiles',
-            async: false,
             success: function(data) {
-                console.log("Saved the data"); 
+
             }
         });
     });
@@ -510,7 +509,6 @@ $(document).ready(function () {
         $.ajax({
             type: 'get',
             url: '/dbClearFiles',
-            async: false,
             success: function(data) {
                 console.log(data);
                 $(".console-output").append("<medium style=\"color:green;\">Deleting All DB Contents</medium></br>");
