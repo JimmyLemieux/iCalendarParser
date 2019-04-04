@@ -533,7 +533,5 @@ $(document).ready(function () {
     });
 
 
-
-
     //***Ending the database section
 });
