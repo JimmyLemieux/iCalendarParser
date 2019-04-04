@@ -370,7 +370,6 @@ app.get('/dbSaveFiles', function(req, res) {
             //Taking the rows from over in the database
             // This will then be takin from the 
             // From here I will be
-
             var calID = row.cal_id;
             var eventList = sharedLib.eventJSONWrapper(row.file_Name);
             var propList = sharedLib.eventPropWrapper(row.file_Name);
@@ -414,7 +413,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
             }
           }
-
+          console.log("Starting here");
           connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
             if(err) {
               console.log("There was an error");
@@ -446,9 +445,6 @@ app.get('/dbSaveFiles', function(req, res) {
           });
         }
       });
-
-
-
 
     }
   });
