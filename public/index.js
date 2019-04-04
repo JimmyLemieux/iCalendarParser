@@ -499,7 +499,6 @@ $(document).ready(function () {
             type: 'get',
             url: '/dbSaveFiles',
             success: function(data) {
-
             }
         });
     });
