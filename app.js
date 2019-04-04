@@ -486,7 +486,7 @@ app.get('/getDBStatus', function(req,res) {
     }
   }); 
 
-  connection.query(eventSize, function(err, result) {
+  connection.query(eventSize, function(err, rows, result) {
     if(err) {
       console.log("Something went wrong with the query");
     } else {
@@ -496,7 +496,7 @@ app.get('/getDBStatus', function(req,res) {
     }
   });
 
-  connection.query(alarmSize, function(err, result) {
+  connection.query(alarmSize, function(err, rows, result) {
     if(err) {
 
       console.log("Something went wrong");
