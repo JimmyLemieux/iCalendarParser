@@ -504,16 +504,10 @@ $(document).ready(function () {
         });
     });
 
-
-    $(".main-functions").find("#clear-all-files").on('click', function(e) {
+    $(".main-functions").find("#clear-db-files").on('click', function(e) {
         e.preventDefault();
-        $.ajax({
-            type: 'get',
-            url: '/dbClearFiles',
-            success: function(data) {
-                console.log("cleared");
-            }
-        });
+        alert("The clear function was pressed");
+        
     });
 
     $(".main-functions").find("#get-db-status").on('click', function(e) {
