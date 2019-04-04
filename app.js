@@ -347,6 +347,10 @@ app.get('/dbSaveFiles', function(req, res) {
 
       for(let row of rows) {
 
+        //Taking the rows from over in the database
+        // This will then be takin from the 
+        // From here I will be
+
         var calID = row.cal_id;
         var eventList = sharedLib.eventJSONWrapper(row.file_Name);
         var propList = sharedLib.eventPropWrapper(row.file_Name);
@@ -467,9 +471,9 @@ app.get('/dbClearFiles', function(req, res) {
 
 app.get('/getDBStatus', function(req,res) {
 
-  var fileSize = "SELECT * FROM FILE";
-  var eventSize = "SELECT * FROM EVENT";
-  var alarmSize = "SELECT * FROM ALARM";
+  var fileSize = "SELECT count(file_Name) FROM FILE";
+  var eventSize = "SELECT count(event_id) FROM EVENT";
+  var alarmSize = "SELECT count(alarm_id) FROM ALARM";
 
   connection.query(fileSize, function(err, result) {
     if(err) {
