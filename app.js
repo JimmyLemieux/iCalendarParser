@@ -438,7 +438,6 @@ app.get('/dbSaveFiles', function(req, res) {
                                 }
                               }
                             }
-                            res.send({error: "OK"});
                           }
                         });
                       }
