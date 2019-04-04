@@ -497,9 +497,16 @@ $(document).ready(function () {
         alert("Button pressed!");
         $.ajax({
             type: 'get',
-            url: '/dbSaveFiles',
+            url: '/dbClearFiles',
             success: function(data) {
                 console.log("Saved!");
+                $.ajax({
+                    type: 'get',
+                    url: '/dbSaveFiles',
+                    success: function(data) {
+                        console.log("This happened");
+                    }
+                });
             }
         });
     });

@@ -431,10 +431,6 @@ app.get('/dbSaveFiles', function(req, res) {
   //res.send(fileListObj);
 });
 
-app.get('/dbSaveFilesAlarms', function(req, res) {
-
-});
-
 //This will clear all of the files from the database 
 app.get('/dbClearFiles', function(req, res) {
   var deleteFileTable = "DELETE FROM FILE";
