@@ -490,7 +490,7 @@ app.get('/getDBStatus', function(req,res) {
     if(err) {
       console.log("Something went wrong with the query");
     } else {
-      let jsonText = JOSN.stringify(rows).replace("(event_id)", "");
+      let jsonText = JSON.stringify(rows).replace("(event_id)", "");
       let jsonObj = JSON.parse(jsonText);
       respObj["eventCount"] = jsonObj[0]["count"];
     }
