@@ -481,7 +481,8 @@ app.get('/getDBStatus', function(req,res) {
       console.log("Something went wrong");
     } else {
       let jsonText = JSON.stringify(rows).replace("(file_Name)", "");
-      console.log(jsonText);
+      var jsonObj = JSON.parse(jsonText);
+      respObj["fileCount"] = jsonObj[0]["count"];
     }
   }); 
 
@@ -489,15 +490,22 @@ app.get('/getDBStatus', function(req,res) {
     if(err) {
       console.log("Something went wrong with the query");
     } else {
-      console.log(result);
+      let jsonText = JOSN.stringify(rows).replace("(event_id)", "");
+      let jsonObj = JSON.parse(jsonText);
+      respObj["eventCount"] = jsonObj[0]["count"];
     }
   });
 
   connection.query(alarmSize, function(err, result) {
     if(err) {
+
       console.log("Something went wrong");
     } else {
-      console.log(result);
+      let jsonText = JSON.stringify(rows).replace("(alarm_id)", "");
+      let jsonObj = JSON.parse(jsonText);
+      respObj["alarmCount"] = jsonObj[0]["count"];
+      
+      res.send(respObj);
     }
   });
 

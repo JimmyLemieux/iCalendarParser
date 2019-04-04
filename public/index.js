@@ -524,6 +524,7 @@ $(document).ready(function () {
             url: '/getDBStatus',
             success: function(data) {
                 console.log("Got the status");
+                console.log(data);
             }
         });
     });
