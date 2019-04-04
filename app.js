@@ -441,11 +441,14 @@ app.get('/dbClearFiles', function(req, res) {
 
   var tableSize = "SELECT COUNT(*) FROM FILE";
 
+  var clearRet = {};
+
 
   connection.query("DELETE FROM FILE", function(err) {
     if(err) {
       console.log("Something went wrong");
     } else {
+      clearRet["FILE"] = "DELETED";
       console.log("Table deleted");
     }
   });
@@ -454,6 +457,7 @@ app.get('/dbClearFiles', function(req, res) {
     if(err) {
       console.log("Something went wrong");
     } else {
+      clearRet["EVENT"] = "DELETED";
       console.log("Table deleted");
     }
   });
@@ -462,6 +466,8 @@ app.get('/dbClearFiles', function(req, res) {
     if(err) {
       console.log("Something went wrong");
     } else {
+      clearRet["ALARM"] = "DELETED";
+      res.send(clearRet); 
       console.log("Table deleted");
     }
   });

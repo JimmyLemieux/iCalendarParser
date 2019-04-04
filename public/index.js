@@ -510,6 +510,7 @@ $(document).ready(function () {
             type: 'get',
             url: '/dbClearFiles',
             success: function(data) {
+                console.log(data);
                 console.log("DB Cleared");
             }
         });
