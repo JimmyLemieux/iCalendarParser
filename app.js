@@ -474,12 +474,13 @@ app.get('/getDBStatus', function(req,res) {
   var fileSize = "SELECT count(file_Name) FROM FILE";
   var eventSize = "SELECT count(event_id) FROM EVENT";
   var alarmSize = "SELECT count(alarm_id) FROM ALARM";
+  var respObj = {};
 
   connection.query(fileSize, function(err, result) {
     if(err) {
       console.log("Something went wrong");
     } else {
-      console.log(result);
+      console.log(result.count(file_Name));
     }
   }); 
 
