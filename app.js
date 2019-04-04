@@ -276,18 +276,15 @@ app.get('/loginDatabase', function(req, res) {
   connection.query(sql, function(err, result) {
     if(err){ 
       console.log("FILE TABLE ALREADY EXISTS!"); 
-      return;
     } else {
       console.log("Table FILE Created");
       connection.query(sql2, function(err, result) {
         if(err){ 
           console.log("FILE EVENT ALREADY EXISTS!"); 
-          return;
         } else{
           connection.query(sql3, function(err, result) {
             if(err){ 
             console.log("FILE ALARM ALREADY EXISTS!"); 
-            return;
             } else {
               console.log("Table ALARM Created");
               connection.query("DELETE FROM FILE", function(err) {
