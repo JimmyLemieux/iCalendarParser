@@ -511,6 +511,8 @@ $(document).ready(function () {
             url: '/dbClearFiles',
             success: function(data) {
                 console.log(data);
+                $(".console-output").append("<medium style=\"color:green;\">Deleting All DB Contents</medium></br>");
+                $(".console-output").append("<medium style=\"color:black;\"> FILE: " + data.FILE + ", EVENT: " + data.EVENT + ", ALARM: " + data.ALARM + "</medium></br>");
                 console.log("DB Cleared");
             }
         });
