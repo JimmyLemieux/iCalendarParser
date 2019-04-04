@@ -506,8 +506,13 @@ $(document).ready(function () {
 
     $(".main-functions").find("#clear-db-files").on('click', function(e) {
         e.preventDefault();
-        alert("The clear function was pressed");
-        
+        $.ajax({
+            type: 'get',
+            url: '/dbClearFiles',
+            success: function(data) {
+                console.log("DB Cleared");
+            }
+        });
     });
 
     $(".main-functions").find("#get-db-status").on('click', function(e) {
