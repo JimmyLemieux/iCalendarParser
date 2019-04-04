@@ -525,6 +525,9 @@ $(document).ready(function () {
             success: function(data) {
                 console.log("Got the status");
                 console.log(data);
+                $(".console-output").append("<medium style=\"color:black;\">Fetching DB status..</medium></br>");
+                $(".console-output").append("<medium style=\"color:black;\">Number of files: " + data.fileCount + ", Number of Events: " + data.eventCount + ", Number of Alarms: " + data.alarmCount + "</medium></br>");
+
             }
         });
     });
