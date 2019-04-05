@@ -279,50 +279,44 @@ app.get('/loginDatabase', function(req, res) {
       return;
     } else {
       console.log("Table FILE Created");
+      connection.query(sql2, function(err, result) {
+        if(err){ 
+          console.log("FILE EVENT ALREADY EXISTS!"); 
+          return;
+        } else{
+          console.log("Table EVENT Created");
+          connection.query(sql3, function(err, result) {
+            if(err){ 
+            console.log("FILE ALARM ALREADY EXISTS!"); 
+            return;
+            } else {
+              console.log("Table ALARM Created");
 
-    }
-  });
-
-  connection.query(sql2, function(err, result) {
-    if(err){ 
-      console.log("FILE EVENT ALREADY EXISTS!"); 
-      return;
-    } else{
-      console.log("Table EVENT Created");
-    }
-  });
-
-  connection.query(sql3, function(err, result) {
-    if(err){ 
-    console.log("FILE ALARM ALREADY EXISTS!"); 
-    return;
-    } else {
-      console.log("Table ALARM Created");
-    }
-  });
-
-
-  connection.query("DELETE FROM FILE", function(err) {
-    if(err) {
-      console.log("Something went wrong");
-    } else {
-      console.log("Table deleted");
-    }
-  });
-
-  connection.query("DELETE FROM EVENT" , function(err) {
-    if(err) {
-      console.log("Something went wrong");
-    } else {
-      console.log("Table deleted");
-    }
-  });
-
-  connection.query("DELETE FROM ALARM", function(err) {
-    if(err) {
-      console.log("Something went wrong");
-    } else {
-      console.log("Table deleted");
+              connection.query("DELETE FROM FILE", function(err) {
+                if(err) {
+                  console.log("Something went wrong");
+                } else {
+                  console.log("Table deleted");
+                  connection.query("DELETE FROM EVENT" , function(err) {
+                    if(err) {
+                      console.log("Something went wrong");
+                    } else {
+                      console.log("Table deleted");
+                      connection.query("DELETE FROM ALARM", function(err) {
+                        if(err) {
+                          console.log("Something went wrong");
+                        } else {
+                          console.log("Table deleted");
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
     }
   });
 });
@@ -332,9 +326,9 @@ app.get('/loginDatabase', function(req, res) {
 // All of the tables are populated and added here
 app.get('/dbSaveFiles', function(req, res) {
 
-
   console.log("Starting to save files to the db");
   for(var i = 0;i<fileListObj.length;i++) {
+    var xCount = i+1;
     var jObj = JSON.parse(fileListObj[i]);
     var fileName = jObj.fileName;
     var stringSQLQuery = fileLogToSQL(jObj);
@@ -344,7 +338,91 @@ app.get('/dbSaveFiles', function(req, res) {
       if(err) {
         console.log("Something went wrong!");
       }else {
-        console.log("The table was made successfully");
+        if(xCount == fileListObj.length) {
+          connection.query("SELECT * FROM FILE;", function(err, rows, fields) {
+            if(err) {
+              console.log("Something went wrong");
+            } else {
+              //Go through all of the rows in the query
+              for(let row of rows) {
+        
+                var calID = row.cal_id;
+                var eventList = sharedLib.eventJSONWrapper(row.file_Name);
+                var propList = sharedLib.eventPropWrapper(row.file_Name);
+                var eventLocation = null;
+                var eventOrganizer = null;
+                //Go through all of the indi events and put them into the table with reference to the cal_id
+        
+                var eventListObj = JSON.parse(eventList);
+                var propListObj = JSON.parse(propList);
+        
+                for(var y = 0;y<eventListObj.length;y++) { //The event list for each file in the database
+                  //Each event will have a specific list of props
+                  var yCount = y+1;
+                  for(var x = 0;x<propListObj.length;x++) {
+                    var  jsonText  = JSON.stringify(propListObj[x]);
+                    if(propListObj[x]["event"] == (y+1)) {
+                      if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
+                        eventLocation = propListObj[x]["description"];
+                      }
+                      if(propListObj[x]["name"].toUpperCase() == "ORGANIZER") {
+                        eventOrganizer = propListObj[x]["description"];
+                      }
+                      // Here we need to make a query and add these into the event table
+                    }
+                  }
+                  //console.log("Start time " + eventListObj[i]["start"])
+                  var startTimeDate  = eventListObj[y]["startDT"]["date"];
+                  var starTime = eventListObj[y]["startDT"]["time"];
+        
+                  var summary = null;
+                  if(eventListObj[y].summary != '') summary = eventListObj[y].summary; 
+                  var eventToSQLQuery = eventToSQL(eventListObj[y], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID, row.file_Name,(y+1));
+                  //Adding the event to the database 
+                  connection.query(eventToSQLQuery, function(err, rows) {
+                    if(err) {
+                      console.log("There was an error with the event table");
+                      console.log(err);
+                    } else {
+                      if(yCount == eventListObj.length) {
+                        connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+                          if(err) {
+                            console.log("There was an error");
+                          } else {
+                            //console.log("OK");
+                            for(let row of rows) { // Each of these rows is an event
+                              var eID = row.event_id;
+                              var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
+                              var alarmJSONObj = JSON.parse(alarmJSON);
+                              for(var x = 0;x<alarmJSONObj.length;x++) {
+                                if(alarmJSONObj[x]["event"] == row.event_no) {
+                                  //These are the alarms for the current event
+                                  //console.log(alarmJSONObj[x].trigger);
+                                  var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+                                  connection.query(alarmSQLQuery, function(err) {
+                                    if(err) {
+                                      console.log("There was a problem with alarm TABLE"); 
+                                      console.log(err);
+                                    } else{
+                                      console.log("The alarm was pushed!");
+                                    }
+                                  });
+                                }
+                              }
+                            }
+                          }
+                        });
+
+                      }
+                      console.log("NICE");              
+                    }
+                  });
+        
+                }
+              }
+            }
+          });
+        }
       }
     });
   }
@@ -352,93 +430,8 @@ app.get('/dbSaveFiles', function(req, res) {
 
 
   //Now I am going to have to get a list of fileEvents
-  connection.query("SELECT * FROM FILE;", function(err, rows, fields) {
-    if(err) {
-      console.log("Something went wrong");
-    } else {
-      //Go through all of the rows in the query
 
-
-      for(let row of rows) {
-
-        //Taking the rows from over in the database
-        // This will then be takin from the 
-        // From here I will be
-
-        var calID = row.cal_id;
-        var eventList = sharedLib.eventJSONWrapper(row.file_Name);
-        var propList = sharedLib.eventPropWrapper(row.file_Name);
-        var eventLocation = null;
-        var eventOrganizer = null;
-        //Go through all of the indi events and put them into the table with reference to the cal_id
-
-        var eventListObj = JSON.parse(eventList);
-        var propListObj = JSON.parse(propList);
-
-        for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
-          //Each event will have a specific list of props
-          for(var x = 0;x<propListObj.length;x++) {
-            var  jsonText  = JSON.stringify(propListObj[x]);
-            if(propListObj[x]["event"] == (i+1)) {
-              if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
-                eventLocation = propListObj[x]["description"];
-              }
-              if(propListObj[x]["name"].toUpperCase() == "ORGANIZER") {
-                eventOrganizer = propListObj[x]["description"];
-              }
-              // Here we need to make a query and add these into the event table
-            }
-          }
-          //console.log("Start time " + eventListObj[i]["start"])
-          var startTimeDate  = eventListObj[i]["startDT"]["date"];
-          var starTime = eventListObj[i]["startDT"]["time"];
-
-          var summary = null;
-          if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
-          var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID, row.file_Name,(i+1));
-          //Adding the event to the database 
-          connection.query(eventToSQLQuery, function(err, rows) {
-            if(err) {
-              console.log("There was an error with the event table");
-              console.log(err);
-            } else {
-              console.log("NICE");              
-            }
-          });
-
-        }
-      }
-    }
-  });
   //Make a query to from the event table 
-
-  connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-    if(err) {
-      console.log("There was an error");
-    } else {
-      //console.log("OK");
-      for(let row of rows) { // Each of these rows is an event
-        var eID = row.event_id;
-        var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
-        var alarmJSONObj = JSON.parse(alarmJSON);
-        for(var x = 0;x<alarmJSONObj.length;x++) {
-          if(alarmJSONObj[x]["event"] == row.event_no) {
-            //These are the alarms for the current event
-            //console.log(alarmJSONObj[x].trigger);
-            var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
-            connection.query(alarmSQLQuery, function(err) {
-              if(err) {
-                console.log("There was a problem with alarm TABLE"); 
-                console.log(err);
-              } else{
-                console.log("The alarm was pushed!");
-              }
-            });
-          }
-        }
-      }
-    }
-  });
   //res.send(fileListObj);
 });
 
