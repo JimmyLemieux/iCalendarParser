@@ -276,42 +276,53 @@ app.get('/loginDatabase', function(req, res) {
   connection.query(sql, function(err, result) {
     if(err){ 
       console.log("FILE TABLE ALREADY EXISTS!"); 
+      return;
     } else {
       console.log("Table FILE Created");
-      connection.query(sql2, function(err, result) {
-        if(err){ 
-          console.log("FILE EVENT ALREADY EXISTS!"); 
-        } else{
-          connection.query(sql3, function(err, result) {
-            if(err){ 
-            console.log("FILE ALARM ALREADY EXISTS!"); 
-            } else {
-              console.log("Table ALARM Created");
-              connection.query("DELETE FROM FILE", function(err) {
-                if(err) {
-                  console.log("Something went wrong");
-                } else {
-                  console.log("Table deleted");
-                  connection.query("DELETE FROM EVENT" , function(err) {
-                    if(err) {
-                      console.log("Something went wrong");
-                    } else {
-                      console.log("Table deleted");
-                      connection.query("DELETE FROM ALARM", function(err) {
-                        if(err) {
-                          console.log("Something went wrong");
-                        } else {
-                          console.log("Table deleted");
-                        }
-                      });
-                    }
-                  });
-                }
-              });
-            }
-          });
-        }
-      });
+
+    }
+  });
+
+  connection.query(sql2, function(err, result) {
+    if(err){ 
+      console.log("FILE EVENT ALREADY EXISTS!"); 
+      return;
+    } else{
+      console.log("Table EVENT Created");
+    }
+  });
+
+  connection.query(sql3, function(err, result) {
+    if(err){ 
+    console.log("FILE ALARM ALREADY EXISTS!"); 
+    return;
+    } else {
+      console.log("Table ALARM Created");
+    }
+  });
+
+
+  connection.query("DELETE FROM FILE", function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
+    }
+  });
+
+  connection.query("DELETE FROM EVENT" , function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
+    }
+  });
+
+  connection.query("DELETE FROM ALARM", function(err) {
+    if(err) {
+      console.log("Something went wrong");
+    } else {
+      console.log("Table deleted");
     }
   });
 });
@@ -339,12 +350,15 @@ app.get('/dbSaveFiles', function(req, res) {
   }
 
 
+
   //Now I am going to have to get a list of fileEvents
   connection.query("SELECT * FROM FILE;", function(err, rows, fields) {
     if(err) {
       console.log("Something went wrong");
     } else {
       //Go through all of the rows in the query
+
+
       for(let row of rows) {
 
         //Taking the rows from over in the database
@@ -388,46 +402,45 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("There was an error with the event table");
               console.log(err);
             } else {
-              console.log("NICE");      
-              connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-                if(err) {
-                  console.log("There was an error");
-                } else {
-                  if(i == eventListObj.length - 1) {
-                  //console.log("OK");
-                    for(let row of rows) { // Each of these rows is an event
-                      var eID = row.event_id;
-                      var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
-                      var alarmJSONObj = JSON.parse(alarmJSON);
-                      for(var x = 0;x<alarmJSONObj.length;x++) {
-                        if(alarmJSONObj[x]["event"] == row.event_no) {
-                          //These are the alarms for the current event
-                          //console.log(alarmJSONObj[x].trigger);
-                          var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
-                          console.log(alarmSQLQuery);
-                          //console.log(alarmSQLQuery);
-                          connection.query(alarmSQLQuery, function(err) {
-                            if(err) {
-                              console.log("There was a problem with alarm TABLE"); 
-                              console.log(err);
-                            } else{
-                              console.log("The alarm was pushed!");
-                            }
-                          });
-                        }
-                      }
-                    }
-                  }
-                }
-              });        
+              console.log("NICE");              
             }
           });
+
         }
       }
     }
   });
-
   //Make a query to from the event table 
+
+  connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+    if(err) {
+      console.log("There was an error");
+    } else {
+      //console.log("OK");
+      for(let row of rows) { // Each of these rows is an event
+        var eID = row.event_id;
+        var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
+        var alarmJSONObj = JSON.parse(alarmJSON);
+        for(var x = 0;x<alarmJSONObj.length;x++) {
+          if(alarmJSONObj[x]["event"] == row.event_no) {
+            //These are the alarms for the current event
+            //console.log(alarmJSONObj[x].trigger);
+            var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+            console.log(alarmSQLQuery);
+            //console.log(alarmSQLQuery);
+            connection.query(alarmSQLQuery, function(err) {
+              if(err) {
+                console.log("There was a problem with alarm TABLE"); 
+                console.log(err);
+              } else{
+                console.log("The alarm was pushed!");
+              }
+            });
+          }
+        }
+      }
+    }
+  });
   //res.send(fileListObj);
 });
 
