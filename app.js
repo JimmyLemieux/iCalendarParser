@@ -544,6 +544,13 @@ app.get('/getSortedEvents', function(req, res) {
     if(err) throw err;
     else {
       console.log(rows);
+      for(let row of rows) {
+        console.log(row.start_time);
+        console.log(row.location);
+        console.log(row.organizer);
+        console.log(row.summary);
+        console.log("-----------------");
+      }
       res.send({error: "OK ON SORTED"});
     }
   });
