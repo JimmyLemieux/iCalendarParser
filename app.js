@@ -119,7 +119,12 @@ app.get('/obj', function(req,res) {
      JSONObject["fileName"] = files[i];
      arr[i] = JSON.stringify(JSONObject);
      if(JSONObject["isValid"]) {
-       fileListObj.push(JSON.stringify(JSONObject));
+       var newObj = {
+          file_Name: JSONObject["fileName"],
+          version: JSONObject["version"],
+          prod_id: JSONObject["prodID"]
+       };
+       fileListObj.push([newObj]);
      }
    }
    //Sending the json from server to client side of the application
@@ -329,7 +334,7 @@ app.get('/dbSaveFiles', function(req, res) {
   //You can save multiple files into the table
   console.log(fileListObj);
 
-  var sql = "INSERT INTO FILE (file_name, version, prod_id) VALUES ?";
+  var sql = "INSERT INTO FILE (file_Name, version, prod_id) VALUES ?";
   connection.query(sql, [fileListObj], function(err, result) {
     if(err) throw err;
     else {
