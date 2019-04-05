@@ -557,7 +557,7 @@ $(document).ready(function () {
                     var organizer = data[i].organizer;
                     var summary = data[i].summary;
                     $(".console-output").append("<medium style=\"color:black;\">-----BEGIN EVENT-----</medium></br>");
-                    $(".console-output").append("<medium style=\"color:black;\">Event StartTime: " + startTime + ", Event Location: " + location + ", Organizer " + organizer + "Summary: " + summary + "</medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\">Event StartTime: <b>" + startTime + "</b>, Event Location: <b>" + location + "</b>, Organizer <b>" + organizer + "</b> Summary: <b>" + summary + " </b></medium></br>");
                     $(".console-output").append("<medium style=\"color:black;\">-----END EVENT-----</medium></br>");
 
                 }
