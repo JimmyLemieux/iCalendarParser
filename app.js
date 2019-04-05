@@ -219,8 +219,8 @@ function fileLogToSQL(data) {
   return tableToBeInserted;
 }
 
-function eventToSQL(data, summary,startTime,organizer, location, cal_file_id, fileName, eventNumber) {
-  var heading = "(summary, start_time, location, organizer, file_Name, event_no, cal_file)";
+function eventToSQL(data, summary,startTime,organizer, location, cal_file_id) {
+  var heading = "(summary, start_time, location, organizer, cal_file)";
   var values = "('"+ summary + "', '"
                     + startTime + "', '"
                     + location + "', '"
@@ -273,7 +273,7 @@ app.get('/loginDatabase', function(req, res) {
   });
 
   var sql = "CREATE TABLE IF NOT EXISTS FILE (cal_id INT AUTO_INCREMENT PRIMARY KEY, file_Name VARCHAR(60) NOT NULL, version INT NOT NULL, prod_id VARCHAR(256) NOT NULL)";
-  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, file_Name VARCHAR(60) NOT NULL, event_no INT NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
+  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
   var sql3 = "CREATE TABLE IF NOT EXISTS ALARM (alarm_id INT AUTO_INCREMENT PRIMARY KEY, action VARCHAR(256) NOT NULL, `trigger` VARCHAR(256) NOT NULL, event INT NOT NULL, FOREIGN KEY(event) REFERENCES EVENT(event_id) ON DELETE CASCADE)";
 
 
@@ -339,7 +339,59 @@ app.get('/dbSaveFiles', function(req, res) {
     if(err) throw err;
     else {
       console.log("Pushed");
-      res.send({error: "OK"});
+      //res.send({error: "OK"});
+      //Make a query to get all of the files
+      var pullFile = "SELECT * FROM FILE";
+      connection.query(pullFile, function(err, rows, result) {
+        if(err) throw err
+        else {
+          var eventArrPush = [];
+          for(let row of rows) {
+            var fileName = row.file_Name;
+            var cal_id_ref = row.cal_id; 
+            var eventList = sharedLib.eventJSONWrapper(fileName);
+            var propList = sharedLib.eventPropWrapper(fileName);
+            var eventListObj = JSON.parse(eventList);
+            var propListObj = JSON.parse(propList);
+            var eventLocation = null;
+            var eventOrganizer = null;
+            var tempObj = [];
+            for(var i = 0;i=eventListObj.length;i++) {
+              for(var x = 0;x<propListObj.length;x++) {
+                var  jsonText  = JSON.stringify(propListObj[x]);
+                if(propListObj[x]["event"] == (i+1)) {
+                  if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
+                    eventLocation = propListObj[x]["description"];
+                  }
+                  if(propListObj[x]["name"].toUpperCase() == "ORGANIZER") {
+                    eventOrganizer = propListObj[x]["description"];
+                  }
+                  // Here we need to make a query and add these into the event table
+                }
+              }
+              var startDate = eventListObj[i]["startDT"]["date"];
+              var startTime = eventListObj[i]["startDT"]["time"];
+              //"(summary, start_time, location, organizer, cal_file)"
+              tempObj.push(eventListObj[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
+              //eventArrPush.push()
+            }
+            eventArrPush.push(tempObj);
+          }
+
+          //Push the content of the events
+
+          //"(summary, start_time, location, organizer, cal_file)"
+          var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
+          connection.query(sql, [eventArrPush], function(err) {
+            if(err) throw err;
+            else {
+              console.log("events pushed");
+            }
+          });
+
+
+        }
+      });
     }
   });
 
