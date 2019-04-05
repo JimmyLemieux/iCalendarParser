@@ -592,10 +592,10 @@ $(document).ready(function () {
                     $(".console-output").append("<medium style=\"color:black;\">-----THERE IS NOTHING TO QUERY-----</medium></br>");
                 }
                 for(var i = 0;i<data.length;i++) {
-                    var startTime = data[i].startTime; 
+                    var startTime = data[i].startDate; 
                     var summary = data[i].summary;
                     $(".console-output").append("<medium style=\"color:black;\">-----BEGIN EVENT-----</medium></br>");
-                    $(".console-output").append("<medium style=\"color:black;\">Event StartTime: <b>" + startTime + "</b></br> Summary: <b>" + summary + " </b></medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\">Event StartTime: <b>" + startDate + "</b></br> Summary: <b>" + summary + " </b></medium></br>");
                     $(".console-output").append("<medium style=\"color:black;\">-----END EVENT-----</medium></br>");
                 }
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
