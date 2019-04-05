@@ -404,7 +404,19 @@ app.get('/dbSaveFiles', function(req, res) {
           connection.query(sql, [eventArrPush], function(err) {
             if(err) throw err;
             else {
-              console.log("events pushed");
+              //Now pull from events and push the alarms
+              var pullEvents = "SELECT * FROM EVENTS";
+              connection.query(pullEvents, function(err, rows, result) {
+                if(err) throw err;
+                else {
+                  var alarmPush = [];
+                  for(let row of rows) {
+                    var event_id_ref = row.event_id;
+                    console.log(event_id_ref);
+                  }
+                }
+              })
+              
             }
           });
 
