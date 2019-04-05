@@ -461,6 +461,10 @@ $(document).ready(function () {
         var userName = $(this).find('#userNameInput').val();
         var passWord = $(this).find("#passWordInput").val();
         var databaseName = $(this).find("#databaseName").val();
+        if(!userName || !passWord || !databaseName) {
+            $(".console-output").append("<medium style=\"color:red;\"> Please make sure all fields are filled out correctly!</medium></br>");
+            return;
+        }
         $(this).find("#userNameInput").val("");
         $(this).find("#passWordInput").val("");
         $(this).find("#databaseName").val("");
