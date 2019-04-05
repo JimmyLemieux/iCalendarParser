@@ -389,20 +389,19 @@ app.get('/dbSaveFiles', function(req, res) {
               //"(summary, start_time, location, organizer, cal_file)"
               tempObj.push(eventListObj[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
             }
-            //eventArrPush.push(tempObj);
+            eventArrPush.push(tempObj);
           }
 
           //Push the content of the events
 
           // //"(summary, start_time, location, organizer, cal_file)"
-          // var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
-          // connection.query(sql, [eventArrPush], function(err) {
-          //   if(err) throw err;
-          //   else {
-          //     console.log("events pushed");
-          //   }
-          // });
-
+          var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
+          connection.query(sql, [eventArrPush], function(err) {
+            if(err) throw err;
+            else {
+              console.log("events pushed");
+            }
+          });
 
         }
       });
