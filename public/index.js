@@ -498,6 +498,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'get',
             url: '/dbClearFiles',
+            async: false,
             success: function(data) {
                 $.ajax({
                     type: 'get',
