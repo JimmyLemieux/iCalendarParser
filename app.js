@@ -562,6 +562,30 @@ app.get('/getSortedEvents', function(req, res) {
   });
 });
 
+app.get('/getFileEvents', function(req,res) {
+  var reqJson = req.query;
+  var fileName = reqJson.fileName;
+  console.log("From the req " + fileName);
+  var arr = [];
+  connection.query("SELECT * FROM EVENT", function(err, rows, result) {
+    if(err) throw err; 
+    else {
+      for(let row of rows) {
+        if(row.file_Name == fileName){
+          var tempObj = {
+            startDate: row.start_time,
+            summary: row.summary,
+          }
+          arr.push(tempObj);
+        }
+      }
+      res.send(arr);
+    }
+  });
+
+
+});
+
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);
