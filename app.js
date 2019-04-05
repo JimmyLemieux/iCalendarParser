@@ -670,7 +670,7 @@ app.get("/getAlarmTrigger", function(req, res) {
 });
 
 app.get("/getEventOrganizer", function(req, res) {
-  connection("SELECT * FROM EVENT", function(err, rows, result) {
+  connection.query("SELECT * FROM EVENT", function(err, rows, result) {
     if(err) throw err;
     else {
       var outObject = [];
