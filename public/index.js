@@ -494,7 +494,6 @@ $(document).ready(function () {
     //The button that will submit all of the forms
     $(".main-functions").find("#store-files-btn").on('click', function(e) {
         e.preventDefault();
-        alert("Button pressed!");
         $.ajax({
             type: 'get',
             url: '/dbSaveFiles',
@@ -504,6 +503,8 @@ $(document).ready(function () {
         });
            
     });
+
+
 
     $(".main-functions").find("#clear-db-files").on('click', function(e) {
         e.preventDefault();

@@ -453,6 +453,7 @@ app.get('/dbSaveFiles', function(req, res) {
                     if(err) throw err; 
                     else {
                       console.log("alarm push");
+                      res.send({error: "OK ON PUSH"});
                     }
                   });
                 }
