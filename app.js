@@ -587,12 +587,11 @@ app.get('/getFileEvents', function(req,res) {
 app.get('/getConflictEvents', function(req, res) {
   var arr = [];
 
-  connection.query("SELECT *, COUNT(*) AS c FROM EVENT GROUP BY (start_time) HAVING c > 1", function(err, rows, result) {
+  connection.query("SELECT *, COUNT(*) AS c FROM EVENT GROUP BY (*) HAVING c > 1", function(err, rows, result) {
     if(err) throw err;
     else {
       for(let row of rows) {
         console.log(row);
-      }
       res.send({error: "OK"});
     }
   });
