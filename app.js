@@ -401,26 +401,26 @@ app.get('/dbSaveFiles', function(req, res) {
 
           // //"(summary, start_time, location, organizer, cal_file)"
           console.log(eventArrPush);
-          var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file, file_Name) VALUES ?";
-          connection.query(sql, [eventArrPush], function(err) {
-            if(err) throw err;
-            else {
-              //Now pull from events and push the alarms
-              var pullEvents = "SELECT * FROM EVENT";
-              connection.query(pullEvents, function(err, rows, result) {
-                if(err) throw err;
-                else {
-                  var alarmPush = [];
-                  for(let row of rows) {
-                    var event_id_ref = row.event_id;
-                    console.log(event_id_ref);
-                    var alarmList = sharedLib.alarmJSONWrapper();
-                  }
-                }
-              })
+          // var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file, file_Name) VALUES ?";
+          // connection.query(sql, [eventArrPush], function(err) {
+          //   if(err) throw err;
+          //   else {
+          //     //Now pull from events and push the alarms
+          //     var pullEvents = "SELECT * FROM EVENT";
+          //     connection.query(pullEvents, function(err, rows, result) {
+          //       if(err) throw err;
+          //       else {
+          //         var alarmPush = [];
+          //         for(let row of rows) {
+          //           var event_id_ref = row.event_id;
+          //           console.log(event_id_ref);
+          //           var alarmList = sharedLib.alarmJSONWrapper();
+          //         }
+          //       }
+          //     })
               
-            }
-          });
+          //   }
+          // });
 
         }
       });
