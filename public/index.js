@@ -506,6 +506,8 @@ $(document).ready(function () {
                         console.log(data);
                         $(".console-output").append("<medium style=\"color:green;\">Saving Files to DB..</medium></br>");
                         $(".console-output").append("<medium style=\"color:green;\">Files have been saved!..</medium></br>");
+                        $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                        $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
                     }
                 });
             }
@@ -523,6 +525,8 @@ $(document).ready(function () {
                 console.log(data);
                 $(".console-output").append("<medium style=\"color:green;\">Deleting All DB Contents</medium></br>");
                 $(".console-output").append("<medium style=\"color:black;\"> FILE: " + data.FILE + ", EVENT: " + data.EVENT + ", ALARM: " + data.ALARM + "</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
                 console.log("DB Cleared");
             }
         });
@@ -540,6 +544,8 @@ $(document).ready(function () {
                 console.log(data);
                 $(".console-output").append("<medium style=\"color:black;\">Fetching DB status..</medium></br>");
                 $(".console-output").append("<medium style=\"color:black;\">Number of files: " + data.fileCount + ", Number of Events: " + data.eventCount + ", Number of Alarms: " + data.alarmCount + "</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
 
             }
         });
@@ -567,6 +573,8 @@ $(document).ready(function () {
                     $(".console-output").append("<medium style=\"color:black;\">-----END EVENT-----</medium></br>");
                 }
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
             }
         });
 
@@ -601,6 +609,9 @@ $(document).ready(function () {
                     $(".console-output").append("<medium style=\"color:black;\">-----END EVENT-----</medium></br>");
                 }
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
+
             }
         });
 
@@ -630,6 +641,8 @@ $(document).ready(function () {
                 }
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
                 $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
+
 
             }
         });
@@ -658,6 +671,8 @@ $(document).ready(function () {
                 $(".console-output").append("<medium style=\"color:green;\">-----Total of " + data.length + " conflicting triggers!-----</medium></br>");                
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
                 $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
+
             }
         })
     });
@@ -684,6 +699,8 @@ $(document).ready(function () {
                 $(".console-output").append("<medium style=\"color:green;\">-----Total of " + data.length + " conflicting event organizers!-----</medium></br>");                
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
                 $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
+
                 
             }
         });
@@ -712,6 +729,8 @@ $(document).ready(function () {
                 $(".console-output").append("<medium style=\"color:green;\">-----Total of " + data.length + " conflicting event summaries!-----</medium></br>");                
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
                 $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">-----------------------------------</medium></br>");
+
             }
         });
 
