@@ -411,9 +411,41 @@ app.get('/dbSaveFiles', function(req, res) {
               connection.query(pullEvents, function(err, rows, result) {
                 if(err) throw err;
                 else {
+                  var alarmPush = [];
                   for(let row of rows) {
-                    console.log(row.file_Name);
+                    var alar
+                    var event_id_ref = row.event_id;
+                    var fileName = row.file_Name;
+                    var eventList = sharedLib.eventJSONWrapper(fileName);
+                    var alarmList = sharedLib.alarmJSONWrapper(fileName);
+                    var eventListObj = JSON.parse(eventList);
+                    var alarmListObj = JSON.parse(alarmList);
+                    
+
+                    for(var i = 0;i<eventListObj.length;i++) {
+                      var tempAlarmArr = [];
+                      for(var x = 0;x<alarmListObj.length;x++) {
+                        if(alarmListObj[x]["event"] == (i+1)) {
+                          var action = alarmListObj[x]["action"];
+                          var trigger = alarmListObj[x]["trigger"];
+                          tempAlarmArr.push(action);
+                          tempAlarmArr.push(trigger);
+                          tempAlarmArr.push(event_id_ref);
+
+                        }
+                      }
+                      alarmPush.push(tempAlarmArr);
+                    }
                   }
+
+
+                  var insertAlarm = "INSERT INTO ALARM (action, `trigger`, event) VALUES ?";
+                  connection.query(insertAlarm,[alarmPush],function(err) {
+                    if(err) throw err; 
+                    else {
+                      console.log("alarm push");
+                    }
+                  });
                 }
               })
               
