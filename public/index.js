@@ -551,6 +551,10 @@ $(document).ready(function () {
             url: '/getSortedEvents',
             success: function(data) {
                 console.log(data);
+                $(".console-output").append("<medium style=\"color:black;\">-----BEGIN QUERY-----</medium></br>");
+                if(data.length == 0) {
+                    $(".console-output").append("<medium style=\"color:black;\">-----THERE IS NOTHING TO QUERY-----</medium></br>");
+                }
                 for(var i = 0;i<data.length;i++) {
                     var startTime = data[i].startTime; 
                     var location = data[i].location;
@@ -559,13 +563,14 @@ $(document).ready(function () {
                     $(".console-output").append("<medium style=\"color:black;\">-----BEGIN EVENT-----</medium></br>");
                     $(".console-output").append("<medium style=\"color:black;\">Event StartTime: <b>" + startTime + "</b></br> Event Location: <b>" + location + "</b></br> Organizer <b>" + organizer + "</b></br> Summary: <b>" + summary + " </b></medium></br>");
                     $(".console-output").append("<medium style=\"color:black;\">-----END EVENT-----</medium></br>");
-
                 }
+                $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
             }
         });
 
     });
 
+    //query to get events from a specific file
     $(".main-functions").find("#get-file-events").on('click', function(e) {
         e.preventDefault();
         console.log("Clicked the file events");
