@@ -580,13 +580,11 @@ $(document).ready(function () {
         var obj = {
             fileName: fileNameInput
         }
-        var dataObj = JSON.stringify(obj);
         $.ajax({
             type: 'get',
             dataType: 'json',
-            contentType: "application/json",
             url: "/getFileEvents",
-            data: dataObj,
+            data: obj,
             success: function(data) {
                 console.log(data);
             }
