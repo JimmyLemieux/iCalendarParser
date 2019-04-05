@@ -551,6 +551,13 @@ $(document).ready(function () {
             url: '/getSortedEvents',
             success: function(data) {
                 console.log(data);
+                for(var i = 0;i<data.length;i++) {
+                    var startTime = data.startTime; 
+                    var location = data.location;
+                    var organizer = data.organizer;
+                    var summary = data.summary;
+                    $(".console-output").append("<medium style=\"color:black;\">Event StartTime: " + startTime + ", Event Location: " + location + ", Organizer " + organizer + "Summary: " + summary + "</medium></br>");
+                }
             }
         });
 
