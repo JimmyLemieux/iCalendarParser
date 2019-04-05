@@ -577,11 +577,15 @@ $(document).ready(function () {
         $("#file-event-input").val("");
         console.log(fileNameInput);
         console.log("Clicked the file events");
+        var obj = {
+            fileName: fileNameInput
+        }
+        var dataObj = JSON.stringify(obj);
         $.ajax({
             type: 'get',
             dataType: 'json',
             url: "/getFileEvents",
-            data: JSON.stringify({fileName: fileNameInput}),
+            data: dataObj,
             success: function(data) {
                 console.log(data);
             }
