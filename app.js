@@ -337,7 +337,7 @@ app.get('/dbSaveFiles', function(req, res) {
             } else {
 
               
-              console.log("Table deleted");
+              console.log("Table deleted Alarm");
             }
           });
         }
@@ -445,7 +445,6 @@ app.get('/dbSaveFiles', function(req, res) {
               });        
             }
           });
-
         }
       }
     }
