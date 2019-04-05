@@ -412,8 +412,19 @@ app.get('/dbSaveFiles', function(req, res) {
                 if(err) throw err;
                 else {
                   var alarmPush = [];
+                  var rowCount = 0;
+                  var eventCount = 1;
+                  var prevFileName = "";
                   for(let row of rows) {
-                    var alar
+                    if(rowCount == 0) {
+                      prevFileName = row.file_Name;
+                    } else if(prevFileName != row.file_Name) {
+                      eventCount = 0;
+                      prevFileName = row.file_Name;
+                    } else {
+                      eventCount++;
+                      prevFileName = row.file_Name;
+                    }
                     var event_id_ref = row.event_id;
                     var fileName = row.file_Name;
                     var eventList = sharedLib.eventJSONWrapper(fileName);
@@ -421,20 +432,18 @@ app.get('/dbSaveFiles', function(req, res) {
                     var eventListObj = JSON.parse(eventList);
                     var alarmListObj = JSON.parse(alarmList);
                     
-
-                    for(var i = 0;i<eventListObj.length;i++) {
-                      for(var x = 0;x<alarmListObj.length;x++) {
-                      var tempAlarmArr = [];
-                        if(alarmListObj[x]["event"] == (i+1)) {
-                          var action = alarmListObj[x]["action"];
-                          var trigger = alarmListObj[x]["trigger"];
-                          tempAlarmArr.push(action);
-                          tempAlarmArr.push(trigger);
-                          tempAlarmArr.push(event_id_ref);
-                          alarmPush.push(tempAlarmArr);
-                        }
+                    for(var x = 0;x<alarmListObj.length;x++) {
+                    var tempAlarmArr = [];
+                      if(alarmListObj[x]["event"] == (eventCount)) {
+                        var action = alarmListObj[x]["action"];
+                        var trigger = alarmListObj[x]["trigger"];
+                        tempAlarmArr.push(action);
+                        tempAlarmArr.push(trigger);
+                        tempAlarmArr.push(event_id_ref);
+                        alarmPush.push(tempAlarmArr);
                       }
                     }
+                    rowCount++;
                   }
 
                   console.log(alarmPush);
