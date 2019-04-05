@@ -8,9 +8,6 @@ const express = require("express");
 const app     = express();
 const path    = require("path");
 const fileUpload = require('express-fileupload');
-
-const Promise = require('promise');
-
 var connection;
 var fileListObj = [];
 
