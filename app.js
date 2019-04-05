@@ -590,7 +590,9 @@ app.get('/getConflictEvents', function(req, res) {
   connection.query("SELECT *, COUNT(*) AS c FROM EVENT GROUP BY (start_time) HAVING c > 1", function(err, rows, result) {
     if(err) throw err;
     else {
-      console.log(rows);
+      for(let row of rows) {
+        console.log(row);
+      }
       res.send({error: "OK"});
     }
   });
