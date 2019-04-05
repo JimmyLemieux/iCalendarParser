@@ -405,7 +405,7 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) throw err;
             else {
               //Now pull from events and push the alarms
-              var pullEvents = "SELECT * FROM EVENTS";
+              var pullEvents = "SELECT * FROM EVENT";
               connection.query(pullEvents, function(err, rows, result) {
                 if(err) throw err;
                 else {
