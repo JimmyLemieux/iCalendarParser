@@ -329,6 +329,14 @@ app.get('/dbSaveFiles', function(req, res) {
   //You can save multiple files into the table
   console.log(fileListObj);
 
+  var sql = "INSERT INTO FILE (file_name, version, prod_id) VALUES ?";
+  connection.query(sql, [fileListObj], function(err, result) {
+    if(err) throw err;
+    else {
+      console.log("Pushed");
+    }
+  });
+
 
   //res.send(fileListObj);
 });
