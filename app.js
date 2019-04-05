@@ -431,8 +431,8 @@ app.get('/dbSaveFiles', function(req, res) {
                           tempAlarmArr.push(action);
                           tempAlarmArr.push(trigger);
                           tempAlarmArr.push(event_id_ref);
-                          alarmPush.push(tempAlarmArr);
                         }
+                          alarmPush.push(tempAlarmArr);
                       }
                     }
                   }
