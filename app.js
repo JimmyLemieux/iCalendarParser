@@ -385,7 +385,7 @@ app.get('/dbSaveFiles', function(req, res) {
               var startDate = eventListObj[i]["startDT"]["date"];
               var startTime = eventListObj[i]["startDT"]["time"];
               var summary = null;
-              if(eventListObj[i].summary != "") summary = eventListObj.summary;
+              if(eventListObj[i]["summary"] != "") summary = eventListObj[i]["summary"];
               //"(summary, start_time, location, organizer, cal_file)"
               tempEventArr.push(summary);
               tempEventArr.push( startDate + startTime);
