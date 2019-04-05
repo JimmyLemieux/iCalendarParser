@@ -350,16 +350,19 @@ app.get('/dbSaveFiles', function(req, res) {
             var fileName = row.file_Name;
             var cal_id_ref = row.cal_id; 
             console.log( "Some file name" + " "+ fileName);
-             var eventList = sharedLib.eventJSONWrapper(fileName);
-             var propList = sharedLib.eventPropWrapper(fileName);
+            var eventList = sharedLib.eventJSONWrapper(fileName);
+            var propList = sharedLib.eventPropWrapper(fileName);
 
-             eventList = JSON.parse(eventList);
-             propList = JSON.parse(propList);
+            eventList = JSON.parse(eventList);
+            propList = JSON.parse(propList);
             // var eventListObj = JSON.parse(eventList);
             // var propListObj = JSON.parse(propList);
-             var eventLocation = null;
-             var eventOrganizer = null;
-             var tempObj = [];
+            var eventLocation = null;
+            var eventOrganizer = null;
+            var tempObj = [];
+             
+            console.log(eventList.length);
+            console.log(propList.length);
             for(var i = 0;i=eventList.length;i++) {
               for(var x = 0;x<propList.length;x++) {
                 var  jsonText  = JSON.stringify(propList[x]);
