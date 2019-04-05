@@ -356,33 +356,30 @@ app.get('/dbSaveFiles', function(req, res) {
             console.log(eventList);
             console.log("---------------");
             console.log(propList);
-            
-
-
             // var propListObj = JSON.parse(propList);
-            // var eventLocation = null;
-            // var eventOrganizer = null;
-            // var tempObj = [];
-            // for(var i = 0;i=eventListObj.length;i++) {
-            //   for(var x = 0;x<propListObj.length;x++) {
-            //     var  jsonText  = JSON.stringify(propListObj[x]);
-            //     if(propListObj[x]["event"] == (i+1)) {
-            //       if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
-            //         eventLocation = propListObj[x]["description"];
-            //       }
-            //       if(propListObj[x]["name"].toUpperCase() == "ORGANIZER") {
-            //         eventOrganizer = propListObj[x]["description"];
-            //       }
-            //       // Here we need to make a query and add these into the event table
-            //     }
-            //   }
-            //   console.log( "This is some event " +" "+ eventListObj[i]);
-            //   var startDate = eventListObj[i]["startDT"]["date"];
-            //   var startTime = eventListObj[i]["startDT"]["time"];
-            //   //"(summary, start_time, location, organizer, cal_file)"
-            //   tempObj.push(eventListObj[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
-            //   //eventArrPush.push()
-            // }
+             var eventLocation = null;
+             var eventOrganizer = null;
+             var tempObj = [];
+            for(var i = 0;i=eventList.length;i++) {
+              for(var x = 0;x<propList.length;x++) {
+                var  jsonText  = JSON.stringify(propList[x]);
+                if(propList[x]["event"] == (i+1)) {
+                  if(propList[x]["name"].toUpperCase() == "LOCATION") {
+                    eventLocation = propList[x]["description"];
+                  }
+                  if(propList[x]["name"].toUpperCase() == "ORGANIZER") {
+                    eventOrganizer = propList[x]["description"];
+                  }
+                  // Here we need to make a query and add these into the event table
+                }
+              }
+              console.log( "This is some event " +" "+ eventList[i]);
+              var startDate = eventList[i]["startDT"]["date"];
+              var startTime = eventList[i]["startDT"]["time"];
+              //"(summary, start_time, location, organizer, cal_file)"
+              tempObj.push(eventList[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
+              //eventArrPush.push()
+            }
             //eventArrPush.push(tempObj);
           }
 
