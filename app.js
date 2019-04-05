@@ -335,7 +335,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
   var sql = "INSERT INTO FILE (file_Name, version, prod_id) VALUES ?";
   console.log("here");
-  connection.query(sql, fileListObj, function(err, result) {
+  connection.query(sql, [fileListObj], function(err, result) {
     if(err) throw err;
     else {
       console.log("Pushed");
