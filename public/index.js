@@ -580,6 +580,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'get',
             dataType: 'json',
+            url: "/getFileEvents",
             data: JSON.stringify({fileName: fileNameInput}),
             success: function(data) {
                 console.log(data);
