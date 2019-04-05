@@ -342,13 +342,21 @@ app.get('/dbSaveFiles', function(req, res) {
     });
   }
 
+
+
   //Now I am going to have to get a list of fileEvents
   connection.query("SELECT * FROM FILE;", function(err, rows, fields) {
     if(err) {
       console.log("Something went wrong");
     } else {
       //Go through all of the rows in the query
+
+
       for(let row of rows) {
+
+        //Taking the rows from over in the database
+        // This will then be takin from the 
+        // From here I will be
 
         var calID = row.cal_id;
         var eventList = sharedLib.eventJSONWrapper(row.file_Name);
@@ -362,7 +370,6 @@ app.get('/dbSaveFiles', function(req, res) {
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
-          var xCount = i+1;
           for(var x = 0;x<propListObj.length;x++) {
             var  jsonText  = JSON.stringify(propListObj[x]);
             if(propListObj[x]["event"] == (i+1)) {
@@ -383,53 +390,53 @@ app.get('/dbSaveFiles', function(req, res) {
           if(eventListObj[i].summary != '') summary = eventListObj[i].summary; 
           var eventToSQLQuery = eventToSQL(eventListObj[i], summary, startTimeDate + starTime, eventOrganizer, eventLocation,calID, row.file_Name,(i+1));
           //Adding the event to the database 
-            connection.query(eventToSQLQuery, function(err, rows) {
-              if(err) {
-                console.log("There was an error with the event table");
-                console.log(err);
-              } else {
-                console.log("NICE");
-                console.log("The value of the: " + xCount);
-                console.log("The value of the index: " + i);
-                if(i == eventListObj.length - 1){
-                  connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-                    if(err) {
-                      console.log("There was an error");
-                    } else {
-                      console.log("OK");
-                      for(let row of rows) { // Each of these rows is an event
-                        var eID = row.event_id;
-                        var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
-                        var alarmJSONObj = JSON.parse(alarmJSON);
-                        for(var x = 0;x<alarmJSONObj.length;x++) {
-                          if(alarmJSONObj[x]["event"] == row.event_no) {
-                            //These are the alarms for the current event
-                            //console.log(alarmJSONObj[x].trigger);
-                            var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
-                            connection.query(alarmSQLQuery, function(err) {
-                              if(err) {
-                                console.log("There was a problem with alarm TABLE"); 
-                                console.log(err);
-                              } else{
-                                console.log("The alarm was pushed!");
-                              }
-                            });
-                          }
-                        }
-                      }
-                    }
-                  });    
-                }          
-              }
-            });
+          connection.query(eventToSQLQuery, function(err, rows) {
+            if(err) {
+              console.log("There was an error with the event table");
+              console.log(err);
+            } else {
+              console.log("NICE");              
+            }
+          });
+
         }
       }
+
+      connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+        if(err) {
+          console.log("There was an error");
+        } else {
+          //console.log("OK");
+          for(let row of rows) { // Each of these rows is an event
+            var eID = row.event_id;
+            var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
+            var alarmJSONObj = JSON.parse(alarmJSON);
+            for(var x = 0;x<alarmJSONObj.length;x++) {
+              if(alarmJSONObj[x]["event"] == row.event_no) {
+                //These are the alarms for the current event
+                //console.log(alarmJSONObj[x].trigger);
+                var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+                console.log(alarmSQLQuery);
+                //console.log(alarmSQLQuery);
+                connection.query(alarmSQLQuery, function(err) {
+                  if(err) {
+                    console.log("There was a problem with alarm TABLE"); 
+                    console.log(err);
+                  } else{
+                    console.log("The alarm was pushed!");
+                  }
+                });
+              }
+            }
+          }
+        }
+      });
     }
   });
   //Make a query to from the event table 
+
   //res.send(fileListObj);
 });
-
 //This will clear all of the files from the database 
 app.get('/dbClearFiles', function(req, res) {
   var deleteFileTable = "DELETE FROM FILE";
