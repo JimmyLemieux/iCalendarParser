@@ -350,10 +350,10 @@ app.get('/dbSaveFiles', function(req, res) {
             var fileName = row.file_Name;
             var cal_id_ref = row.cal_id; 
             console.log( "Some file name" + " "+ fileName);
-            // var eventList = sharedLib.eventJSONWrapper(row.file_Name);
+             var eventList = sharedLib.eventJSONWrapper(fileName);
             // var propList = sharedLib.eventPropWrapper(row.file_Name);
             // var eventListObj = JSON.parse(eventList);
-            
+            console.log(eventList);
 
 
             // var propListObj = JSON.parse(propList);
@@ -380,7 +380,7 @@ app.get('/dbSaveFiles', function(req, res) {
             //   tempObj.push(eventListObj[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
             //   //eventArrPush.push()
             // }
-            eventArrPush.push(tempObj);
+            //eventArrPush.push(tempObj);
           }
 
           //Push the content of the events
