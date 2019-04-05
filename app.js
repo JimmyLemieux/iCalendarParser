@@ -607,18 +607,19 @@ app.get('/getConflictEvents', function(req, res) {
 
       for(var i = 0;i<timeObject.length;i++) {
         for(var j = 0;j<timeObject.length;j++) {
-          if(i == j)continue;
-          if(timeObject[i] == timeObject[j]) {
-            // if(eventObj[i].isFound == 0) {
-            //   eventObj[i].isFound = 1;
-            //   outObject.push(eventObj[i]);
-            // } 
-            // if(eventObj[j].isFound == 0) {
-            //   eventObj[j].isFound = 1;
-            //   outObject.push(eventObj[j]);
-            // }
-            console.log(timeObject[i]);
-            console.log(timeObject[j]);
+          if(i != j){
+            if(timeObject[i] == timeObject[j]) {
+              // if(eventObj[i].isFound == 0) {
+              //   eventObj[i].isFound = 1;
+              //   outObject.push(eventObj[i]);
+              // } 
+              // if(eventObj[j].isFound == 0) {
+              //   eventObj[j].isFound = 1;
+              //   outObject.push(eventObj[j]);
+              // }
+              console.log(timeObject[i]);
+              console.log(timeObject[j]);
+            }
           }
         }
       }
