@@ -514,6 +514,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'get',
             url: '/dbClearFiles',
+            async: false,
             success: function(data) {
                 console.log(data);
                 $(".console-output").append("<medium style=\"color:green;\">Deleting All DB Contents</medium></br>");
@@ -529,6 +530,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'get',
             url: '/getDBStatus',
+            async: false,
             success: function(data) {
                 console.log("Got the status");
                 console.log(data);

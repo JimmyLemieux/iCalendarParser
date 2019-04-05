@@ -452,27 +452,28 @@ app.get('/dbClearFiles', function(req, res) {
     } else {
       clearRet["FILE"] = "DELETED";
       console.log("Table deleted");
+      connection.query("DELETE FROM EVENT" , function(err) {
+        if(err) {
+          console.log("Something went wrong");
+        } else {
+          clearRet["EVENT"] = "DELETED";
+          console.log("Table deleted");
+          connection.query("DELETE FROM ALARM", function(err) {
+            if(err) {
+              console.log("Something went wrong");
+            } else {
+              clearRet["ALARM"] = "DELETED";
+              res.send(clearRet); 
+              console.log("Table deleted");
+            }
+          });
+        }
+      });
     }
   });
 
-  connection.query("DELETE FROM EVENT" , function(err) {
-    if(err) {
-      console.log("Something went wrong");
-    } else {
-      clearRet["EVENT"] = "DELETED";
-      console.log("Table deleted");
-    }
-  });
 
-  connection.query("DELETE FROM ALARM", function(err) {
-    if(err) {
-      console.log("Something went wrong");
-    } else {
-      clearRet["ALARM"] = "DELETED";
-      res.send(clearRet); 
-      console.log("Table deleted");
-    }
-  });
+
 
 
 });
