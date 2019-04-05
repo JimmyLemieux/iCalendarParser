@@ -641,6 +641,20 @@ $(document).ready(function () {
             url: '/getAlarmTrigger',
             success: function(data) {
                 console.log(data);
+                $(".console-output").append("<medium style=\"color:green;\">Displaying Alarms With The Same Trigger..</medium></br>");
+                $(".console-output").append("<medium style=\"color:black;\">-----BEGIN QUERY-----</medium></br>");
+                if(data.length == 0) {
+                    $(".console-output").append("<medium style=\"color:black;\">-----THERE IS NOTHING TO QUERY OR NO CONFLICTS!-----</medium></br>");
+                }
+                for(var i = 0;i<data.length;i++) {
+                    var trigger = data[i].trigger;
+                    var action = data[i].action;
+                    $(".console-output").append("<medium style=\"color:black;\">-----BEGIN ALARM-----</medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\"> Trigger: <b>" + trigger + " </b> Action: <b>" + action + "</b></medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\">-----END ALARM-----</medium></br>");
+                }
+                $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
             }
         })
     });
