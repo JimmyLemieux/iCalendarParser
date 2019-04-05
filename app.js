@@ -119,12 +119,11 @@ app.get('/obj', function(req,res) {
      JSONObject["fileName"] = files[i];
      arr[i] = JSON.stringify(JSONObject);
      if(JSONObject["isValid"]) {
-       var newObj = {
-          file_Name: JSONObject["fileName"],
-          version: JSONObject["version"],
-          prod_id: JSONObject["prodID"]
-       };
-       fileListObj.push([newObj]);
+       var newObjArr = [];
+       newObjArr.push(JSONObject["fileName"]);
+       newObjArr.push(JSONObject["version"]);
+       newObjArr.push(JSONObject["prodID"]); 
+       fileListObj.push(newObjArr);
      }
    }
    //Sending the json from server to client side of the application
