@@ -351,9 +351,12 @@ app.get('/dbSaveFiles', function(req, res) {
             var cal_id_ref = row.cal_id; 
             console.log( "Some file name" + " "+ fileName);
              var eventList = sharedLib.eventJSONWrapper(fileName);
-            // var propList = sharedLib.eventPropWrapper(row.file_Name);
+             var propList = sharedLib.eventPropWrapper(fileName);
             // var eventListObj = JSON.parse(eventList);
             console.log(eventList);
+            console.log("---------------");
+            console.log(propList);
+            
 
 
             // var propListObj = JSON.parse(propList);
