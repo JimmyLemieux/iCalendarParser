@@ -352,7 +352,7 @@ app.get('/dbSaveFiles', function(req, res) {
             var eventList = sharedLib.eventJSONWrapper(row.file_Name);
             var propList = sharedLib.eventPropWrapper(row.file_Name);
             var eventListObj = JSON.parse(eventList);
-            console.log("Testing "+ eventListObj);
+            console.log("Testing "+ eventListObj[0]["startDT"]);
             var propListObj = JSON.parse(propList);
             var eventLocation = null;
             var eventOrganizer = null;
