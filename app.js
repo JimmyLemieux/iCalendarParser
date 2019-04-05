@@ -401,7 +401,7 @@ app.get('/dbSaveFiles', function(req, res) {
     if(err) {
       console.log("There was an error");
     } else {
-      //console.log("OK");
+      console.log("OK");
       for(let row of rows) { // Each of these rows is an event
         var eID = row.event_id;
         var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
