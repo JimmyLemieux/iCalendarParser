@@ -544,14 +544,20 @@ app.get('/getSortedEvents', function(req, res) {
     if(err) throw err;
     else {
       for(let row of rows) {
-        
-        console.log(row.start_time);
-        console.log(row.location);
-        console.log(row.organizer);
-        console.log(row.summary);
-        console.log("-----------------");
+        var tempObj = {
+          startTime: row.start_time,
+          location: row.location,
+          organizer: row.organizer,
+          summary: row.summary
+        };
+        arr.push(tempObj);
+        // console.log(row.start_time);
+        // console.log(row.location);
+        // console.log(row.organizer);
+        // console.log(row.summary);
+        // console.log("-----------------");
       }
-      res.send({error: "OK ON SORTED"});
+      res.send(arr);
     }
   });
 });
