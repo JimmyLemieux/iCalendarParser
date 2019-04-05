@@ -362,6 +362,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
         for(var i = 0;i<eventListObj.length;i++) { //The event list for each file in the database
           //Each event will have a specific list of props
+          var xCount = i+1;
           for(var x = 0;x<propListObj.length;x++) {
             var  jsonText  = JSON.stringify(propListObj[x]);
             if(propListObj[x]["event"] == (i+1)) {
@@ -387,7 +388,35 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log("There was an error with the event table");
               console.log(err);
             } else {
-              console.log("NICE");              
+              console.log("NICE");
+              console.log(xCount);
+              // connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+              //   if(err) {
+              //     console.log("There was an error");
+              //   } else {
+              //     console.log("OK");
+              //     for(let row of rows) { // Each of these rows is an event
+              //       var eID = row.event_id;
+              //       var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
+              //       var alarmJSONObj = JSON.parse(alarmJSON);
+              //       for(var x = 0;x<alarmJSONObj.length;x++) {
+              //         if(alarmJSONObj[x]["event"] == row.event_no) {
+              //           //These are the alarms for the current event
+              //           //console.log(alarmJSONObj[x].trigger);
+              //           var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+              //           connection.query(alarmSQLQuery, function(err) {
+              //             if(err) {
+              //               console.log("There was a problem with alarm TABLE"); 
+              //               console.log(err);
+              //             } else{
+              //               console.log("The alarm was pushed!");
+              //             }
+              //           });
+              //         }
+              //       }
+              //     }
+              //   }
+              // });              
             }
           });
 
@@ -396,34 +425,6 @@ app.get('/dbSaveFiles', function(req, res) {
     }
   });
   //Make a query to from the event table 
-
-  connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-    if(err) {
-      console.log("There was an error");
-    } else {
-      console.log("OK");
-      for(let row of rows) { // Each of these rows is an event
-        var eID = row.event_id;
-        var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
-        var alarmJSONObj = JSON.parse(alarmJSON);
-        for(var x = 0;x<alarmJSONObj.length;x++) {
-          if(alarmJSONObj[x]["event"] == row.event_no) {
-            //These are the alarms for the current event
-            //console.log(alarmJSONObj[x].trigger);
-            var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
-            connection.query(alarmSQLQuery, function(err) {
-              if(err) {
-                console.log("There was a problem with alarm TABLE"); 
-                console.log(err);
-              } else{
-                console.log("The alarm was pushed!");
-              }
-            });
-          }
-        }
-      }
-    }
-  });
   //res.send(fileListObj);
 });
 
