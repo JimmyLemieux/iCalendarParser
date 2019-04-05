@@ -352,10 +352,10 @@ app.get('/dbSaveFiles', function(req, res) {
             console.log( "Some file name" + " "+ fileName);
              var eventList = sharedLib.eventJSONWrapper(fileName);
              var propList = sharedLib.eventPropWrapper(fileName);
+
+             eventList = JSON.parse(eventList);
+             propList = JSON.parse(propList);
             // var eventListObj = JSON.parse(eventList);
-            console.log(eventList);
-            console.log("---------------");
-            console.log(propList);
             // var propListObj = JSON.parse(propList);
              var eventLocation = null;
              var eventOrganizer = null;
