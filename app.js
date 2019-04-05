@@ -410,7 +410,7 @@ app.get('/dbSaveFiles', function(req, res) {
             if(err) {
               console.log("There was an error with the event table");
               console.log(err);
-            } else if(!err && i == eventListObj.length - 1){
+            } else {
               console.log("NICE");      
               connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
                 if(err) {
