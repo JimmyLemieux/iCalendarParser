@@ -592,8 +592,10 @@ app.get('/getConflictEvents', function(req, res) {
     else {
       for(let row of rows) {
         console.log(row);
+      }
       res.send({error: "OK"});
     }
+  });
 });
 
 
