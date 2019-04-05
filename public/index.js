@@ -604,9 +604,18 @@ $(document).ready(function () {
 
     });
 
+
+
     $(".main-functions").find("#get-conflict-events").on('click', function(e) {
         e.preventDefault();
         console.log("Clicked the conflict events");
+        $.ajax({
+            type: 'get',
+            url: '/getConflictEvents', 
+            success: function(data) {
+                console.log(data);
+            }
+        });
     });
 
 

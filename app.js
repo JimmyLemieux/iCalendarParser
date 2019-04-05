@@ -584,6 +584,18 @@ app.get('/getFileEvents', function(req,res) {
 
 });
 
+app.get('/getConflictEvents', function(req, res) {
+  var arr = [];
+
+  connection.query("SELECT (summary, organizer, start_time), COUNT(*) AS c FROM EVENT GROUP BY start_time HAVING c > 1", function(err, rows, result) {
+    if(err) throw err;
+    else {
+      console.log(rows);
+      res.send({error: "OK"});
+    }
+  });
+});
+
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);
