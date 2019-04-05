@@ -349,48 +349,50 @@ app.get('/dbSaveFiles', function(req, res) {
           for(let row of rows) {
             var fileName = row.file_Name;
             var cal_id_ref = row.cal_id; 
-            var eventList = sharedLib.eventJSONWrapper(row.file_Name);
-            var propList = sharedLib.eventPropWrapper(row.file_Name);
-            var eventListObj = JSON.parse(eventList);
-            console.log(eventList["startDT"]);
-            //console.log("Testing "+ eventListObj[0]["startDT"]);
-            var propListObj = JSON.parse(propList);
-            var eventLocation = null;
-            var eventOrganizer = null;
-            var tempObj = [];
-            for(var i = 0;i=eventListObj.length;i++) {
-              for(var x = 0;x<propListObj.length;x++) {
-                var  jsonText  = JSON.stringify(propListObj[x]);
-                if(propListObj[x]["event"] == (i+1)) {
-                  if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
-                    eventLocation = propListObj[x]["description"];
-                  }
-                  if(propListObj[x]["name"].toUpperCase() == "ORGANIZER") {
-                    eventOrganizer = propListObj[x]["description"];
-                  }
-                  // Here we need to make a query and add these into the event table
-                }
-              }
-              console.log( "This is some event " +" "+ eventListObj[i]);
-              var startDate = eventListObj[i]["startDT"]["date"];
-              var startTime = eventListObj[i]["startDT"]["time"];
-              //"(summary, start_time, location, organizer, cal_file)"
-              tempObj.push(eventListObj[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
-              //eventArrPush.push()
-            }
+            console.log( "Some file name" + " "+ fileName);
+            // var eventList = sharedLib.eventJSONWrapper(row.file_Name);
+            // var propList = sharedLib.eventPropWrapper(row.file_Name);
+            // var eventListObj = JSON.parse(eventList);
+            
+
+
+            // var propListObj = JSON.parse(propList);
+            // var eventLocation = null;
+            // var eventOrganizer = null;
+            // var tempObj = [];
+            // for(var i = 0;i=eventListObj.length;i++) {
+            //   for(var x = 0;x<propListObj.length;x++) {
+            //     var  jsonText  = JSON.stringify(propListObj[x]);
+            //     if(propListObj[x]["event"] == (i+1)) {
+            //       if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
+            //         eventLocation = propListObj[x]["description"];
+            //       }
+            //       if(propListObj[x]["name"].toUpperCase() == "ORGANIZER") {
+            //         eventOrganizer = propListObj[x]["description"];
+            //       }
+            //       // Here we need to make a query and add these into the event table
+            //     }
+            //   }
+            //   console.log( "This is some event " +" "+ eventListObj[i]);
+            //   var startDate = eventListObj[i]["startDT"]["date"];
+            //   var startTime = eventListObj[i]["startDT"]["time"];
+            //   //"(summary, start_time, location, organizer, cal_file)"
+            //   tempObj.push(eventListObj[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
+            //   //eventArrPush.push()
+            // }
             eventArrPush.push(tempObj);
           }
 
           //Push the content of the events
 
-          //"(summary, start_time, location, organizer, cal_file)"
-          var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
-          connection.query(sql, [eventArrPush], function(err) {
-            if(err) throw err;
-            else {
-              console.log("events pushed");
-            }
-          });
+          // //"(summary, start_time, location, organizer, cal_file)"
+          // var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
+          // connection.query(sql, [eventArrPush], function(err) {
+          //   if(err) throw err;
+          //   else {
+          //     console.log("events pushed");
+          //   }
+          // });
 
 
         }
