@@ -543,8 +543,8 @@ app.get('/getSortedEvents', function(req, res) {
   connection.query("SELECT * FROM EVENT ORDER BY start_time", function(err, rows, result) {
     if(err) throw err;
     else {
-      console.log(rows);
       for(let row of rows) {
+        
         console.log(row.start_time);
         console.log(row.location);
         console.log(row.organizer);
