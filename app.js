@@ -611,6 +611,7 @@ app.get('/getConflictEvents', function(req, res) {
             if(timeObject[i] == timeObject[j]) {
               console.log(timeObject[i]);
               console.log(timeObject[j]);
+              //Some
             }
           }
         }
