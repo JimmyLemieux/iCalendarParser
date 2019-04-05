@@ -349,7 +349,7 @@ app.get('/dbSaveFiles', function(req, res) {
           for(let row of rows) {
             var fileName = row.file_Name;
             var cal_id_ref = row.cal_id; 
-            console.log( "Some file name" + " "+ fileName);
+            //console.log( "Some file name" + " "+ fileName);
             var eventList = sharedLib.eventJSONWrapper(fileName);
             var propList = sharedLib.eventPropWrapper(fileName);
             var eventJSON = JSON.stringify(eventList);
@@ -367,9 +367,6 @@ app.get('/dbSaveFiles', function(req, res) {
              
             // console.log(eventList);
             // console.log(propList);
-            if(eventListObj.length > 0) {
-              console.log(eventListObj[0]["startDT"]);
-            }
 
             for(var i = 0;i<eventListObj.length;i++) {
               for(var x = 0;x<propListObj.length;x++) {
@@ -395,6 +392,7 @@ app.get('/dbSaveFiles', function(req, res) {
           //Push the content of the events
 
           // //"(summary, start_time, location, organizer, cal_file)"
+          console.log(eventArrPush);
           var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
           connection.query(sql, [eventArrPush], function(err) {
             if(err) throw err;
