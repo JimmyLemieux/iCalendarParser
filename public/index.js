@@ -653,6 +653,7 @@ $(document).ready(function () {
                     $(".console-output").append("<medium style=\"color:black;\"> Trigger: <b>" + trigger + " </b> Action: <b>" + action + "</b></medium></br>");
                     $(".console-output").append("<medium style=\"color:black;\">-----END ALARM-----</medium></br>");
                 }
+                $(".console-output").append("<medium style=\"color:green;\">-----Total of " + data.length + "-----</medium></br>");                
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
                 $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
             }
