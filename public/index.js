@@ -496,14 +496,19 @@ $(document).ready(function () {
         e.preventDefault();
         $.ajax({
             type: 'get',
-            url: '/dbSaveFiles',
+            url: '/dbClearFiles',
+            async: false,
             success: function(data) {
-                console.log(data);
+                $.ajax({
+                    type: 'get',
+                    url: '/dbSaveFiles',
+                    success: function(data) {
+                        console.log(data);
+                    }
+                });
             }
-        });
-           
+        }) 
     });
-
 
 
     $(".main-functions").find("#clear-db-files").on('click', function(e) {
