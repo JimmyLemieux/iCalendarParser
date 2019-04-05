@@ -462,13 +462,7 @@ app.get('/dbSaveFiles', function(req, res) {
 });
 //This will clear all of the files from the database 
 app.get('/dbClearFiles', function(req, res) {
-  var deleteFileTable = "DELETE FROM FILE";
-
-  var tableSize = "SELECT COUNT(*) FROM FILE";
-
   var clearRet = {};
-
-
   connection.query("DELETE FROM FILE", function(err) {
     if(err) {
       console.log("Something went wrong");
@@ -510,33 +504,28 @@ app.get('/getDBStatus', function(req,res) {
       let jsonText = JSON.stringify(rows).replace("(file_Name)", "");
       var jsonObj = JSON.parse(jsonText);
       respObj["fileCount"] = jsonObj[0]["count"];
+      connection.query(eventSize, function(err, rows, result) {
+        if(err) {
+          console.log("Something went wrong with the query");
+        } else {
+          let jsonText = JSON.stringify(rows).replace("(event_id)", "");
+          let jsonObj = JSON.parse(jsonText);
+          respObj["eventCount"] = jsonObj[0]["count"];
+          connection.query(alarmSize, function(err, rows, result) {
+            if(err) {
+              console.log("Something went wrong");
+            } else {
+              let jsonText = JSON.stringify(rows).replace("(alarm_id)", "");
+              let jsonObj = JSON.parse(jsonText);
+              respObj["alarmCount"] = jsonObj[0]["count"];
+              
+              res.send(respObj);
+            }
+          });
+        }
+      });
     }
   }); 
-
-  connection.query(eventSize, function(err, rows, result) {
-    if(err) {
-      console.log("Something went wrong with the query");
-    } else {
-      let jsonText = JSON.stringify(rows).replace("(event_id)", "");
-      let jsonObj = JSON.parse(jsonText);
-      respObj["eventCount"] = jsonObj[0]["count"];
-    }
-  });
-
-  connection.query(alarmSize, function(err, rows, result) {
-    if(err) {
-
-      console.log("Something went wrong");
-    } else {
-      let jsonText = JSON.stringify(rows).replace("(alarm_id)", "");
-      let jsonObj = JSON.parse(jsonText);
-      respObj["alarmCount"] = jsonObj[0]["count"];
-      
-      res.send(respObj);
-    }
-  });
-
-
 });
 
 
