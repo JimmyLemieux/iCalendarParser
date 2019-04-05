@@ -390,6 +390,7 @@ app.get('/dbSaveFiles', function(req, res) {
               } else {
                 console.log("NICE");
                 console.log("The value of the: " + xCount);
+                console.log("The value of the index: " + i);
                 connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
                   if(err) {
                     console.log("There was an error");
