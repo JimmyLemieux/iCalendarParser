@@ -392,15 +392,14 @@ app.get('/dbSaveFiles', function(req, res) {
               tempEventArr.push(eventLocation);
               tempEventArr.push(eventOrganizer);
               tempEventArr.push(cal_id_ref);
-              tempObj.push(tempEventArr);
+              eventArrPush.push(tempEventArr);
             }
-            eventArrPush.push(tempObj);
           }
 
           //Push the content of the events
 
           // //"(summary, start_time, location, organizer, cal_file)"
-          console.log(eventArrPush[0]);
+          console.log(eventArrPush);
           var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
           connection.query(sql, [eventArrPush], function(err) {
             if(err) throw err;
