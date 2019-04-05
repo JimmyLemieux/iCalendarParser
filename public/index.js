@@ -584,6 +584,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'get',
             dataType: 'json',
+            contentType: "application/json",
             url: "/getFileEvents",
             data: dataObj,
             success: function(data) {
