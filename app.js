@@ -621,10 +621,8 @@ app.get('/getConflictEvents', function(req, res) {
           }
         }
       }
-      
 
-      console.log(outObject);
-      res.send({error: "OK"});
+      res.send(outObject);
     }
   });
 });

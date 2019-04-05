@@ -614,6 +614,18 @@ $(document).ready(function () {
             url: '/getConflictEvents', 
             success: function(data) {
                 console.log(data);
+                $(".console-output").append("<medium style=\"color:black;\">-----BEGIN QUERY-----</medium></br>");
+                if(data.length == 0) {
+                    $(".console-output").append("<medium style=\"color:black;\">-----THERE IS NOTHING TO QUERY OR NO CONFLICTS!-----</medium></br>");
+                }
+                for(var i = 0;i<data.length;i++) {
+                    var summary = data[i].summary;
+                    var organizer = data[i].organizer;
+                    $(".console-output").append("<medium style=\"color:black;\">-----BEGIN EVENT-----</medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\"> Summary: <b>" + summary + " </b> Organizer: <b>" + organizer + "</b></medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\">-----END EVENT-----</medium></br>");
+                }
+                $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
             }
         });
     });
