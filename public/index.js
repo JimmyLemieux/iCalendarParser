@@ -504,6 +504,8 @@ $(document).ready(function () {
                     url: '/dbSaveFiles',
                     success: function(data) {
                         console.log(data);
+                        $(".console-output").append("<medium style=\"color:green;\">Saving Files to DB..</medium></br>");
+                        $(".console-output").append("<medium style=\"color:green;\">Files have been saved!..</medium></br>");
                     }
                 });
             }
