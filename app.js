@@ -587,7 +587,7 @@ app.get('/getFileEvents', function(req,res) {
 app.get('/getConflictEvents', function(req, res) {
   var arr = [];
 
-  connection.query("SELECT *, COUNT(*) AS c from EVENT WHERE start_time IN (SELECT *  FROM EVENT GROUP BY start_time having  > 1)", function(err, rows, result) {
+  connection.query("SELECT *, COUNT(*) AS c from EVENT WHERE start_time IN (SELECT *  FROM EVENT GROUP BY start_time having  c > 1)", function(err, rows, result) {
     if(err) throw err;
     else {
       for(let row of rows) {
