@@ -707,6 +707,46 @@ app.get("/getEventOrganizer", function(req, res) {
   });
 });
 
+app.get("/getEventSummary", function(req, res) {
+  connection.query("SELECT * FROM EVENT", function(err, rows, result) {
+    if(err) throw err;
+    else {
+      var outObject = [];
+      var eventObj = [];
+      var summaryObj = [];
+      for(let row of rows) {
+        var tempObj = {
+          summary: row.summary,
+          organizer: row.organizer,
+          isFound: 0
+        }
+        eventObj.push(tempObj);
+        summaryObj.push(row.summary);
+      }
+      for(var i = 0;i<summaryObj.length;i++) {
+        for(var j = 0;j<summaryObj.length;j++) {
+          if(i != j){
+            if(String(summaryObj[i]) == String(summaryObj[j])) {
+              if(eventObj[i].isFound == 0) {
+                eventObj[i].isFound = 1;
+                outObject.push(eventObj[i]);
+              }
+
+              if(eventObj[j].isFound == 0) {
+                eventObj[j].isFound = 1;
+                outObject.push(eventObj[j]);
+              }
+            }
+          }
+        }
+      }
+      res.send(outObject);
+    }
+  });
+
+
+});
+
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);
