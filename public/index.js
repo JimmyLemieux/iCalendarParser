@@ -503,6 +503,7 @@ $(document).ready(function () {
                 $.ajax({
                     type: 'get',
                     url: '/dbSaveFiles',
+                    async: false,
                     success: function(data) {
                     }
                 });
