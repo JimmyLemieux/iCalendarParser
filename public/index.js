@@ -653,11 +653,23 @@ $(document).ready(function () {
                     $(".console-output").append("<medium style=\"color:black;\"> Trigger: <b>" + trigger + " </b> Action: <b>" + action + "</b></medium></br>");
                     $(".console-output").append("<medium style=\"color:black;\">-----END ALARM-----</medium></br>");
                 }
-                $(".console-output").append("<medium style=\"color:green;\">-----Total of " + data.length + "-----</medium></br>");                
+                $(".console-output").append("<medium style=\"color:green;\">-----Total of " + data.length + " conflicting triggers!-----</medium></br>");                
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
                 $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
             }
         })
+    });
+
+    $(".main-functions").find("#get-same-organizer").on('click', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'get',
+            url: '/getEventOrganizer',
+            success: function(data) {
+                console.log(data);
+                
+            }
+        });
     });
 
 

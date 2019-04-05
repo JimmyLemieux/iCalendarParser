@@ -667,7 +667,44 @@ app.get("/getAlarmTrigger", function(req, res) {
       res.send(outObject);
     }
   });
+});
 
+app.get("/getEventOrganizer", function(req, res) {
+  connection("SELECT * FROM EVENT", function(err, rows, result) {
+    if(err) throw err;
+    else {
+      var outObject = [];
+      var eventObj = [];
+      var organizerObj = [];
+      for(let row of rows) {
+        var tempObj = {
+          summary: row.summary,
+          organizer: row.organizer,
+          isFound: 0
+        }
+        eventObj.push(tempObj);
+        organizerObj.push(row.organizer);
+      }
+      for(var i = 0;i<organizerObj.length;i++) {
+        for(var j = 0;j<organizerObj.length;j++) {
+          if(i != j){
+            if(String(organizerObj[i]) == String(organizerObj[j])) {
+              if(eventObj[i].isFound == 0) {
+                eventObj[i].isFound = 1;
+                outObject.push(eventObj[i]);
+              }
+
+              if(eventObj[j].isFound == 0) {
+                eventObj[j].isFound = 1;
+                outObject.push(eventObj[j]);
+              }
+            }
+          }
+        }
+      }
+      res.send(outObject);
+    }
+  });
 });
 
 
