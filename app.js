@@ -377,7 +377,7 @@ app.get('/dbSaveFiles', function(req, res) {
                   if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
                     eventLocation = propListObj[x]["description"];
                   }
-                  if(propList[x]["name"].toUpperCase() == "ORGANIZER") {
+                  if(propListObj[x]["name"].toUpperCase() == "ORGANIZER") {
                     eventOrganizer = propListObj[x]["description"];
                   }
                   // Here we need to make a query and add these into the event table
