@@ -365,8 +365,11 @@ app.get('/dbSaveFiles', function(req, res) {
             var eventOrganizer = null;
             var tempObj = [];
              
-            console.log(eventList);
-            console.log(propList);
+            // console.log(eventList);
+            // console.log(propList);
+            if(eventListObj.length > 0) {
+              console.log(eventListObj[0]["startDT"]);
+            }
 
             // for(var i = 0;i=eventListObj.length;i++) {
             //   for(var x = 0;x<propListObj.length;x++) {
