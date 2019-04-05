@@ -552,10 +552,10 @@ $(document).ready(function () {
             success: function(data) {
                 console.log(data);
                 for(var i = 0;i<data.length;i++) {
-                    var startTime = data.startTime; 
-                    var location = data.location;
-                    var organizer = data.organizer;
-                    var summary = data.summary;
+                    var startTime = data[i].startTime; 
+                    var location = data[i].location;
+                    var organizer = data[i].organizer;
+                    var summary = data[i].summary;
                     $(".console-output").append("<medium style=\"color:black;\">Event StartTime: " + startTime + ", Event Location: " + location + ", Organizer " + organizer + "Summary: " + summary + "</medium></br>");
                 }
             }
