@@ -369,6 +369,7 @@ app.get('/dbSaveFiles', function(req, res) {
             // console.log(propList);
 
             for(var i = 0;i<eventListObj.length;i++) {
+              var tempEventArr = [];
               for(var x = 0;x<propListObj.length;x++) {
                 if(propListObj[x]["event"] == (i+1)) {
                   if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
@@ -386,12 +387,12 @@ app.get('/dbSaveFiles', function(req, res) {
               var summary = null;
               if(eventListObj[i]["summary"] != "") summary = eventListObj["summary"]
               //"(summary, start_time, location, organizer, cal_file)"
-              tempObj.push(summary);
-              tempObj.push( startDate + startTime);
-              tempObj.push(eventLocation);
-              tempObj.push(eventOrganizer);
-              tempObj.push(cal_id_ref);
-
+              tempEventArr.push(summary);
+              tempEventArr.push( startDate + startTime);
+              tempEventArr.push(eventLocation);
+              tempEventArr.push(eventOrganizer);
+              tempEventArr.push(cal_id_ref);
+              tempObj.push(tempEventArr);
             }
             eventArrPush.push(tempObj);
           }
