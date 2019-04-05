@@ -563,7 +563,7 @@ app.get('/getSortedEvents', function(req, res) {
 });
 
 app.get('/getFileEvents', function(req,res) {
-  console.log(req.body);
+  console.log(req.query);
   var arr = [];
   connection.query("SELECT * FROM EVENT", function(err, rows, result) {
     if(err) throw err; 
