@@ -357,16 +357,16 @@ app.get('/dbSaveFiles', function(req, res) {
 
 
 
-            var eventListObj = JSON.parse(eventJSON);
-            var propListObj = JSON.parse(propJSON);
+            var eventListObj = JSON.parse(eventList);
+            var propListObj = JSON.parse(propList);
            
            
             var eventLocation = null;
             var eventOrganizer = null;
             var tempObj = [];
              
-            console.log(eventJSON);
-            console.log(propJSON);
+            console.log(eventList);
+            console.log(propList);
 
             // for(var i = 0;i=eventListObj.length;i++) {
             //   for(var x = 0;x<propListObj.length;x++) {
