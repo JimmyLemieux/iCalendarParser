@@ -667,6 +667,21 @@ $(document).ready(function () {
             url: '/getEventOrganizer',
             success: function(data) {
                 console.log(data);
+                $(".console-output").append("<medium style=\"color:green;\">Displaying Events With The Same Organizer..</medium></br>");
+                $(".console-output").append("<medium style=\"color:black;\">-----BEGIN QUERY-----</medium></br>");
+                if(data.length == 0) {
+                    $(".console-output").append("<medium style=\"color:black;\">-----THERE IS NOTHING TO QUERY OR NO CONFLICTS!-----</medium></br>");
+                }
+                for(var i = 0;i<data.length;i++) {
+                    var summary = data[i].summary;
+                    var organizer = data[i].organizer;
+                    $(".console-output").append("<medium style=\"color:black;\">-----BEGIN ALARM-----</medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\"> Summary: <b>" + summary + " </b> Organizer: <b>" + organizer + "</b></medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\">-----END ALARM-----</medium></br>");
+                }
+                $(".console-output").append("<medium style=\"color:green;\">-----Total of " + data.length + " conflicting event organizers!-----</medium></br>");                
+                $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
                 
             }
         });
