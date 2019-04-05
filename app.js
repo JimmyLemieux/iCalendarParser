@@ -383,8 +383,10 @@ app.get('/dbSaveFiles', function(req, res) {
               //console.log( "This is some event " +" "+ eventListObj[i]);
               var startDate = eventListObj[i]["startDT"]["date"];
               var startTime = eventListObj[i]["startDT"]["time"];
+              var summary = null;
+              if(eventListObj[i]["summary"] != "") summary = eventListObj["summary"]
               //"(summary, start_time, location, organizer, cal_file)"
-              tempObj.push(eventListObj[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
+              tempObj.push(summary, startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
             }
             eventArrPush.push(tempObj);
           }
