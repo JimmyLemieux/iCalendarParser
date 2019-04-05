@@ -603,6 +603,8 @@ app.get('/getConflictEvents', function(req, res) {
         timeObject.push(row.start_time);
       }
 
+      console.log(timeObject.length);
+
       for(var i = 0;i<timeObject.length;i++) {
         for(var j = 0;j<timeObject.length;j++) {
           if(i == j)continue;
