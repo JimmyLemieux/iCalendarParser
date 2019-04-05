@@ -591,7 +591,7 @@ app.get('/getConflictEvents', function(req, res) {
     if(err) throw err;
     else {
       for(let row of rows) {
-        console.log(row.start_date);
+        console.log(row);
       }
       res.send({error: "OK"});
     }
