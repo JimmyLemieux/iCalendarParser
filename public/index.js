@@ -589,10 +589,10 @@ $(document).ready(function () {
                 console.log(data);
                 $(".console-output").append("<medium style=\"color:black;\">-----BEGIN QUERY-----</medium></br>");
                 if(data.length == 0) {
-                    $(".console-output").append("<medium style=\"color:black;\">-----THERE IS NOTHING TO QUERY-----</medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\">-----THERE IS NOTHING TO QUERY OR FILE NOT FOUND!-----</medium></br>");
                 }
                 for(var i = 0;i<data.length;i++) {
-                    var startTime = data[i].startDate; 
+                    var startDate = data[i].startDate; 
                     var summary = data[i].summary;
                     $(".console-output").append("<medium style=\"color:black;\">-----BEGIN EVENT-----</medium></br>");
                     $(".console-output").append("<medium style=\"color:black;\">Event StartTime: <b>" + startDate + "</b></br> Summary: <b>" + summary + " </b></medium></br>");
