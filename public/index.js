@@ -573,6 +573,9 @@ $(document).ready(function () {
     //query to get events from a specific file
     $(".main-functions").find("#get-file-events").on('click', function(e) {
         e.preventDefault();
+        var fileNameInput = $("#file-event-input").val();
+        $("#file-event-input").val("");
+        console.log(fileNameInput);
         console.log("Clicked the file events");
     });
 
