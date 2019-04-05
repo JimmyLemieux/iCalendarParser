@@ -334,8 +334,6 @@ app.get('/dbSaveFiles', function(req, res) {
             var eventJSON = JSON.stringify(eventList);
             var propJSON = JSON.stringify(propList);
 
-
-
             var eventListObj = JSON.parse(eventList);
             var propListObj = JSON.parse(propList);
            
