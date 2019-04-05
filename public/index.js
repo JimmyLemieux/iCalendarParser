@@ -588,7 +588,7 @@ $(document).ready(function () {
     $(".main-functions").find("#get-file-events").on('click', function(e) {
         e.preventDefault();
         var fileNameInput = $("#file-event-input").val();
-        if(!fileNameInput || (fileNameInput >= 4 && !fileNameInput.contains(".ics"))) {
+        if(!fileNameInput || fileNameInput.length < 4 || (fileNameInput.length >= 4 && !fileNameInput.contains(".ics"))) {
             $(".console-output").append("<medium style=\"color:red;\">Please enter a valid file name!</medium></br>");
             return;
         }
