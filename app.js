@@ -563,6 +563,7 @@ app.get('/getSortedEvents', function(req, res) {
 });
 
 app.get('/getFileEvents', function(req,res) {
+  console.log(req.query);
   var reqJson = JSON.parse(req.query);
 
   var fileName = reqJson.fileName;
