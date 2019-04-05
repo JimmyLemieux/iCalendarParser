@@ -273,7 +273,7 @@ app.get('/loginDatabase', function(req, res) {
   });
 
   var sql = "CREATE TABLE IF NOT EXISTS FILE (cal_id INT AUTO_INCREMENT PRIMARY KEY, file_Name VARCHAR(60) NOT NULL, version INT NOT NULL, prod_id VARCHAR(256) NOT NULL)";
-  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
+  var sql2 = "CREATE TABLE IF NOT EXISTS EVENT (event_id INT AUTO_INCREMENT PRIMARY KEY, summary VARCHAR(1024), start_time DATETIME NOT NULL, location VARCHAR(60), organizer VARCHAR(256), cal_file INT NOT NULL, file_Name VARCHAR(60) NOT NULL, FOREIGN KEY(cal_file) REFERENCES FILE(cal_id) ON DELETE CASCADE)";
   var sql3 = "CREATE TABLE IF NOT EXISTS ALARM (alarm_id INT AUTO_INCREMENT PRIMARY KEY, action VARCHAR(256) NOT NULL, `trigger` VARCHAR(256) NOT NULL, event INT NOT NULL, FOREIGN KEY(event) REFERENCES EVENT(event_id) ON DELETE CASCADE)";
 
 
@@ -392,6 +392,7 @@ app.get('/dbSaveFiles', function(req, res) {
               tempEventArr.push(eventLocation);
               tempEventArr.push(eventOrganizer);
               tempEventArr.push(cal_id_ref);
+              tempEventArr.push(fileName);
               eventArrPush.push(tempEventArr);
             }
           }
@@ -400,7 +401,7 @@ app.get('/dbSaveFiles', function(req, res) {
 
           // //"(summary, start_time, location, organizer, cal_file)"
           console.log(eventArrPush);
-          var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
+          var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file, file_Name) VALUES ?";
           connection.query(sql, [eventArrPush], function(err) {
             if(err) throw err;
             else {
@@ -413,6 +414,7 @@ app.get('/dbSaveFiles', function(req, res) {
                   for(let row of rows) {
                     var event_id_ref = row.event_id;
                     console.log(event_id_ref);
+                    var alarmList = sharedLib.alarmJSONWrapper();
                   }
                 }
               })
