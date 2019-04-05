@@ -614,6 +614,7 @@ $(document).ready(function () {
             url: '/getConflictEvents', 
             success: function(data) {
                 console.log(data);
+                $(".console-output").append("<medium style=\"color:green;\">Displaying Conflict Events..</medium></br>");
                 $(".console-output").append("<medium style=\"color:black;\">-----BEGIN QUERY-----</medium></br>");
                 if(data.length == 0) {
                     $(".console-output").append("<medium style=\"color:black;\">-----THERE IS NOTHING TO QUERY OR NO CONFLICTS!-----</medium></br>");
