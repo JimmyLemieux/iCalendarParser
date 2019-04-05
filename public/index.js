@@ -627,6 +627,8 @@ $(document).ready(function () {
                     $(".console-output").append("<medium style=\"color:black;\">-----END EVENT-----</medium></br>");
                 }
                 $(".console-output").append("<medium style=\"color:black;\">-----END QUERY-----</medium></br>");
+                $(".console-output").append("<medium style=\"color:green;\">Done..</medium></br>");
+
             }
         });
     });
