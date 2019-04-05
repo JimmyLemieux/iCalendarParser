@@ -676,7 +676,7 @@ $(document).ready(function () {
                     var summary = data[i].summary;
                     var organizer = data[i].organizer;
                     $(".console-output").append("<medium style=\"color:black;\">-----BEGIN ALARM-----</medium></br>");
-                    $(".console-output").append("<medium style=\"color:black;\"> Summary: <b>" + summary + " </b> Organizer: <b>" + organizer + "</b></medium></br>");
+                    $(".console-output").append("<medium style=\"color:black;\"> Summary: <b >" + summary + " </b> Organizer: <b style=\"color:green\">" + organizer + "</b></medium></br>");
                     $(".console-output").append("<medium style=\"color:black;\">-----END ALARM-----</medium></br>");
                 }
                 $(".console-output").append("<medium style=\"color:green;\">-----Total of " + data.length + " conflicting event organizers!-----</medium></br>");                
