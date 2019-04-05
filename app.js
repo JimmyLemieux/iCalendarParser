@@ -295,28 +295,7 @@ app.get('/loginDatabase', function(req, res) {
             return;
             } else {
               console.log("Table ALARM Created");
-
-              connection.query("DELETE FROM FILE", function(err) {
-                if(err) {
-                  console.log("Something went wrong");
-                } else {
-                  console.log("Table deleted");
-                  connection.query("DELETE FROM EVENT" , function(err) {
-                    if(err) {
-                      console.log("Something went wrong");
-                    } else {
-                      console.log("Table deleted");
-                      connection.query("DELETE FROM ALARM", function(err) {
-                        if(err) {
-                          console.log("Something went wrong");
-                        } else {
-                          console.log("Table deleted");
-                        }
-                      });
-                    }
-                  });
-                }
-              });
+              res.send({error: "LOGGED IN!"}); 
             }
           });
         }
