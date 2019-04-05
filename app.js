@@ -391,33 +391,35 @@ app.get('/dbSaveFiles', function(req, res) {
                 console.log("NICE");
                 console.log("The value of the: " + xCount);
                 console.log("The value of the index: " + i);
-                connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
-                  if(err) {
-                    console.log("There was an error");
-                  } else {
-                    console.log("OK");
-                    for(let row of rows) { // Each of these rows is an event
-                      var eID = row.event_id;
-                      var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
-                      var alarmJSONObj = JSON.parse(alarmJSON);
-                      for(var x = 0;x<alarmJSONObj.length;x++) {
-                        if(alarmJSONObj[x]["event"] == row.event_no) {
-                          //These are the alarms for the current event
-                          //console.log(alarmJSONObj[x].trigger);
-                          var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
-                          connection.query(alarmSQLQuery, function(err) {
-                            if(err) {
-                              console.log("There was a problem with alarm TABLE"); 
-                              console.log(err);
-                            } else{
-                              console.log("The alarm was pushed!");
-                            }
-                          });
+                if(i == eventListObj.length - 1){
+                  connection.query("SELECT * FROM EVENT", function(err, rows, fields) {
+                    if(err) {
+                      console.log("There was an error");
+                    } else {
+                      console.log("OK");
+                      for(let row of rows) { // Each of these rows is an event
+                        var eID = row.event_id;
+                        var alarmJSON = sharedLib.alarmJSONWrapper(row.file_Name);
+                        var alarmJSONObj = JSON.parse(alarmJSON);
+                        for(var x = 0;x<alarmJSONObj.length;x++) {
+                          if(alarmJSONObj[x]["event"] == row.event_no) {
+                            //These are the alarms for the current event
+                            //console.log(alarmJSONObj[x].trigger);
+                            var alarmSQLQuery = alarmToSQL(alarmJSONObj[x], eID);
+                            connection.query(alarmSQLQuery, function(err) {
+                              if(err) {
+                                console.log("There was a problem with alarm TABLE"); 
+                                console.log(err);
+                              } else{
+                                console.log("The alarm was pushed!");
+                              }
+                            });
+                          }
                         }
                       }
                     }
-                  }
-                });              
+                  });    
+                }          
               }
             });
         }
