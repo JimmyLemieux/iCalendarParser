@@ -423,16 +423,16 @@ app.get('/dbSaveFiles', function(req, res) {
                     
 
                     for(var i = 0;i<eventListObj.length;i++) {
-                      var tempAlarmArr = [];
                       for(var x = 0;x<alarmListObj.length;x++) {
+                      var tempAlarmArr = [];
                         if(alarmListObj[x]["event"] == (i+1)) {
                           var action = alarmListObj[x]["action"];
                           var trigger = alarmListObj[x]["trigger"];
                           tempAlarmArr.push(action);
                           tempAlarmArr.push(trigger);
                           tempAlarmArr.push(event_id_ref);
-                        }
                           alarmPush.push(tempAlarmArr);
+                        }
                       }
                     }
                   }
