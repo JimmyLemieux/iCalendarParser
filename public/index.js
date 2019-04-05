@@ -577,8 +577,15 @@ $(document).ready(function () {
         $("#file-event-input").val("");
         console.log(fileNameInput);
         console.log("Clicked the file events");
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            data: JSON.stringify({fileName: fileNameInput}),
+            success: function(data) {
+                console.log(data);
+            }
+        });
 
-        
     });
 
     $(".main-functions").find("#get-conflict-events").on('click', function(e) {
