@@ -590,9 +590,36 @@ app.get('/getConflictEvents', function(req, res) {
   connection.query("SELECT * FROM EVENT", function(err, rows, result) {
     if(err) throw err;
     else {
+      var outObject = [];
+      var eventObj = [];
+      var timeObject = [];
       for(let row of rows) {
-        console.log(row);
+        var tempObj = {
+          summary: row.summary,
+          organizer: row.organizer,
+          isFound: 0
+        }
+        eventObj.push(tempObj);
+        timeObject.push(row.start_time);
       }
+
+      for(var i = 0;i<timeObject.length;i++) {
+        for(var j = 0;j<timeObject.length;j++) {
+          if(i == j)continue;
+          if(timeObject[i] == timeObject[j]) {
+            if(eventObj[i].isFound == 0) {
+              eventObj[i].isFound = 1;
+              outObject.push(eventObj[i]);
+            } 
+            if(eventObj[j].isFound == 0) {
+              eventObj[j].isFound = 1;
+              outObject.push(eventObj[j]);
+            }
+          }
+        }
+      }
+
+      console.log(outObject);
       res.send({error: "OK"});
     }
   });
