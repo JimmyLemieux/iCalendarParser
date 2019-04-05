@@ -400,7 +400,7 @@ app.get('/dbSaveFiles', function(req, res) {
           //Push the content of the events
 
           // //"(summary, start_time, location, organizer, cal_file)"
-          console.log(eventArrPush);
+          console.log(eventArrPush[0]);
           var sql = "INSERT INTO EVENT (summary, start_time, location, organizer, cal_file) VALUES ?";
           connection.query(sql, [eventArrPush], function(err) {
             if(err) throw err;
