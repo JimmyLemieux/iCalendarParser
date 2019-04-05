@@ -371,25 +371,24 @@ app.get('/dbSaveFiles', function(req, res) {
               console.log(eventListObj[0]["startDT"]);
             }
 
-            // for(var i = 0;i=eventListObj.length;i++) {
-            //   for(var x = 0;x<propListObj.length;x++) {
-            //     if(propListObj[x]["event"] == (i+1)) {
-            //       if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
-            //         eventLocation = propListObj[x]["description"];
-            //       }
-            //       if(propList[x]["name"].toUpperCase() == "ORGANIZER") {
-            //         eventOrganizer = propListObj[x]["description"];
-            //       }
-            //       // Here we need to make a query and add these into the event table
-            //     }
-            //   }
-            //   // console.log( "This is some event " +" "+ eventList[i]);
-            //   // var startDate = eventList[i]["startDT"]["date"];
-            //   // var startTime = eventList[i]["startDT"]["time"];
-            //   // //"(summary, start_time, location, organizer, cal_file)"
-            //   // tempObj.push(eventList[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
-            //   //eventArrPush.push()
-            // }
+            for(var i = 0;i<eventListObj.length;i++) {
+              for(var x = 0;x<propListObj.length;x++) {
+                if(propListObj[x]["event"] == (i+1)) {
+                  if(propListObj[x]["name"].toUpperCase() == "LOCATION") {
+                    eventLocation = propListObj[x]["description"];
+                  }
+                  if(propList[x]["name"].toUpperCase() == "ORGANIZER") {
+                    eventOrganizer = propListObj[x]["description"];
+                  }
+                  // Here we need to make a query and add these into the event table
+                }
+              }
+              console.log( "This is some event " +" "+ eventList[i]);
+              var startDate = eventList[i]["startDT"]["date"];
+              var startTime = eventList[i]["startDT"]["time"];
+              //"(summary, start_time, location, organizer, cal_file)"
+              tempObj.push(eventList[i]["summary"], startDate + startTime, eventLocation, eventOrganizer, cal_id_ref);
+            }
             //eventArrPush.push(tempObj);
           }
 
