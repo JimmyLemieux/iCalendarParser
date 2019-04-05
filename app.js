@@ -369,6 +369,7 @@ app.get('/dbSaveFiles', function(req, res) {
                   // Here we need to make a query and add these into the event table
                 }
               }
+              console.log( "This is some event " +" "+ eventListObj[i]);
               var startDate = eventListObj[i]["startDT"]["date"];
               var startTime = eventListObj[i]["startDT"]["time"];
               //"(summary, start_time, location, organizer, cal_file)"
