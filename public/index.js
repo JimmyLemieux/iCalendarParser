@@ -634,6 +634,17 @@ $(document).ready(function () {
     });
 
 
+    $(".main-functions").find("#same-alarm-trigger").on('click', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'get',
+            url: '/getAlarmTrigger',
+            success: function(data) {
+                console.log(data);
+            }
+        })
+    });
+
 
 
 

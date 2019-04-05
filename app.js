@@ -621,10 +621,53 @@ app.get('/getConflictEvents', function(req, res) {
           }
         }
       }
-
       res.send(outObject);
     }
   });
+});
+
+app.get("/getAlarmTrigger", function(req, res) {
+  connection.query("SELECT * FROM ALARM", function(err, rows, reuslt) {
+    if(err) throw err;
+    else {
+      var outObject = [];
+      var alarmObject = [];
+      var triggerObject = [];
+      for(let row of rows) {
+        var tempObj = {
+          trigger: row.trigger,
+          action: row.action,
+          isFound: 0
+        }
+        alarmObject.push(tempObj);
+        triggerObject.push(row.trigger);
+
+      }
+
+      for(var i = 0;i<alarmObject.length;i++) {
+        for(var j = 0;j<alarmObject.length;j++) {
+          if(i != j) {
+            if(String(triggerObject[i]) == String(triggerObject[j])) {
+              if(alarmObject[i].isFound == 0) {
+                alarmObject[i].isFound = 1;
+                outObject.push(alarmObject[i]);
+              } 
+
+              if(alarmObject[j].isFound == 0) {
+                alarmObject[j].isFound = 1;
+                outObject.push(alarmObject[j]);
+              }
+
+
+            }
+
+          }
+        }
+      }
+      res.send(outObject);
+    }
+  });
+
 });
 
 
