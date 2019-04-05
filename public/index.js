@@ -497,18 +497,12 @@ $(document).ready(function () {
         alert("Button pressed!");
         $.ajax({
             type: 'get',
-            url: '/dbClearFiles',
-            async: false,
+            url: '/dbSaveFiles',
             success: function(data) {
-                $.ajax({
-                    type: 'get',
-                    url: '/dbSaveFiles',
-                    async: false,
-                    success: function(data) {
-                    }
-                });
+                console.log(data);
             }
         });
+           
     });
 
     $(".main-functions").find("#clear-db-files").on('click', function(e) {

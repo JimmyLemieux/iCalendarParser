@@ -339,6 +339,7 @@ app.get('/dbSaveFiles', function(req, res) {
     if(err) throw err;
     else {
       console.log("Pushed");
+      res.send({error: "OK"});
     }
   });
 
