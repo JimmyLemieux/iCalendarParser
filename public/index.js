@@ -546,6 +546,14 @@ $(document).ready(function () {
     $(".main-functions").find("#get-sort-events").on('click', function(e) {
         e.preventDefault();
         console.log("Clicked the sorted events");
+        $.ajax({
+            type: 'get',
+            url: '/getSortedEvents',
+            success: function(data) {
+                console.log(data);
+            }
+        });
+
     });
 
     $(".main-functions").find("#get-file-events").on('click', function(e) {

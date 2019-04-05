@@ -538,6 +538,17 @@ app.get('/getDBStatus', function(req,res) {
   }); 
 });
 
+app.get('/getSortedEvents', function(req, res) {
+  var arr = [];
+  connection.query("SELECT * FROM EVENT ORDER BY start_time", function(err, rows, result) {
+    if(err) throw err;
+    else {
+      console.log(result);
+      res.send({error: "OK ON SORTED"});
+    }
+  });
+});
+
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);
