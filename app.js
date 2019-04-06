@@ -292,7 +292,6 @@ app.get('/loginDatabase', function(req, res) {
             return;
             } else {
               console.log("Table ALARM Created");
-              res.send({error: "LOGGED IN!"}); 
             }
           });
         }
@@ -464,7 +463,7 @@ app.get('/dbClearFiles', function(req, res) {
               console.log("Something went wrong");
             } else {
               clearRet["ALARM"] = "DELETED";
-              //res.send(clearRet); 
+              res.send(clearRet); 
             }
           });
         }
@@ -524,11 +523,6 @@ app.get('/getSortedEvents', function(req, res) {
           summary: row.summary
         };
         arr.push(tempObj);
-        // console.log(row.start_time);
-        // console.log(row.location);
-        // console.log(row.organizer);
-        // console.log(row.summary);
-        // console.log("-----------------");
       }
       res.send(arr);
     }
