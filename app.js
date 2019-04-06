@@ -465,7 +465,6 @@ app.get('/dbClearFiles', function(req, res) {
             } else {
               clearRet["ALARM"] = "DELETED";
               res.send(clearRet); 
-              console.log("uee Table deleted");
             }
           });
         }
