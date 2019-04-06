@@ -464,7 +464,7 @@ app.get('/dbClearFiles', function(req, res) {
               console.log("Something went wrong");
             } else {
               clearRet["ALARM"] = "DELETED";
-              res.send(clearRet); 
+              //res.send(clearRet); 
             }
           });
         }
