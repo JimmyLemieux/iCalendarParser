@@ -15,7 +15,6 @@ gitStash:
 	git stash save --keep-index
 
 gitPull:
-	git pull https://JimmyLemieux:Jrrangers123321@github.com/JimmyLemieux/iCalendarParser.git
 
 startServer:
 	npm run dev 32629
